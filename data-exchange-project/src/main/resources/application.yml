@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: data-exchange-project
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+
+logging:
+  file:
+    name: ./log/backend.log
+  pattern:
+    level: r=%X{r} ip=%X{ip} u=%X{u} %5p
+  level:
+    root: info
+    project.data_exchange_project: TRACE
+
+server:
+  servlet:
+    context-path: /api/v1
