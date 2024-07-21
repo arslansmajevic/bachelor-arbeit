@@ -45,7 +45,7 @@ public class LoginEndpoint {
     @PermitAll
     @PutMapping()
     public String login(@RequestBody @Valid UserLoginDto userLoginDto) {
-        log.info("POST api/v1/authentication - {}", userLoginDto);
+        log.info("PUT api/v1/authentication - {}", userLoginDto);
         try {
             return userService.loginUser(userLoginDto);
         } catch (BadCredentialsException | LockedException e) {
