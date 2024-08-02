@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Globals} from "../global/globals";
-import {UserLoginDto} from "../dtos/user/user";
+import {UserLoginDto, UserRegisterDto} from "../dtos/user/user";
 import {Observable} from "rxjs";
 import {tap} from 'rxjs/operators';
 import {jwtDecode} from "jwt-decode";
@@ -27,6 +27,10 @@ export class AuthService {
       .pipe(
         tap((authResponse: string) => this.setToken(authResponse))
       );
+  }
+
+  registerUser(userRegisterDto: UserRegisterDto): Observable<String> {
+    return this.httpClient.post<String>(this.authBaseUri, userRegisterDto)
   }
 
   /**

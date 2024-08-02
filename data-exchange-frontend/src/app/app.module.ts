@@ -8,20 +8,31 @@ import {BrowserModule} from "@angular/platform-browser";
 import {ToastrModule} from "ngx-toastr";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpClientModule} from "@angular/common/http";
+import {LoginComponent} from "./components/user-login/login/login.component";
+import {RegisterUserComponent} from "./components/user-login/register-user/register-user.component";
+import {HomeComponent} from "./components/home/home.component";
+import {FormsModule} from "@angular/forms";
+import {ResetPasswordComponent} from "./components/user-login/reset-password/reset-password.component";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
+    RegisterUserComponent,
+    HomeComponent,
+    HeaderComponent,
+    FooterComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FooterComponent,
-    HeaderComponent,
     RouterOutlet,
     ToastrModule.forRoot(),
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    
   ],
   bootstrap: [AppComponent]
 })

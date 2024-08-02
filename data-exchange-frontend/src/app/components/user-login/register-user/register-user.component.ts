@@ -1,28 +1,24 @@
 import { Component } from '@angular/core';
-import {FormsModule} from "@angular/forms";
-import {UserLoginDto} from "../../dtos/user/user";
-import {NgIf} from "@angular/common";
+import {Router} from "@angular/router";
+import {UserLoginDto, UserRegisterDto} from "../../../dtos/user/user";
 import {ToastrService} from "ngx-toastr";
-import {AuthService} from "../../services/auth.service";
-import {Router, RouterLink} from "@angular/router";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [
-    FormsModule,
-    NgIf,
-    RouterLink
-  ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  selector: 'app-register-user',
+  templateUrl: './register-user.component.html',
+  styleUrl: './register-user.component.css'
 })
-export class LoginComponent {
+export class RegisterUserComponent {
 
-  user: UserLoginDto = {
+  user: UserRegisterDto = {
     email: "",
+    firstName: "",
+    lastName: "",
     password: ""
-  };
+  }
+  firstPassword: string = "";
+  secondPassword: string = "";
 
   constructor(
     private notification: ToastrService,
@@ -30,9 +26,8 @@ export class LoginComponent {
     private router: Router
   ) { }
 
-  loginUser(): void {
-    console.log(this.user)
-    this.authenticateUser(this.user);
+  registerUser(): void {
+    this.askForPermission(this.user);
   }
 
   checkEmailValidity(email: string): boolean {
@@ -40,8 +35,8 @@ export class LoginComponent {
     return emailPattern.test(email);
   }
 
-  authenticateUser(userLoginDto: UserLoginDto): void {
-    this.authService.loginUser(userLoginDto).subscribe({
+  askForPermission(userRegisterDto: UserRegisterDto): void {
+    /*this.authService.loginUser(userLoginDto).subscribe({
       next: () => {
         this.router.navigate(['']);
       },
@@ -53,7 +48,6 @@ export class LoginComponent {
 
         this.notification.error(formattedError, "Could not log in due to:", {enableHtml: true});
       }
-    });
+    });*/
   }
-
 }
