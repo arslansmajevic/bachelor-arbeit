@@ -89,7 +89,7 @@
                     <div *ngIf="passwordRepeat.invalid && passwordRepeat.touched" class="text-danger">
                       Password is required.
                     </div>
-                    <div *ngIf="firstPassword != secondPassword && passwordRepeat.touched" class="text-danger">
+                    <div *ngIf="!checkPasswords() && passwordRepeat.touched" class="text-danger">
                       Passwords do not match.
                     </div>
                   </div>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="col-12">
                   <div class="d-grid my-3">
-                    <button class="btn btn-primary btn-lg" type="submit" [disabled]="!loginForm.form.valid || !checkEmailValidity(user.email)">Register</button>
+                    <button class="btn btn-primary btn-lg" type="submit" [disabled]="!loginForm.form.valid || !checkEmailValidity(user.email) || firstPassword != secondPassword">Register</button>
                   </div>
                 </div>
 

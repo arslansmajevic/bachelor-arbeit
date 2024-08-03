@@ -31,11 +31,28 @@ export class RegisterUserComponent {
   }
 
   checkEmailValidity(email: string): boolean {
+    if (email === '') {
+      return true;
+    }
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     return emailPattern.test(email);
   }
 
+  checkPasswords(): boolean {
+    if (this.secondPassword == '') {
+      return true;
+    }
+
+    if (this.firstPassword != this.secondPassword) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   askForPermission(userRegisterDto: UserRegisterDto): void {
+    this.notification.info('The admin will be notified about your ask for permission.')
+    this.router.navigate(['']);
     /*this.authService.loginUser(userLoginDto).subscribe({
       next: () => {
         this.router.navigate(['']);
