@@ -1,7 +1,19 @@
 spring:
   application:
     name: data-exchange-project
-
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:file:./database/db;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: admin
+    password: password
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
 springdoc:
   swagger-ui:
     path: /swagger-ui
@@ -18,3 +30,16 @@ logging:
 server:
   servlet:
     context-path: /api/v1
+
+security:
+  auth:
+    header: Authorization
+    prefix: "Bearer "
+    login-uri: /api/v1/authentication
+  jwt:
+    secret: ?E(H+MbQeThWmZq4t7w!z%C*F-J@NcRfUjXn2r5u8x/A?D(G+KbPdSgVkYp3s6v9
+    type: JWT
+    issuer: secure-backend
+    audience: secure-app
+    # 12 hours in milliseconds
+    expiration-time: 43200000
