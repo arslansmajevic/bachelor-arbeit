@@ -14,6 +14,12 @@ import {HomeComponent} from "./components/home/home.component";
 import {FormsModule} from "@angular/forms";
 import {ResetPasswordComponent} from "./components/user-login/reset-password/reset-password.component";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {NgxPopperjsModule} from "ngx-popperjs";
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import {MatMenuModule} from "@angular/material/menu";
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
+
 
 @NgModule({
   declarations: [
@@ -34,8 +40,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     FormsModule,
     NgbModule,
-
+    NgxPopperjsModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: [
+    provideAnimationsAsync()
+  ]
 })
 export class AppModule { }
