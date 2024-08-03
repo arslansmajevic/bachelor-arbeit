@@ -21,6 +21,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
 import {UserOverviewComponent} from "./components/admin/user-overview/user-overview.component";
+import {MatTable, MatTableModule} from "@angular/material/table";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 
 @NgModule({
@@ -47,7 +49,10 @@ import {UserOverviewComponent} from "./components/admin/user-overview/user-overv
     NgxPopperjsModule,
     MatMenuModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatTable,
+    MatTableModule,
+    MatPaginatorModule
   ],
   bootstrap: [AppComponent],
   providers: [
