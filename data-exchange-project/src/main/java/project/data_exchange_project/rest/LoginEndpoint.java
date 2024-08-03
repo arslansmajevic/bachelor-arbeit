@@ -55,11 +55,6 @@ public class LoginEndpoint {
         }
     }
 
-    @GetMapping()
-    public String logout() {
-        return "ok";
-    }
-
     private void logClientError(HttpStatus status, Exception e) {
         log.warn("{} {}: {}: {}", status.value(), "Authentication error", e.getClass().getSimpleName(), e.getMessage());
     }

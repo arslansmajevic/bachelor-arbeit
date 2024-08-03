@@ -77,6 +77,10 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException(email);
         }
 
+        if (user.isPending()) {
+            throw new BadCredentialsException("This account is pending for permission!");
+        }
+
         List<GrantedAuthority> grantedAuthorities;
 
         if (user.isAdmin()) {

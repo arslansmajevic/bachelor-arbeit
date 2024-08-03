@@ -19,6 +19,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import {MatMenuModule} from "@angular/material/menu";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
+import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
+import {UserOverviewComponent} from "./components/admin/user-overview/user-overview.component";
 
 
 @NgModule({
@@ -29,7 +31,9 @@ import {MatIconModule} from "@angular/material/icon";
     HomeComponent,
     HeaderComponent,
     FooterComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    AdminDashboardComponent,
+    UserOverviewComponent
   ],
   imports: [
     BrowserModule,

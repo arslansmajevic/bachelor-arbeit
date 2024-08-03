@@ -4,6 +4,7 @@ import {HomeComponent} from "./components/home/home.component";
 import {LoginComponent} from "./components/user-login/login/login.component";
 import {ResetPasswordComponent} from "./components/user-login/reset-password/reset-password.component";
 import {RegisterUserComponent} from "./components/user-login/register-user/register-user.component";
+import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -15,6 +16,11 @@ const routes: Routes = [
       {path: 'reset-password', component: ResetPasswordComponent}
     ]
   },
+  {
+    path: 'admin', children: [
+      {path: 'dashboard', component: AdminDashboardComponent}
+    ]
+  }
 ]
 
 @NgModule({

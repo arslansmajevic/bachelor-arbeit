@@ -38,11 +38,7 @@ export class LoginComponent {
       },
       error: error => {
 
-        console.log(error)
-        const errorObj = JSON.parse(error.error);
-        const formattedError = `${errorObj.detail}`;
-
-        this.notification.error(formattedError, "Could not log in due to:", {enableHtml: true});
+        console.log(error.detail);
       }
     });
   }

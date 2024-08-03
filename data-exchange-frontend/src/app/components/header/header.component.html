@@ -38,9 +38,9 @@
           <mat-icon>dialpad</mat-icon>
           <span>Redial</span>
         </button>
-        <button mat-menu-item disabled>
-          <mat-icon>voicemail</mat-icon>
-          <span>Check voice mail</span>
+        <button *ngIf="authService.getUserRole() === 'ADMIN'" mat-menu-item routerLink="admin/dashboard">
+          <mat-icon>manage_accounts</mat-icon>
+          <span>User management</span>
         </button>
         <button mat-menu-item (click)="logoutUser()">
           <mat-icon>logout</mat-icon>

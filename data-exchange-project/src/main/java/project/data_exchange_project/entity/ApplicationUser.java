@@ -38,4 +38,7 @@ public class ApplicationUser {
 
     @Column(name = "is_locked", nullable = false)
     private boolean isLocked;
+
+    @Column(name = "login_pending", nullable = false)
+    private boolean isPending;
 }
