@@ -9,29 +9,13 @@
         <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
       </ul>
 
-      <!--<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-        <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
-      </form>-->
-
       <div class="text-end" *ngIf="!authService.isLoggedIn()">
         <button type="button" class="btn btn-outline-light me-2" routerLink="user/login">Login</button>
         <button type="button" class="btn btn-warning" routerLink="user/register">Sign-up</button>
       </div>
 
-      <!--<div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="bi bi-person-circle"></i> User
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </div>-->
-
-
       <button *ngIf="authService.isLoggedIn()" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-        <mat-icon>account_circle</mat-icon>
+        <mat-icon matBadge="{{numberOfPendingRequests === 0 ? '' : numberOfPendingRequests}}">account_circle</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item>
@@ -39,7 +23,7 @@
           <span>Redial</span>
         </button>
         <button *ngIf="authService.getUserRole() === 'ADMIN'" mat-menu-item routerLink="admin/dashboard">
-          <mat-icon>manage_accounts</mat-icon>
+          <mat-icon matBadge="{{numberOfPendingRequests === 0 ? '' : numberOfPendingRequests}}">manage_accounts</mat-icon>
           <span>User management</span>
         </button>
         <button mat-menu-item (click)="logoutUser()">

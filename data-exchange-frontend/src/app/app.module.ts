@@ -23,6 +23,8 @@ import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-
 import {UserOverviewComponent} from "./components/admin/user-overview/user-overview.component";
 import {MatTable, MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {httpInterceptorProviders} from "./interceptors";
+import {MatBadge} from "@angular/material/badge";
 
 
 @NgModule({
@@ -52,11 +54,13 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     MatIconModule,
     MatTable,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatBadge
   ],
   bootstrap: [AppComponent],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    httpInterceptorProviders
   ]
 })
 export class AppModule { }

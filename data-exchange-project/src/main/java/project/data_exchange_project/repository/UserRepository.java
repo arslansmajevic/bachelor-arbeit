@@ -42,4 +42,6 @@ public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
                                        @Param("isBlocked") Boolean isBlocked,
                                        @Param("isPending") Boolean isPending,
                                        Pageable pageable);
+
+    ApplicationUser findApplicationUserByEmail(String email);
 }

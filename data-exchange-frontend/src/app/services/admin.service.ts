@@ -52,6 +52,16 @@ export class AdminService {
     params = params.append('pageIndex', searchParams.pageIndex.toString());
     params = params.append('pageSize', searchParams.pageSize.toString());
 
-    return this.http.get<PaginatedResponse<UserInformationDto>>(this.baseUri + '/users/search', { params });
+    return this.http.get<PaginatedResponse<UserInformationDto>>(this.baseUri + '/admin/search', { params });
+  }
+
+  retrieveAllPendingUsers(): Observable<PaginatedResponse<UserInformationDto>> {
+
+    let params = new HttpParams();
+    params = params.append('pageIndex', "0");
+    params = params.append('pageSize', '100');
+    params = params.append('isPending', true);
+
+    return this.http.get<PaginatedResponse<UserInformationDto>>(this.baseUri + '/admin/search', { params });
   }
 }

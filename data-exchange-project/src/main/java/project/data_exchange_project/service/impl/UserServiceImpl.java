@@ -24,6 +24,7 @@ import project.data_exchange_project.rest.dto.user.UserInformationDto;
 import project.data_exchange_project.rest.dto.user.UserLoginDto;
 import project.data_exchange_project.rest.dto.user.UserSearchDto;
 import project.data_exchange_project.security.JwtTokenizer;
+import project.data_exchange_project.security.UserAuthentication;
 import project.data_exchange_project.service.UserService;
 
 import java.lang.invoke.MethodHandles;
@@ -36,12 +37,14 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenizer jwtTokenizer;
     private final UserMapper userMapper;
+    private final UserAuthentication userAuthentication;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, UserMapper userMapper, UserAuthentication userAuthentication) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenizer = jwtTokenizer;
       this.userMapper = userMapper;
+        this.userAuthentication = userAuthentication;
     }
 
     @Override
@@ -83,7 +86,20 @@ public class UserServiceImpl implements UserService {
 
         // userAuthenticitaion
 
-        Pageable pageable = PageRequest.of(userSearchDto.pageIndex(), userSearchDto.pageSize());
+        int pageIndex, pageSize;
+        if (userSearchDto.pageIndex() == null) {
+            pageIndex = 0;
+        } else {
+            pageIndex = userSearchDto.pageIndex();
+        }
+
+        if (userSearchDto.pageSize() == null) {
+            pageSize = 10;
+        } else {
+            pageSize = userSearchDto.pageSize();
+        }
+
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
 
         Page<ApplicationUser> users = userRepository.findBySearch(
                 userSearchDto.firstName(),
@@ -105,7 +121,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.trace("loadByUsername{}", email);
+        log.trace("loadByUsername[{}]", email);
 
         ApplicationUser user = userRepository.findUserByEmail(email);
 
