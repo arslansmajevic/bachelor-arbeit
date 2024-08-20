@@ -156,7 +156,7 @@
       <th mat-header-cell *matHeaderCellDef> Actions </th>
       <td mat-cell *matCellDef="let user">
         <div class="btn-group">
-          <button *ngIf = "user.isPending" class="btn btn-light action-button">
+          <button *ngIf = "user.isPending" class="btn btn-light action-button" (click)="grantPermissionToUser(user.email)">
             <mat-icon >person_add</mat-icon>
           </button>
           <a *ngIf="user.isLocked" class="btn btn-sm responsive-info-button" aria-label="Unblock User" (click)="unblockUser(user.email)">

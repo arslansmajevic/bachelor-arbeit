@@ -2,13 +2,12 @@ package project.data_exchange_project.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.constraints.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import project.data_exchange_project.rest.dto.user.UserInformationDto;
 import project.data_exchange_project.rest.dto.user.UserSearchDto;
 import project.data_exchange_project.service.UserService;
@@ -46,5 +45,12 @@ public class AdminEndpoint {
     public Page<UserInformationDto> searchUsers(UserSearchDto userSearchDto) {
         log.info("GET /api/v1/users/search {}", userSearchDto);
         return userService.searchUsers(userSearchDto);
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PutMapping("grant-permission/{email}")
+    public UserInformationDto grantPermissionToUser(@PathVariable("email") @Email String email) {
+        log.info("PUT /api/v1/admin/grant-permission/{}", email);
+        return userService.grantPermissionToUser(email);
     }
 }

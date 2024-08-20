@@ -12,4 +12,6 @@ public interface UserService {
     String loginUser(UserLoginDto userLoginDto) throws BadCredentialsException;
 
     Page<UserInformationDto> searchUsers(UserSearchDto userSearchDto);
+
+    UserInformationDto grantPermissionToUser(String email);
 }

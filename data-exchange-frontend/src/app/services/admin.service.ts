@@ -19,7 +19,7 @@ export class AdminService {
     private http : HttpClient,
     private globals: Globals
   ) {
-    this.baseUri = this.globals.backendUri;
+    this.baseUri = this.globals.backendUri + '/admin';
   }
 
   search(searchParams: UserSearchDto): Observable<PaginatedResponse<UserInformationDto>> {
@@ -52,7 +52,7 @@ export class AdminService {
     params = params.append('pageIndex', searchParams.pageIndex.toString());
     params = params.append('pageSize', searchParams.pageSize.toString());
 
-    return this.http.get<PaginatedResponse<UserInformationDto>>(this.baseUri + '/admin/search', { params });
+    return this.http.get<PaginatedResponse<UserInformationDto>>(this.baseUri + '/search', { params });
   }
 
   retrieveAllPendingUsers(): Observable<PaginatedResponse<UserInformationDto>> {
@@ -62,6 +62,10 @@ export class AdminService {
     params = params.append('pageSize', '100');
     params = params.append('isPending', true);
 
-    return this.http.get<PaginatedResponse<UserInformationDto>>(this.baseUri + '/admin/search', { params });
+    return this.http.get<PaginatedResponse<UserInformationDto>>(this.baseUri + '/search', { params });
+  }
+
+  grantUserPermission(email: String): Observable<UserInformationDto> {
+    return this.http.put<UserInformationDto>(this.baseUri + '/grant-permission/' + email, {})
   }
 }

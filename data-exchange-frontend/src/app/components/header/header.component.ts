@@ -21,15 +21,18 @@ export class HeaderComponent implements OnInit{
   numberOfPendingRequests: number = 0;
 
   ngOnInit() {
-    this.adminService.retrieveAllPendingUsers()
-      .subscribe({
-        next: data => {
-          this.numberOfPendingRequests = data.content.length;
-        },
-        error: err => {
 
-        }
-      })
+    if (this.authService.isLoggedIn() && this.authService.getUserRole() === "ADMIN") {
+      this.adminService.retrieveAllPendingUsers()
+        .subscribe({
+          next: data => {
+            this.numberOfPendingRequests = data.content.length;
+          },
+          error: err => {
+
+          }
+        })
+    }
   }
 
   logoutUser(): void {

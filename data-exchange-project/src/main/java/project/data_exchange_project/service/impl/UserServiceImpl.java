@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenizer = jwtTokenizer;
-      this.userMapper = userMapper;
+        this.userMapper = userMapper;
         this.userAuthentication = userAuthentication;
     }
 
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
     public Page<UserInformationDto> searchUsers(UserSearchDto userSearchDto) {
         log.info("searchingUsers {}", userSearchDto);
 
-        // userAuthenticitaion
+        userAuthentication.checkBlockedStatus(userAuthentication.getEmail());
 
         int pageIndex, pageSize;
         if (userSearchDto.pageIndex() == null) {
@@ -111,13 +111,18 @@ public class UserServiceImpl implements UserService {
                 pageable
         );
 
-        System.out.println(users.stream().toList());
-
         List<UserInformationDto> usersInformationDto = users.stream()
                 .map(userMapper::userToInformationDto)
                 .toList();
 
         return new PageImpl<>(usersInformationDto, pageable, users.getTotalElements());
+    }
+
+    @Override
+    public UserInformationDto grantPermissionToUser(String email) {
+        log.info("grantingPermissionToUser[{}]", email);
+
+        return null;
     }
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

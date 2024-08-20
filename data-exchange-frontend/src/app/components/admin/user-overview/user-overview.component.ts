@@ -94,6 +94,12 @@ export class UserOverviewComponent implements AfterViewInit{
       })
   }
 
+  grantPermissionToUser(email: String): void {
+    console.log(email)
+
+    this.adminService.grantUserPermission(email);
+  }
+
   unblockUser(email: String): void {
 
   }
