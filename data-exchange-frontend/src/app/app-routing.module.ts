@@ -7,6 +7,7 @@ import {RegisterUserComponent} from "./components/user-login/register-user/regis
 import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-dashboard.component";
 import {AdminAuthGuard} from "./guards/admin-auth.guard";
 import {AnonymousUserGuard} from "./guards/anonymous-user.guard";
+import {DatabaseConfigComponent} from "./components/admin/database-config/database-config.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -22,7 +23,8 @@ const routes: Routes = [
   {
     path: 'admin', canActivate: mapToCanActivate([AdminAuthGuard]), children: [
       {path: '', redirectTo: '/', pathMatch: 'full'},
-      {path: 'dashboard', component: AdminDashboardComponent}
+      {path: 'dashboard', component: AdminDashboardComponent},
+      {path: 'database-config', component: DatabaseConfigComponent}
     ]
   }
 ]

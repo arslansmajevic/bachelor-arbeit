@@ -18,13 +18,13 @@
         <mat-icon matBadge="{{numberOfPendingRequests === 0 ? '' : numberOfPendingRequests}}">account_circle</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>
-          <mat-icon>dialpad</mat-icon>
-          <span>Redial</span>
-        </button>
         <button *ngIf="authService.getUserRole() === 'ADMIN'" mat-menu-item routerLink="admin/dashboard">
           <mat-icon matBadge="{{numberOfPendingRequests === 0 ? '' : numberOfPendingRequests}}">manage_accounts</mat-icon>
           <span>User management</span>
+        </button>
+        <button *ngIf="authService.getUserRole() === 'ADMIN'" mat-menu-item routerLink="admin/database-config">
+          <mat-icon>analytics</mat-icon>
+          <span>Database config</span>
         </button>
         <button mat-menu-item (click)="logoutUser()">
           <mat-icon>logout</mat-icon>
