@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import project.data_exchange_project.entity.GraphDBConfiguration;
 import project.data_exchange_project.repository.GraphDBConfigRepository;
-import project.data_exchange_project.repository.UserRepository;
 
 import java.lang.invoke.MethodHandles;
 
@@ -29,7 +28,7 @@ public class GraphDBConfigGenerator {
       GraphDBConfiguration graphDBConfiguration = GraphDBConfiguration.builder()
               .port(7200L)
               .graphDbServerUrl("http://localhost")
-              .repositoryId("starwars")
+              .repositoryId("testing-import-on-data")
               .build();
 
       graphDBConfigRepository.save(graphDBConfiguration);

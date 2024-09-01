@@ -4,10 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import project.data_exchange_project.rest.dto.patient.PatientDataDto;
 import project.data_exchange_project.service.GraphDBService;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/data")
@@ -22,7 +25,7 @@ public class DataEndpoint {
   }
 
   @GetMapping
-  public String test() {
-    return graphDBService.getPatientData();
+  public List<PatientDataDto> test(@RequestParam("patientName") String patientName) {
+    return graphDBService.getPatientData(patientName);
   }
 }

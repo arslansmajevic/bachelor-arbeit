@@ -2,6 +2,7 @@ package project.data_exchange_project.service.impl;
 
 import org.springframework.stereotype.Service;
 import project.data_exchange_project.repository.GraphDbRepository;
+import project.data_exchange_project.rest.dto.patient.PatientDataDto;
 import project.data_exchange_project.service.GraphDBService;
 
 import java.util.List;
@@ -16,12 +17,8 @@ public class GraphDBServiceImpl implements GraphDBService {
   }
 
   @Override
-  public String getPatientData() {
-    graphDbRepository.executeSparqlQuery();
-    List<String> movies = graphDbRepository.getMoviesForHuman1();
+  public List<PatientDataDto> getPatientData(String patientName) {
 
-    System.out.println(movies);
-
-    return "arslan";
+    return graphDbRepository.getPatientInformation();
   }
 }
