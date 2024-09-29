@@ -1,5 +1,7 @@
 package project.data_exchange_project.service;
 
+import project.data_exchange_project.rest.dto.node.ExpandingEdge;
+import project.data_exchange_project.rest.dto.node.GraphNode;
 import project.data_exchange_project.rest.dto.patient.PatientDataDto;
 
 import java.util.List;
@@ -7,4 +9,6 @@ import java.util.List;
 public interface GraphDBService {
 
   List<PatientDataDto> getPatientData(String patientName);
+
+  List<ExpandingEdge> expandNeighbouringNodes(GraphNode graphNode);
 }

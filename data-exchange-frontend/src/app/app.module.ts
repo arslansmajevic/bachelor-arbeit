@@ -25,6 +25,9 @@ import {MatTable, MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {httpInterceptorProviders} from "./interceptors";
 import {MatBadge} from "@angular/material/badge";
+import {NgxGraphModule} from "@swimlane/ngx-graph";
+import {ExploreGraphComponent} from "./components/explore-graph/explore-graph.component";
+import {AngularSplitModule} from "angular-split";
 
 
 @NgModule({
@@ -37,7 +40,8 @@ import {MatBadge} from "@angular/material/badge";
     FooterComponent,
     ResetPasswordComponent,
     AdminDashboardComponent,
-    UserOverviewComponent
+    UserOverviewComponent,
+    ExploreGraphComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +59,10 @@ import {MatBadge} from "@angular/material/badge";
     MatTable,
     MatTableModule,
     MatPaginatorModule,
-    MatBadge
+    MatBadge,
+    NgxGraphModule,
+    AngularSplitModule,
+    NgxGraphModule
   ],
   bootstrap: [AppComponent],
   providers: [

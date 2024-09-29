@@ -28,7 +28,7 @@ public class GraphDBConfigGenerator {
       GraphDBConfiguration graphDBConfiguration = GraphDBConfiguration.builder()
               .port(7200L)
               .graphDbServerUrl("http://localhost")
-              .repositoryId("testing-import-on-data")
+              .repositoryId("a-self-made-fhir-ttl")
               .build();
 
       graphDBConfigRepository.save(graphDBConfiguration);

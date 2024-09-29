@@ -2,9 +2,17 @@ package project.data_exchange_project.repository;
 
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.TupleQueryResult;
+import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
+import org.eclipse.rdf4j.sparqlbuilder.core.Prefix;
+import org.eclipse.rdf4j.sparqlbuilder.core.SparqlBuilder;
+import org.eclipse.rdf4j.sparqlbuilder.core.Variable;
+import org.eclipse.rdf4j.sparqlbuilder.core.query.Queries;
+import org.eclipse.rdf4j.sparqlbuilder.core.query.SelectQuery;
+import org.eclipse.rdf4j.sparqlbuilder.rdf.Rdf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 import project.data_exchange_project.rest.dto.patient.PatientDataDto;
 
 import java.time.LocalDate;
@@ -16,6 +24,8 @@ public class GraphDbRepository {
 
   @Autowired
   private SPARQLRepository sparqlRepository;
+
+  Prefix fhir = SparqlBuilder.prefix("fhir", Rdf.iri("http://hl7.org/fhir/"));
 
   public List<PatientDataDto> getPatientInformation() {
     String sparqlListAllPatients = "PREFIX fhir: <http://hl7.org/fhir/>\n" +
@@ -61,5 +71,55 @@ public class GraphDbRepository {
     }
 
     return patientDataDtos;
+  }
+
+  public List<ExpandingEdge> expandNode(String nodeUri) {
+    Variable object = SparqlBuilder.var("object");
+    Variable objectType = SparqlBuilder.var("object_type");
+    Variable connection = SparqlBuilder.var("connection");
+    Variable referenceObject = SparqlBuilder.var("referenceObject");
+
+    SelectQuery selectQuery = Queries.SELECT(object, objectType, connection)
+            .prefix(fhir)
+            .distinct()
+            .where(
+                    object.has(fhir.iri("nodeRole"), fhir.iri("treeRoot")),
+                    object.isA(objectType),
+                    object.has(connection, referenceObject),
+                    referenceObject.has(fhir.iri("reference"), Rdf.iri(nodeUri))
+            );
+
+    String sparqlQueryString = selectQuery.getQueryString();
+    System.out.println("SPARQL Query: " + sparqlQueryString);
+
+    List<ExpandingEdge> listOfExpandingEdges = new ArrayList<>();
+
+    // Execute the query and process the result
+    List<String> results = new ArrayList<>();
+    try (RepositoryConnection repoConnection = sparqlRepository.getConnection()) {
+      TupleQueryResult result = repoConnection.prepareTupleQuery(sparqlQueryString).evaluate();
+
+      while (result.hasNext()) {
+        BindingSet bindingSet = result.next();
+        results.add("Object: " + bindingSet.getValue("object") +
+                ", Object Type: " + bindingSet.getValue("object_type") +
+                ", Connection: " + bindingSet.getValue("connection"));
+
+        listOfExpandingEdges.add(
+                new ExpandingEdge(
+                        bindingSet.getValue("object").stringValue(),
+                        nodeUri,
+                        bindingSet.getValue("connection").stringValue().concat(".reference")
+                )
+        );
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    // Output the results (you can adapt this to return or process differently)
+    results.forEach(System.out::println);
+
+    return listOfExpandingEdges;
   }
 }

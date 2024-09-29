@@ -18,7 +18,6 @@ public class GraphDBConfig {
 
   @Bean
   public SPARQLRepository sparqlRepository() {
-    // String sparqlEndpoint = graphDbServerUrl + "/repositories/" + repositoryId;
     String sparqlEndpoint = graphDBConfigRepository.getDevGraphDBConfiguration().getGeneratedUrl();
     SPARQLRepository sparqlRepository = new SPARQLRepository(sparqlEndpoint);
     sparqlRepository.init();

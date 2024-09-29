@@ -2,10 +2,9 @@ package project.data_exchange_project.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import project.data_exchange_project.rest.dto.node.ExpandingEdge;
+import project.data_exchange_project.rest.dto.node.GraphNode;
 import project.data_exchange_project.rest.dto.patient.PatientDataDto;
 import project.data_exchange_project.service.GraphDBService;
 
@@ -27,5 +26,10 @@ public class DataEndpoint {
   @GetMapping
   public List<PatientDataDto> test(@RequestParam("patientName") String patientName) {
     return graphDBService.getPatientData(patientName);
+  }
+
+  @PutMapping("expand-node")
+  public List<ExpandingEdge> expandNeighbouringNodes(@RequestBody GraphNode graphNode) {
+    return graphDBService.expandNeighbouringNodes(graphNode);
   }
 }

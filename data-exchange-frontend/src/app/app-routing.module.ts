@@ -8,6 +8,7 @@ import {AdminDashboardComponent} from "./components/admin/admin-dashboard/admin-
 import {AdminAuthGuard} from "./guards/admin-auth.guard";
 import {AnonymousUserGuard} from "./guards/anonymous-user.guard";
 import {DatabaseConfigComponent} from "./components/admin/database-config/database-config.component";
+import {ExploreGraphComponent} from "./components/explore-graph/explore-graph.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -20,6 +21,7 @@ const routes: Routes = [
       {path: 'reset-password', component: ResetPasswordComponent}
     ]
   },
+  { path: 'graph', component: ExploreGraphComponent},
   {
     path: 'admin', canActivate: mapToCanActivate([AdminAuthGuard]), children: [
       {path: '', redirectTo: '/', pathMatch: 'full'},
