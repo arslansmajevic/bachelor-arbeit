@@ -2,6 +2,8 @@ import {Component, ViewChild} from '@angular/core';
 import {D3ForceDirectedLayout, GraphComponent} from "@swimlane/ngx-graph";
 import {GraphNode, Link} from "../../dtos/nodes/node";
 import {DataService} from "../../services/data.service";
+import { select } from 'd3-selection'
+import 'd3-selection'
 
 @Component({
   selector: 'app-explore-graph',
@@ -35,22 +37,30 @@ export class ExploreGraphComponent{
 
   onNodeDoubleClick(node: GraphNode): void {
     node.expanded = true;
-
+    let newNodes: GraphNode[] = [];
+    let newLinks: Link[] = [];
     this.dataService.expandNode(node.id).subscribe({
       next: (data: Link[]) => {
         for (let link of data) {
-          let newNode: GraphNode = { id: link.source, label: 'nesto', expanded: false };
-          this.nodes = [...this.nodes, newNode]; // Spread operator to create a new array instance
-          this.links = [...this.links, link];   // Same for links
+          let labelParts = link.source.split('/');
+          let extractedLabel = labelParts.slice(-2).join('/'); // This will give 'Patient/1'
+
+          let newNode: GraphNode = { id: link.source, label: extractedLabel, expanded: false };
+
+          extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
+          let newLink: Link = { source: link.source, target: link.target, label:  extractedLabel}
+
+          newNodes.push(newNode);
+          newLinks.push(newLink);
+
+          /*this.nodes = [...this.nodes, newNode]; // Spread operator to create a new array instance
+          this.links = [...this.links, link];   // Same for links*/
         }
 
-        // Update the graph after modifying the nodes and links
-        this.updateGraph();
+        this.nodes = [...this.nodes, ...newNodes];
+        this.links = [...this.links, ...newLinks];
       }
     });
-
-    console.log("nodes", this.nodes);
-    console.log("links", this.links);
   }
 
 
