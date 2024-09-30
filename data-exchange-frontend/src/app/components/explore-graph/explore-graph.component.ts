@@ -50,7 +50,9 @@ export class ExploreGraphComponent{
           extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
           let newLink: Link = { source: link.source, target: link.target, label:  extractedLabel}
 
-          newNodes.push(newNode);
+          if (!this.nodes.some(existingNode => existingNode.id === newNode.id)) {
+            newNodes.push(newNode);
+          }
           newLinks.push(newLink);
 
           /*this.nodes = [...this.nodes, newNode]; // Spread operator to create a new array instance
