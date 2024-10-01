@@ -73,7 +73,7 @@ public class GraphDbRepository {
     return patientDataDtos;
   }
 
-  public List<ExpandingEdge> expandNode(String nodeUri) {
+  public List<ExpandingEdge> expandNeighbouringNodes(String nodeUri) {
     Variable object = SparqlBuilder.var("object");
     Variable objectType = SparqlBuilder.var("object_type");
     Variable connection = SparqlBuilder.var("connection");
@@ -112,6 +112,56 @@ public class GraphDbRepository {
                         bindingSet.getValue("connection").stringValue().concat(".reference")
                 )
         );
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    // Output the results (you can adapt this to return or process differently)
+    results.forEach(System.out::println);
+
+    return listOfExpandingEdges;
+  }
+
+  public List<ExpandingEdge> expandNode(String nodeUri) {
+
+    Variable object = SparqlBuilder.var("object");
+    Variable connection = SparqlBuilder.var("connection");
+
+    SelectQuery selectQuery = Queries.SELECT(object, connection)
+            .prefix(fhir)
+            .where(
+                    Rdf.iri(nodeUri).has(connection, object)
+            );
+
+    String sparqlQueryString = selectQuery.getQueryString();
+    System.out.println("SPARQL Query: " + sparqlQueryString);
+
+    List<ExpandingEdge> listOfExpandingEdges = new ArrayList<>();
+
+    // Execute the query and process the result
+    List<String> results = new ArrayList<>();
+    try (RepositoryConnection repoConnection = sparqlRepository.getConnection()) {
+      TupleQueryResult result = repoConnection.prepareTupleQuery(sparqlQueryString).evaluate();
+
+      while (result.hasNext()) {
+        BindingSet bindingSet = result.next();
+        results.add("Predicate: " + bindingSet.getValue("connection") +
+                ", Object: " + bindingSet.getValue("object"));
+
+        String predicateValue = bindingSet.getValue("connection").stringValue();
+
+        // Skip predicates you want to ignore
+        if (!(predicateValue.contains("rdf-syntax-ns#type") ||
+                predicateValue.contains("fhir/nodeRole"))) {
+            listOfExpandingEdges.add(
+                  new ExpandingEdge(
+                          nodeUri,
+                          bindingSet.getValue("object").stringValue(),
+                          bindingSet.getValue("connection").stringValue()
+                  )
+          );
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();

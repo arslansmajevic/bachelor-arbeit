@@ -26,6 +26,11 @@ public class GraphDBServiceImpl implements GraphDBService {
 
   @Override
   public List<ExpandingEdge> expandNeighbouringNodes(GraphNode graphNode) {
+    return graphDbRepository.expandNeighbouringNodes(graphNode.nodeUri());
+  }
+
+  @Override
+  public List<ExpandingEdge> expandNode(GraphNode graphNode) {
     return graphDbRepository.expandNode(graphNode.nodeUri());
   }
 }

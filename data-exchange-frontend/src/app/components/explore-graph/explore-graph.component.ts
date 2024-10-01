@@ -23,6 +23,7 @@ export class ExploreGraphComponent{
   constructor(
     private dataService: DataService
   ) {
+
   }
 
   @ViewChild(GraphComponent) graph!: GraphComponent;
@@ -36,33 +37,41 @@ export class ExploreGraphComponent{
   }
 
   onNodeDoubleClick(node: GraphNode): void {
-    node.expanded = true;
-    let newNodes: GraphNode[] = [];
-    let newLinks: Link[] = [];
-    this.dataService.expandNode(node.id).subscribe({
-      next: (data: Link[]) => {
-        for (let link of data) {
-          let labelParts = link.source.split('/');
-          let extractedLabel = labelParts.slice(-2).join('/'); // This will give 'Patient/1'
-
-          let newNode: GraphNode = { id: link.source, label: extractedLabel, expanded: false };
-
-          extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
-          let newLink: Link = { source: link.source, target: link.target, label:  extractedLabel}
-
-          if (!this.nodes.some(existingNode => existingNode.id === newNode.id)) {
-            newNodes.push(newNode);
-          }
-          newLinks.push(newLink);
-
-          /*this.nodes = [...this.nodes, newNode]; // Spread operator to create a new array instance
-          this.links = [...this.links, link];   // Same for links*/
-        }
-
-        this.nodes = [...this.nodes, ...newNodes];
-        this.links = [...this.links, ...newLinks];
+    if (!node.expanded) {
+      console.log("arsl")
+      console.log(node)
+      node.expanded = true;
+      const nodeInArray = this.nodes.find(existingNode => existingNode.id === node.id);
+      if (nodeInArray) {
+        nodeInArray.expanded = true;
       }
-    });
+      let newNodes: GraphNode[] = [];
+      let newLinks: Link[] = [];
+      this.dataService.expandNode(node.id).subscribe({
+        next: (data: Link[]) => {
+          for (let link of data) {
+            let labelParts = link.source.split('/');
+            let extractedLabel = labelParts.slice(-2).join('/'); // This will give 'Patient/1'
+
+            let newNode: GraphNode = { id: link.source, label: extractedLabel, expanded: false };
+
+            extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
+            let newLink: Link = { source: link.source, target: link.target, label:  extractedLabel}
+
+            if (!this.nodes.some(existingNode => existingNode.id === newNode.id)) {
+              newNodes.push(newNode);
+            }
+            newLinks.push(newLink);
+
+            /*this.nodes = [...this.nodes, newNode]; // Spread operator to create a new array instance
+            this.links = [...this.links, link];   // Same for links*/
+          }
+
+          this.nodes = [...this.nodes, ...newNodes];
+          this.links = [...this.links, ...newLinks];
+        }
+      });
+    }
   }
 
 

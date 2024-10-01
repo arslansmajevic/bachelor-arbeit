@@ -11,4 +11,6 @@ public interface GraphDBService {
   List<PatientDataDto> getPatientData(String patientName);
 
   List<ExpandingEdge> expandNeighbouringNodes(GraphNode graphNode);
+
+  List<ExpandingEdge> expandNode(GraphNode graphNode);
 }

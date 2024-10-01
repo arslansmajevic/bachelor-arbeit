@@ -28,8 +28,13 @@ public class DataEndpoint {
     return graphDBService.getPatientData(patientName);
   }
 
-  @PutMapping("expand-node")
+  @PutMapping("expand-neighbour")
   public List<ExpandingEdge> expandNeighbouringNodes(@RequestBody GraphNode graphNode) {
     return graphDBService.expandNeighbouringNodes(graphNode);
+  }
+
+  @PutMapping("expand-node")
+  public List<ExpandingEdge> expandNode(@RequestBody GraphNode graphNode) {
+    return graphDBService.expandNode(graphNode);
   }
 }

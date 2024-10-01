@@ -19,6 +19,6 @@ export class DataService {
   }
 
   expandNode(nodeUri: string): Observable<Link[]> {
-    return this.http.put<Link[]>(this.baseUri + '/expand-node', {nodeUri: nodeUri});
+    return this.http.put<Link[]>(this.baseUri + '/expand-neighbour', {nodeUri: nodeUri});
   }
 }
