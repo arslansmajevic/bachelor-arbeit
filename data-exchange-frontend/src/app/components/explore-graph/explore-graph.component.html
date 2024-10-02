@@ -7,7 +7,6 @@
           [showMiniMap]="true"
           [links]="links"
           [nodes]="nodes"
-          [layout]="d3ForceDirected"
         >
           <ng-template #nodeTemplate let-node>
             <svg:g class="node" (dblclick)="onNodeDoubleClick(node)">

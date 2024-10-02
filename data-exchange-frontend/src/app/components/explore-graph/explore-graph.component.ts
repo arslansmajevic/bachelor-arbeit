@@ -38,8 +38,6 @@ export class ExploreGraphComponent{
 
   onNodeDoubleClick(node: GraphNode): void {
     if (!node.expanded) {
-      console.log("arsl")
-      console.log(node)
       node.expanded = true;
       const nodeInArray = this.nodes.find(existingNode => existingNode.id === node.id);
       if (nodeInArray) {
@@ -47,7 +45,7 @@ export class ExploreGraphComponent{
       }
       let newNodes: GraphNode[] = [];
       let newLinks: Link[] = [];
-      this.dataService.expandNode(node.id).subscribe({
+      this.dataService.expandNeighbouringNodes(node.id).subscribe({
         next: (data: Link[]) => {
           for (let link of data) {
             let labelParts = link.source.split('/');
@@ -62,9 +60,30 @@ export class ExploreGraphComponent{
               newNodes.push(newNode);
             }
             newLinks.push(newLink);
+          }
 
-            /*this.nodes = [...this.nodes, newNode]; // Spread operator to create a new array instance
-            this.links = [...this.links, link];   // Same for links*/
+          this.nodes = [...this.nodes, ...newNodes];
+          this.links = [...this.links, ...newLinks];
+        }
+      });
+
+      newNodes = [];
+      newLinks = [];
+
+      this.dataService.expandNode(node.id).subscribe({
+        next: (data: Link[]) => {
+          for (let link of data) {
+
+            let newNode: GraphNode = { id: link.target, label: link.target, expanded: true };
+
+            let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
+            let newLink: Link = { source: link.source, target: link.target, label:  extractedLabel}
+
+            if (!this.nodes.some(existingNode => existingNode.id === newNode.id)) {
+              newNodes.push(newNode);
+            }
+            newLinks.push(newLink);
+
           }
 
           this.nodes = [...this.nodes, ...newNodes];

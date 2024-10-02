@@ -18,7 +18,11 @@ export class DataService {
     this.baseUri = this.globals.backendUri + '/data';
   }
 
-  expandNode(nodeUri: string): Observable<Link[]> {
+  expandNeighbouringNodes(nodeUri: string): Observable<Link[]> {
     return this.http.put<Link[]>(this.baseUri + '/expand-neighbour', {nodeUri: nodeUri});
+  }
+
+  expandNode(nodeUri: string): Observable<Link[]> {
+    return this.http.put<Link[]>(this.baseUri + '/expand-node', {nodeUri: nodeUri});
   }
 }
