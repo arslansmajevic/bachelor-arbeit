@@ -9,6 +9,7 @@ import org.eclipse.rdf4j.sparqlbuilder.core.SparqlBuilder;
 import org.eclipse.rdf4j.sparqlbuilder.core.Variable;
 import org.eclipse.rdf4j.sparqlbuilder.core.query.Queries;
 import org.eclipse.rdf4j.sparqlbuilder.core.query.SelectQuery;
+import org.eclipse.rdf4j.sparqlbuilder.graphpattern.TriplePattern;
 import org.eclipse.rdf4j.sparqlbuilder.rdf.Rdf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -139,6 +140,8 @@ public class GraphDbRepository {
 
     List<ExpandingEdge> listOfExpandingEdges = new ArrayList<>();
 
+    int oneTime = 0;
+
     // Execute the query and process the result
     List<String> results = new ArrayList<>();
     try (RepositoryConnection repoConnection = sparqlRepository.getConnection()) {
@@ -150,17 +153,22 @@ public class GraphDbRepository {
                 ", Object: " + bindingSet.getValue("object"));
 
         String predicateValue = bindingSet.getValue("connection").stringValue();
-
+        String objectValue = bindingSet.getValue("object").stringValue();
         // Skip predicates you want to ignore
         if (!(predicateValue.contains("rdf-syntax-ns#type") ||
                 predicateValue.contains("fhir/nodeRole"))) {
             listOfExpandingEdges.add(
                   new ExpandingEdge(
                           nodeUri,
-                          bindingSet.getValue("object").stringValue(),
-                          bindingSet.getValue("connection").stringValue()
+                          objectValue,
+                          predicateValue
                   )
           );
+        }
+
+        if (objectValue.startsWith("node") && oneTime++ == 1) {
+          System.out.println("expanding on blank node: " + objectValue);
+          listOfExpandingEdges.addAll(recursiveExpandOnNodes(nodeUri, 1));
         }
       }
     } catch (Exception e) {
@@ -169,6 +177,78 @@ public class GraphDbRepository {
 
     // Output the results (you can adapt this to return or process differently)
     results.forEach(System.out::println);
+
+    return listOfExpandingEdges;
+  }
+
+  private List<ExpandingEdge> recursiveExpandOnNodes(String subject, int level) {
+    List<TriplePattern> wherePatterns = new ArrayList<>();
+    Variable currentSubject = SparqlBuilder.var("o1"); // Initialize with o1 (after ?subject)
+
+    // The first triple pattern
+    Variable p = SparqlBuilder.var("p");
+    Variable o1 = SparqlBuilder.var("o1");
+    wherePatterns.add(Rdf.iri(subject).has(p, o1));
+
+    // Iteratively create the rest of the triple patterns based on the level
+    for (int i = 1; i <= level; i++) {
+      Variable nextP = SparqlBuilder.var("p" + i);
+      Variable nextO = SparqlBuilder.var("o" + (i + 1));
+      wherePatterns.add(currentSubject.has(nextP, nextO));
+      currentSubject = nextO;  // Update current subject to next object
+    }
+
+    // Create the SELECT query with all variable projections
+    SelectQuery selectQuery = Queries.SELECT();
+    for (int i = 1; i <= level; i++) {
+      selectQuery.select(SparqlBuilder.var("p" + i), SparqlBuilder.var("o" + i));
+    }
+    selectQuery.select(SparqlBuilder.var("o" + (level+1)));
+
+    selectQuery.prefix(fhir)
+            .where(wherePatterns.toArray(new TriplePattern[0]));
+
+    System.out.println("query for expansion of blank node: ");
+    System.out.println(selectQuery.getQueryString());
+
+    String sparqlQueryString = selectQuery.getQueryString();
+    List<ExpandingEdge> listOfExpandingEdges = new ArrayList<>();
+
+    int oneTime = 0;
+
+    try (RepositoryConnection repoConnection = sparqlRepository.getConnection()) {
+      TupleQueryResult result = repoConnection.prepareTupleQuery(sparqlQueryString).evaluate();
+
+      while (result.hasNext()) {
+        BindingSet bindingSet = result.next();
+
+        String subjectBlankNode = bindingSet.getValue("o" + level).stringValue();
+        String predicate = bindingSet.getValue("p" + level).stringValue();
+        String objectValue = bindingSet.getValue("o" + (level+1)).stringValue();
+
+        if (!(predicate.contains("rdf-syntax-ns#type") ||
+                predicate.contains("fhir/nodeRole"))) {
+          listOfExpandingEdges.add(
+                  new ExpandingEdge(
+                          subjectBlankNode,
+                          objectValue,
+                          predicate
+                  )
+          );
+        }
+
+        if (objectValue.startsWith("node") && oneTime++ == 0) {
+          System.out.println("expanding on blank node: " + objectValue);
+          listOfExpandingEdges.addAll(recursiveExpandOnNodes(subject, level+1));
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    for (ExpandingEdge e : listOfExpandingEdges) {
+      System.out.println("source: " + e.source() + " | target: " + e.target() + " | label: " + e.label());
+    }
 
     return listOfExpandingEdges;
   }
