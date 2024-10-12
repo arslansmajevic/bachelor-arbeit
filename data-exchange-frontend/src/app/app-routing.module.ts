@@ -9,6 +9,8 @@ import {AdminAuthGuard} from "./guards/admin-auth.guard";
 import {AnonymousUserGuard} from "./guards/anonymous-user.guard";
 import {DatabaseConfigComponent} from "./components/admin/database-config/database-config.component";
 import {ExploreGraphComponent} from "./components/explore-graph/explore-graph.component";
+import {ExploreGraphCytoscapeComponent} from "./components/explore-graph-cytoscape/explore-graph-cytoscape.component";
+import {GraphVisJsComponent} from "./components/graph-vis-js/graph-vis-js.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -21,7 +23,9 @@ const routes: Routes = [
       {path: 'reset-password', component: ResetPasswordComponent}
     ]
   },
-  { path: 'graph', component: ExploreGraphComponent},
+  { path: 'graph-ngx', component: ExploreGraphComponent},
+  { path: 'graph-cytoscape', component: ExploreGraphCytoscapeComponent},
+  { path: 'graph-vis-js', component: GraphVisJsComponent},
   {
     path: 'admin', canActivate: mapToCanActivate([AdminAuthGuard]), children: [
       {path: '', redirectTo: '/', pathMatch: 'full'},

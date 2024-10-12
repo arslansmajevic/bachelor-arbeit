@@ -1,0 +1,22 @@
+.full-width-container {
+  width: 100%;              /* Stretch to full width */
+  height: 100vh;
+}
+
+.as-split-container {
+  height: 100%;             /* Make the split container take full height */
+}
+
+.chart-container {
+  width: 100%;
+  height: 100%;
+}
+
+.as-split-container {
+  height: 100vh; /* Ensure full height for the split container */
+}
+
+#visGraphContainer {
+  width: 100%;
+  height: 500px;
+}

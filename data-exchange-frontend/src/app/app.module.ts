@@ -28,6 +28,8 @@ import {MatBadge} from "@angular/material/badge";
 import {NgxGraphModule} from "@swimlane/ngx-graph";
 import {ExploreGraphComponent} from "./components/explore-graph/explore-graph.component";
 import {AngularSplitModule} from "angular-split";
+import {ExploreGraphCytoscapeComponent} from "./components/explore-graph-cytoscape/explore-graph-cytoscape.component";
+import {GraphVisJsComponent} from "./components/graph-vis-js/graph-vis-js.component";
 
 
 @NgModule({
@@ -41,7 +43,9 @@ import {AngularSplitModule} from "angular-split";
     ResetPasswordComponent,
     AdminDashboardComponent,
     UserOverviewComponent,
-    ExploreGraphComponent
+    ExploreGraphComponent,
+    ExploreGraphCytoscapeComponent,
+    GraphVisJsComponent
   ],
   imports: [
     BrowserModule,
@@ -61,8 +65,7 @@ import {AngularSplitModule} from "angular-split";
     MatPaginatorModule,
     MatBadge,
     NgxGraphModule,
-    AngularSplitModule,
-    NgxGraphModule
+    AngularSplitModule
   ],
   bootstrap: [AppComponent],
   providers: [

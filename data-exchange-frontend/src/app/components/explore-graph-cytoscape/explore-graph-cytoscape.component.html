@@ -1,0 +1,14 @@
+<div class="full-width-container">
+  <as-split direction="horizontal" class="as-split-container" (dragEnd)="onResize($event)">
+    <as-split-area [size]="65">
+      <div #cy class="cytoscape-container"></div>
+    </as-split-area>
+    <as-split-area [size]="35">
+      <as-split direction="vertical">
+        <as-split-area [size]="100">
+          <p>Arslan</p>
+        </as-split-area>
+      </as-split>
+    </as-split-area>
+  </as-split>
+</div>

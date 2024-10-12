@@ -15,7 +15,9 @@ export class ExploreGraphComponent{
   d3ForceDirected = new D3ForceDirectedLayout();
 
   nodes: GraphNode[] = [
-    { id: 'http://example.org/fhir/Encounter/Encounter1', label: 'Encounter/Encounter1', expanded: false }
+    { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
+    // { id: 'http://example.org/fhir/Encounter/Encounter1', label: 'Encounter/Encounter1', expanded: false }
+    // { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
   ];
 
   links: Link[] = [];
