@@ -90,6 +90,11 @@ public class GraphDbRepository {
                     referenceObject.has(fhir.iri("reference"), Rdf.iri(nodeUri))
             );
 
+    /*SelectQuery selectQuery = Queries.SELECT(object, objectType, connection)
+            .where(
+                    object.has(connection, Rdf.iri(nodeUri))
+            );
+*/
     String sparqlQueryString = selectQuery.getQueryString();
     System.out.println("SPARQL Query: " + sparqlQueryString);
 
@@ -129,6 +134,7 @@ public class GraphDbRepository {
     Variable object = SparqlBuilder.var("object");
     Variable connection = SparqlBuilder.var("connection");
 
+    System.out.println("nodeUri " + nodeUri);
     SelectQuery selectQuery = Queries.SELECT(object, connection)
             .prefix(fhir)
             .where(
