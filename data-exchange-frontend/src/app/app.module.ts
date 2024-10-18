@@ -30,6 +30,7 @@ import {ExploreGraphComponent} from "./components/explore-graph/explore-graph.co
 import {AngularSplitModule} from "angular-split";
 import {ExploreGraphCytoscapeComponent} from "./components/explore-graph-cytoscape/explore-graph-cytoscape.component";
 import {GraphVisJsComponent} from "./components/graph-vis-js/graph-vis-js.component";
+import {MatExpansionModule, MatExpansionPanelContent} from "@angular/material/expansion";
 
 
 @NgModule({
@@ -65,7 +66,10 @@ import {GraphVisJsComponent} from "./components/graph-vis-js/graph-vis-js.compon
     MatPaginatorModule,
     MatBadge,
     NgxGraphModule,
-    AngularSplitModule
+    AngularSplitModule,
+    MatExpansionModule,
+    MatExpansionPanelContent,
+    MatExpansionModule
   ],
   bootstrap: [AppComponent],
   providers: [

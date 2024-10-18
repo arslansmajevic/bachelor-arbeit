@@ -15,8 +15,66 @@ export class GraphVisJsComponent implements OnInit {
   nodesDataSet!: DataSet<any>;
   edgesDataSet!: DataSet<any>;
   network!: Network;
+  groupId: number = 0;
+  colors: string[] = [
+    '#FFB6C1', // Light Pink
+    '#FFDAB9', // Peach Puff
+    '#FFFACD', // Lemon Chiffon
+    '#E6E6FA', // Lavender
+    '#F0FFF0', // Honeydew
+    '#F5FFFA', // Mint Cream
+    '#FFF0F5', // Lavender Blush
+    '#FFE4E1', // Misty Rose
+    '#FFF8DC', // Cornsilk
+    '#FAFAD2', // Light Goldenrod Yellow
+    '#FFEFD5', // Papaya Whip
+    '#FFF5EE', // Seashell
+    '#F0E68C', // Khaki
+    '#E0FFFF', // Light Cyan
+    '#AFEEEE', // Pale Turquoise
+    '#B0E0E6', // Powder Blue
+    '#ADD8E6', // Light Blue
+    '#D3D3D3', // Light Gray
+    '#F5F5DC', // Beige
+    '#F8F8FF', // Ghost White
+    '#FDF5E6', // Old Lace
+    '#F0F8FF', // Alice Blue
+    '#FAEBD7', // Antique White
+    '#FAF0E6', // Linen
+    '#F0FFFF', // Azure
+    '#FFFAF0', // Floral White
+    '#FFFFE0', // Light Yellow
+    '#E0E0E0', // Gainsboro
+    '#E6F2FF', // Soft Blue
+    '#F7F7F7', // Snow White
+    '#FFFACD', // Light Butter
+    '#E0FFF4', // Light Mint
+    '#D1F2EB', // Mint Splash
+    '#FEF9E7', // Soft Cream
+    '#D5DBDB', // Light Gray
+    '#FFEBCD', // Blanched Almond
+    '#F4A460', // Sandy Brown
+    '#DEB887', // Burly Wood
+    '#FFD700', // Gold
+    '#F0E68C', // Light Khaki
+    '#E9ECEF', // Soft Gray
+    '#E5E4E2', // Platinum
+    '#E3F2FD', // Light Blue
+    '#DFF9FB', // Light Aqua
+    '#D1C4E9', // Soft Purple
+    '#FFCCCB', // Light Coral
+    '#F3E5F5', // Thistle
+    '#FFEBEE', // Soft Pink
+    '#FFF3E0', // Soft Orange
+    '#FDFEFE'  // Soft White
+    ];
 
   nodes: GraphNode[] = [
+    { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
+    /*{ id: 'http://example.org/fhir/Patient/T1357', label: 'Patient/T1357', expanded: false }*/
+  ];
+
+  rootNodes: GraphNode[] = [
     { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
   ];
 
@@ -39,22 +97,40 @@ export class GraphVisJsComponent implements OnInit {
     const options = {
       physics: {
         enabled: true,
-        repulsion: {
-          nodeDistance: 150, // Increase the distance between nodes
-          springLength: 120,  // Increase the length of edges, which helps spread nodes
-          springConstant: 0.05, // Controls the stiffness of edges (lower = more flexible)
+        solver: 'forceAtlas2Based', // You can keep physics settings or disable them for a static layout
+        forceAtlas2Based: {
+          gravitationalConstant: -50,
+          centralGravity: 0.01,
+          springLength: 100,
+          springConstant: 0.08,
+          damping: 0.4
         },
-        solver: 'repulsion'
+        maxVelocity: 50,
+        minVelocity: 0.1,
+        stabilization: {
+          enabled: true,
+          iterations: 1000,
+          updateInterval: 25,
+          onlyDynamicEdges: false,
+          fit: true
+        }
       },
       layout: {
-        improvedLayout: true // Let vis.js improve the layout spacing
+        hierarchical: false,           // Disable hierarchical layout
+        improvedLayout: true,          // Keeps this to prevent overlap
+        randomSeed: undefined,         // Optional, allows for reproducible results if a seed is provided
+        circular: {                    // Enable circular layout
+          enabled: true,               // Ensure circular layout is active
+          sortMethod: 'hubsize'        // Sort by 'hubsize' or 'directed'
+        }
       },
       edges: {
         arrows: {
-          to: { enabled: true, scaleFactor: 1 } // Add arrows pointing to the target node
+          to: { enabled: true, scaleFactor: 1 } // Adds arrows to edges
         }
       }
     };
+
 
 
     this.network = new Network(container, data, options);
@@ -73,7 +149,12 @@ export class GraphVisJsComponent implements OnInit {
     const node = this.nodesDataSet.get(nodeId);
     if (node && !node.expanded) {
       node.expanded = true;
+      let randomColor = this.colors[this.groupId % 50];
+      node.color = randomColor;
+      node.group = this.groupId++;
+
       this.nodesDataSet.update(node);
+
 
       // Fetch neighboring nodes and links (replace this with actual logic to fetch data)
       this.dataService.expandNeighbouringNodes(nodeId).subscribe((data: Link[]) => {
@@ -87,9 +168,11 @@ export class GraphVisJsComponent implements OnInit {
           // Add new nodes if they don't already exist
           if (!this.nodesDataSet.get(link.source)) {
             this.nodesDataSet.add({ id: link.source, label: extractedLabelSource, expanded: false });
+            this.rootNodes.push({ id: link.source, label: extractedLabelSource, expanded: false });
           }
           if (!this.nodesDataSet.get(link.target)) {
             this.nodesDataSet.add({ id: link.target, label: extractedLabelTarget, expanded: false });
+            this.rootNodes.push({ id: link.source, label: extractedLabelSource, expanded: false });
           }
 
           let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
@@ -117,10 +200,18 @@ export class GraphVisJsComponent implements OnInit {
 
           // Add new nodes if they don't already exist
           if (!this.nodesDataSet.get(link.source)) {
-            this.nodesDataSet.add({ id: link.source, label: sourceLabel, expanded: false });
+            if (sourceLabel.startsWith('node')) {
+              this.nodesDataSet.add({ id: link.source, expanded: true, shape: 'diamond', color: randomColor, group: this.groupId - 1 })
+            } else {
+              this.nodesDataSet.add({ id: link.source, expanded: true, color: randomColor, group: this.groupId - 1 });
+            }
           }
           if (!this.nodesDataSet.get(link.target)) {
-            this.nodesDataSet.add({ id: link.target, label: targetLabel, expanded: false });
+            if (targetLabel.startsWith('node')) {
+              this.nodesDataSet.add({ id: link.target, expanded: true, shape: 'diamond', color: randomColor, group: this.groupId - 1 });
+            } else {
+              this.nodesDataSet.add({ id: link.target, label: targetLabel, expanded: true, color: randomColor, group: this.groupId - 1 });
+            }
           }
 
           // Check if the edge already exists before adding it
@@ -136,5 +227,35 @@ export class GraphVisJsComponent implements OnInit {
         });
       });
     }
+    this.printGraphData();
   }
+
+  printGraphData(): void {
+    console.log("Nodes:");
+    this.nodesDataSet.forEach(node => {
+      console.log(node);
+    });
+
+    console.log("Edges:");
+    this.edgesDataSet.forEach(edge => {
+      console.log(edge);
+    });
+  }
+
+  selectNeighbouringNodesOfRootNode(graphNode: GraphNode): GraphNode[] {
+    // Filter edges where the 'from' field matches the graphNode.id
+    const relatedEdges = this.edgesDataSet.get({
+      filter: (edge: any) => edge.from === graphNode.id
+    });
+
+    // Collect the neighboring nodes based on the edges
+    const neighbouringNodes: GraphNode[] = [];
+    relatedEdges.forEach((edge: any) => {
+      neighbouringNodes.push({ id: edge.to, label: edge.label, expanded: true })
+    });
+
+    return neighbouringNodes;
+  }
+
+
 }
