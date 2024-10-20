@@ -11,3 +11,9 @@ export interface Link {
   target: string;
   label: string;
 }
+
+export interface CustomPanel {
+  title?: string;
+  description?: string;
+  subPanels?: CustomPanel[];
+}

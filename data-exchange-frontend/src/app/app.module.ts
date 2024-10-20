@@ -31,6 +31,7 @@ import {AngularSplitModule} from "angular-split";
 import {ExploreGraphCytoscapeComponent} from "./components/explore-graph-cytoscape/explore-graph-cytoscape.component";
 import {GraphVisJsComponent} from "./components/graph-vis-js/graph-vis-js.component";
 import {MatExpansionModule, MatExpansionPanelContent} from "@angular/material/expansion";
+import {RecShowPanelComponent} from "./components/rec-show-panel/rec-show-panel.component";
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import {MatExpansionModule, MatExpansionPanelContent} from "@angular/material/ex
     UserOverviewComponent,
     ExploreGraphComponent,
     ExploreGraphCytoscapeComponent,
-    GraphVisJsComponent
+    GraphVisJsComponent,
+    RecShowPanelComponent
   ],
   imports: [
     BrowserModule,

@@ -1,8 +1,10 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { Network } from 'vis-network';
 import { DataSet } from 'vis-data';
-import { GraphNode, Link } from "../../dtos/nodes/node";
+import {CustomPanel, GraphNode, Link} from "../../dtos/nodes/node";
 import { DataService } from "../../services/data.service";
+import {create} from "d3-selection";
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-graph-vis-js',
@@ -77,6 +79,9 @@ export class GraphVisJsComponent implements OnInit {
   rootNodes: GraphNode[] = [
     { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
   ];
+
+  panels: CustomPanel[] = [];
+
 
   constructor(private dataService: DataService) {}
 
@@ -155,10 +160,13 @@ export class GraphVisJsComponent implements OnInit {
 
       this.nodesDataSet.update(node);
 
-
-      // Fetch neighboring nodes and links (replace this with actual logic to fetch data)
-      this.dataService.expandNeighbouringNodes(nodeId).subscribe((data: Link[]) => {
-        data.forEach((link) => {
+      // Use forkJoin to wait for both API calls to complete
+      forkJoin([
+        this.dataService.expandNeighbouringNodes(nodeId), // First API call
+        this.dataService.expandNode(nodeId)               // Second API call
+      ]).subscribe(([neighbourData, nodeData]) => {
+        // Handle neighboring nodes
+        neighbourData.forEach((link) => {
           let labelPartsSource = link.source.split('/');
           let extractedLabelSource = labelPartsSource.slice(-2).join('/'); // This will give 'Patient/1'
 
@@ -186,13 +194,10 @@ export class GraphVisJsComponent implements OnInit {
             let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
             this.edgesDataSet.add({ from: link.source, to: link.target, label: extractedLabel });
           }
-
         });
-      });
 
-      // Fetch additional data (as per your original logic)
-      this.dataService.expandNode(nodeId).subscribe((data: Link[]) => {
-        data.forEach((link) => {
+        // Handle node expansion data
+        nodeData.forEach((link) => {
           const sourceLabel = link.source.substring(link.source.lastIndexOf('/') + 1);
           const targetLabel = link.target.substring(link.target.lastIndexOf('/') + 1);
 
@@ -225,9 +230,28 @@ export class GraphVisJsComponent implements OnInit {
             this.edgesDataSet.add({ from: link.source, to: link.target, label: extractedLabel });
           }
         });
+
+        // After all data has been processed, print the graph data
+        // this.printGraphData();
+        this.panels.push(this.createPanelForInstance(nodeId, node.label));
       });
     }
-    this.printGraphData();
+  }
+
+  createPanelForInstance(nodeUri: string, nodeLabel: string): CustomPanel {
+    console.log(nodeUri)
+    let tempPanel:CustomPanel = {title: nodeLabel, subPanels: []}
+    this.edgesDataSet.forEach((edge: any) => {
+      if (edge.from === nodeUri) {
+        console.log(edge.to)
+        if (!edge.to.startsWith('node')) {
+          tempPanel.subPanels?.push({title: edge.label, description: edge.to});
+        } else {
+          tempPanel.subPanels?.push( this.createPanelForInstance(edge.to, edge.label))
+        }
+      }
+    })
+    return tempPanel;
   }
 
   printGraphData(): void {
@@ -242,20 +266,6 @@ export class GraphVisJsComponent implements OnInit {
     });
   }
 
-  selectNeighbouringNodesOfRootNode(graphNode: GraphNode): GraphNode[] {
-    // Filter edges where the 'from' field matches the graphNode.id
-    const relatedEdges = this.edgesDataSet.get({
-      filter: (edge: any) => edge.from === graphNode.id
-    });
-
-    // Collect the neighboring nodes based on the edges
-    const neighbouringNodes: GraphNode[] = [];
-    relatedEdges.forEach((edge: any) => {
-      neighbouringNodes.push({ id: edge.to, label: edge.label, expanded: true })
-    });
-
-    return neighbouringNodes;
-  }
 
 
 }

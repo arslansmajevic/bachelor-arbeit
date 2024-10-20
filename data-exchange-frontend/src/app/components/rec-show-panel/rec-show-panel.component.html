@@ -1,0 +1,13 @@
+<mat-expansion-panel hideToggle="{{panelsEmpty()}}" >
+  <mat-expansion-panel-header>
+    <mat-panel-title> {{panel.title}} </mat-panel-title>
+    <mat-panel-description> {{panel.description}}</mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <div *ngIf="!panelsEmpty()">
+    <div *ngFor="let panel of panel.subPanels">
+      <app-rec-show-panel [panel]="panel"></app-rec-show-panel>
+    </div>
+  </div>
+
+</mat-expansion-panel>
