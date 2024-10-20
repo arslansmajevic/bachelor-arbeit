@@ -70,6 +70,7 @@ export class GraphVisJsComponent implements OnInit {
     '#FFF3E0', // Soft Orange
     '#FDFEFE'  // Soft White
     ];
+  previousNode = {nodeUri: "", color: ""};
 
   nodes: GraphNode[] = [
     { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
@@ -152,98 +153,116 @@ export class GraphVisJsComponent implements OnInit {
 
   onNodeDoubleClick(nodeId: string): void {
     const node = this.nodesDataSet.get(nodeId);
-    if (node && !node.expanded) {
-      node.expanded = true;
-      let randomColor = this.colors[this.groupId % 50];
-      node.color = randomColor;
-      node.group = this.groupId++;
 
-      this.nodesDataSet.update(node);
+    console.log(node)
 
-      // Use forkJoin to wait for both API calls to complete
-      forkJoin([
-        this.dataService.expandNeighbouringNodes(nodeId), // First API call
-        this.dataService.expandNode(nodeId)               // Second API call
-      ]).subscribe(([neighbourData, nodeData]) => {
-        // Handle neighboring nodes
-        neighbourData.forEach((link) => {
-          let labelPartsSource = link.source.split('/');
-          let extractedLabelSource = labelPartsSource.slice(-2).join('/'); // This will give 'Patient/1'
+    if (node.id === this.previousNode.nodeUri) {
+      return;
+    }
 
-          let labelPartsTarget = link.target.split('/');
-          let extractedLabelTarget = labelPartsTarget.slice(-2).join('/'); // This will give 'Patient/1'
+    if (node.color !== undefined && node.expanded === true) {
+      this.showNode(nodeId, node.color)
+      this.collapseNode(this.previousNode.nodeUri, this.previousNode.color)
+      this.previousNode.nodeUri = nodeId;
+      this.previousNode.color = node.color;
+    } else {
+      if (node && !node.expanded) {
+        node.expanded = true;
+        let randomColor = this.colors[this.groupId % 50];
+        node.color = randomColor;
+        node.group = this.groupId++;
 
-          // Add new nodes if they don't already exist
-          if (!this.nodesDataSet.get(link.source)) {
-            this.nodesDataSet.add({ id: link.source, label: extractedLabelSource, expanded: false });
-            this.rootNodes.push({ id: link.source, label: extractedLabelSource, expanded: false });
-          }
-          if (!this.nodesDataSet.get(link.target)) {
-            this.nodesDataSet.add({ id: link.target, label: extractedLabelTarget, expanded: false });
-            this.rootNodes.push({ id: link.source, label: extractedLabelSource, expanded: false });
-          }
+        this.nodesDataSet.update(node);
 
-          let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
-          // Check if the edge already exists before adding it
-          const existingEdges = this.edgesDataSet.get({
-            filter: (edge: any) => edge.from === link.source && edge.to === link.target
+        // Use forkJoin to wait for both API calls to complete
+        forkJoin([
+          this.dataService.expandNeighbouringNodes(nodeId), // First API call
+          this.dataService.expandNode(nodeId)               // Second API call
+        ]).subscribe(([neighbourData, nodeData]) => {
+          // Handle neighboring nodes
+          neighbourData.forEach((link) => {
+            let labelPartsSource = link.source.split('/');
+            let extractedLabelSource = labelPartsSource.slice(-2).join('/'); // This will give 'Patient/1'
+
+            let labelPartsTarget = link.target.split('/');
+            let extractedLabelTarget = labelPartsTarget.slice(-2).join('/'); // This will give 'Patient/1'
+
+            // Add new nodes if they don't already exist
+            if (!this.nodesDataSet.get(link.source)) {
+              this.nodesDataSet.add({ id: link.source, label: extractedLabelSource, expanded: false });
+              this.rootNodes.push({ id: link.source, label: extractedLabelSource, expanded: false });
+            }
+            if (!this.nodesDataSet.get(link.target)) {
+              this.nodesDataSet.add({ id: link.target, label: extractedLabelTarget, expanded: false });
+              this.rootNodes.push({ id: link.source, label: extractedLabelSource, expanded: false });
+            }
+
+            let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
+            // Check if the edge already exists before adding it
+            const existingEdges = this.edgesDataSet.get({
+              filter: (edge: any) => edge.from === link.source && edge.to === link.target
+            });
+
+            if (existingEdges.length === 0) {
+              // Edge does not exist, so add it
+              let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
+              this.edgesDataSet.add({ from: link.source, to: link.target, label: extractedLabel });
+            }
           });
 
-          if (existingEdges.length === 0) {
-            // Edge does not exist, so add it
+          // Handle node expansion data
+          nodeData.forEach((link) => {
+            const sourceLabel = link.source.substring(link.source.lastIndexOf('/') + 1);
+            const targetLabel = link.target.substring(link.target.lastIndexOf('/') + 1);
+
             let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
-            this.edgesDataSet.add({ from: link.source, to: link.target, label: extractedLabel });
-          }
-        });
 
-        // Handle node expansion data
-        nodeData.forEach((link) => {
-          const sourceLabel = link.source.substring(link.source.lastIndexOf('/') + 1);
-          const targetLabel = link.target.substring(link.target.lastIndexOf('/') + 1);
-
-          let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
-
-          // Add new nodes if they don't already exist
-          if (!this.nodesDataSet.get(link.source)) {
-            if (sourceLabel.startsWith('node')) {
-              this.nodesDataSet.add({ id: link.source, expanded: true, shape: 'diamond', color: randomColor, group: this.groupId - 1 })
-            } else {
-              this.nodesDataSet.add({ id: link.source, expanded: true, color: randomColor, group: this.groupId - 1 });
+            // Add new nodes if they don't already exist
+            if (!this.nodesDataSet.get(link.source)) {
+              if (sourceLabel.startsWith('node')) {
+                this.nodesDataSet.add({ id: link.source, expanded: true, shape: 'diamond', color: randomColor, group: this.groupId - 1 })
+              } else {
+                this.nodesDataSet.add({ id: link.source, expanded: true, color: randomColor, shape: 'rectangle', group: this.groupId - 1 });
+              }
             }
-          }
-          if (!this.nodesDataSet.get(link.target)) {
-            if (targetLabel.startsWith('node')) {
-              this.nodesDataSet.add({ id: link.target, expanded: true, shape: 'diamond', color: randomColor, group: this.groupId - 1 });
-            } else {
-              this.nodesDataSet.add({ id: link.target, label: targetLabel, expanded: true, color: randomColor, group: this.groupId - 1 });
+            if (!this.nodesDataSet.get(link.target)) {
+              if (targetLabel.startsWith('node')) {
+                this.nodesDataSet.add({ id: link.target, expanded: true, shape: 'diamond', color: randomColor, group: this.groupId - 1 });
+              } else {
+                this.nodesDataSet.add({ id: link.target, label: targetLabel, shape: 'rectangle', expanded: true, color: randomColor, group: this.groupId - 1 });
+              }
             }
-          }
 
-          // Check if the edge already exists before adding it
-          const existingEdges = this.edgesDataSet.get({
-            filter: (edge: any) => edge.from === link.source && edge.to === link.target
+            // Check if the edge already exists before adding it
+            const existingEdges = this.edgesDataSet.get({
+              filter: (edge: any) => edge.from === link.source && edge.to === link.target
+            });
+
+            if (existingEdges.length === 0) {
+              // Edge does not exist, so add it
+              let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
+              this.edgesDataSet.add({ from: link.source, to: link.target, label: extractedLabel });
+            }
           });
 
-          if (existingEdges.length === 0) {
-            // Edge does not exist, so add it
-            let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
-            this.edgesDataSet.add({ from: link.source, to: link.target, label: extractedLabel });
+          // After all data has been processed, print the graph data
+          // this.printGraphData();
+          this.panels.push(this.createPanelForInstance(nodeId, node.label, randomColor));
+          if (this.previousNode.nodeUri !== "") {
+            this.collapseNode(this.previousNode.nodeUri, this.previousNode.color)
           }
-        });
 
-        // After all data has been processed, print the graph data
-        // this.printGraphData();
-        this.panels.push(this.createPanelForInstance(nodeId, node.label));
-      });
+          this.previousNode.nodeUri = nodeId;
+          this.previousNode.color = randomColor;
+        });
+      }
     }
   }
 
-  createPanelForInstance(nodeUri: string, nodeLabel: string): CustomPanel {
-    console.log(nodeUri)
-    let tempPanel:CustomPanel = {title: nodeLabel, subPanels: []}
+  createPanelForInstance(nodeUri: string, nodeLabel: string, color?: string): CustomPanel {
+    let tempPanel:CustomPanel = {title: nodeLabel, subPanels: [], color: color}
     this.edgesDataSet.forEach((edge: any) => {
       if (edge.from === nodeUri) {
-        console.log(edge.to)
         if (!edge.to.startsWith('node')) {
           tempPanel.subPanels?.push({title: edge.label, description: edge.to});
         } else {
@@ -266,6 +285,23 @@ export class GraphVisJsComponent implements OnInit {
     });
   }
 
+  collapseNode(prevNodeId: string, nodeColor: string): void {
+
+    this.nodesDataSet.forEach( (node) => {
+
+      if (node.color === nodeColor && node.id !== prevNodeId) {
+        this.nodesDataSet.update( {id: node.id, hidden: true});
+      }
+    })
+  }
+
+  showNode(nodeId: string, nodeColor: string): void {
+    this.nodesDataSet.forEach( (node) => {
+      if (node.color === nodeColor) {
+        this.nodesDataSet.update( {id: node.id, hidden: false, color: nodeColor})
+      }
+    })
+  }
 
 
 }

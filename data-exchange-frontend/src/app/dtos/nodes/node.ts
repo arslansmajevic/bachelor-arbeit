@@ -16,4 +16,5 @@ export interface CustomPanel {
   title?: string;
   description?: string;
   subPanels?: CustomPanel[];
+  color?: string;
 }
