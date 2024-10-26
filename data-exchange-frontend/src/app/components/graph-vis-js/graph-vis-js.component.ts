@@ -1,10 +1,11 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import {Component, ElementRef, ViewChild, OnInit, Input} from '@angular/core';
 import { Network } from 'vis-network';
 import { DataSet } from 'vis-data';
 import {CustomPanel, GraphNode, Link} from "../../dtos/nodes/node";
 import { DataService } from "../../services/data.service";
 import {create} from "d3-selection";
 import {forkJoin} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-graph-vis-js',
@@ -72,6 +73,8 @@ export class GraphVisJsComponent implements OnInit {
     ];
   previousNode = {nodeUri: "", color: ""};
 
+  @Input() firstNode: GraphNode = {id: "null", label: "null", expanded: false};
+
   nodes: GraphNode[] = [
     { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
     /*{ id: 'http://example.org/fhir/Patient/T1357', label: 'Patient/T1357', expanded: false }*/
@@ -84,13 +87,20 @@ export class GraphVisJsComponent implements OnInit {
   panels: CustomPanel[] = [];
 
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private router: Router
+              ) {}
 
   ngOnInit(): void {
+    this.firstNode = history.state.firstNode || { id: 'null', label: 'null', expanded: false };
+    if (this.firstNode.id === 'null') {
+      this.router.navigate(['search-instance'])
+    }
     const container = this.visGraphContainer.nativeElement;
 
     this.nodesDataSet = new DataSet([
-      { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
+      { id: this.firstNode.id, label: this.firstNode.label, expanded: false }
     ]);
 
     this.edgesDataSet = new DataSet([]);

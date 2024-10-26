@@ -11,6 +11,7 @@ import {DatabaseConfigComponent} from "./components/admin/database-config/databa
 import {ExploreGraphComponent} from "./components/explore-graph/explore-graph.component";
 import {ExploreGraphCytoscapeComponent} from "./components/explore-graph-cytoscape/explore-graph-cytoscape.component";
 import {GraphVisJsComponent} from "./components/graph-vis-js/graph-vis-js.component";
+import {SearchAnInstanceComponent} from "./components/search-an-instance/search-an-instance.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -23,6 +24,7 @@ const routes: Routes = [
       {path: 'reset-password', component: ResetPasswordComponent}
     ]
   },
+  { path: 'search-instance', component: SearchAnInstanceComponent},
   { path: 'graph-ngx', component: ExploreGraphComponent},
   { path: 'graph-cytoscape', component: ExploreGraphCytoscapeComponent},
   { path: 'graph-vis-js', component: GraphVisJsComponent},

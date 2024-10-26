@@ -32,6 +32,10 @@ import {ExploreGraphCytoscapeComponent} from "./components/explore-graph-cytosca
 import {GraphVisJsComponent} from "./components/graph-vis-js/graph-vis-js.component";
 import {MatExpansionModule, MatExpansionPanelContent} from "@angular/material/expansion";
 import {RecShowPanelComponent} from "./components/rec-show-panel/rec-show-panel.component";
+import {SearchAnInstanceComponent} from "./components/search-an-instance/search-an-instance.component";
+import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
+import {MatFormField} from "@angular/material/form-field";
+import {MatInput} from "@angular/material/input";
 
 
 @NgModule({
@@ -48,7 +52,8 @@ import {RecShowPanelComponent} from "./components/rec-show-panel/rec-show-panel.
     ExploreGraphComponent,
     ExploreGraphCytoscapeComponent,
     GraphVisJsComponent,
-    RecShowPanelComponent
+    RecShowPanelComponent,
+    SearchAnInstanceComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +76,13 @@ import {RecShowPanelComponent} from "./components/rec-show-panel/rec-show-panel.
     AngularSplitModule,
     MatExpansionModule,
     MatExpansionPanelContent,
-    MatExpansionModule
+    MatExpansionModule,
+    MatButtonModule,
+    MatAutocompleteTrigger,
+    MatAutocomplete,
+    MatOption,
+    MatFormField,
+    MatInput
   ],
   bootstrap: [AppComponent],
   providers: [

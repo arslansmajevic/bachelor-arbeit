@@ -1,0 +1,20 @@
+<div class="search-container">
+  <form (ngSubmit)="search()" class="search-form">
+    <mat-form-field class="search-field" appearance="outline">
+      <input type="text"
+             matInput
+             placeholder="Search for an instance..."
+             [matAutocomplete]="auto"
+             [(ngModel)]="searchQuery"
+             (input)="onSearchChange()"
+             name="searchQuery"
+             autocomplete="off">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let suggestion of filteredSuggestions" [value]="suggestion">
+          {{ suggestion }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" class="search-button">Search</button>
+  </form>
+</div>
