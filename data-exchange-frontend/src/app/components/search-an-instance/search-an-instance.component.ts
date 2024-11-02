@@ -9,7 +9,18 @@ import {Router} from "@angular/router";
 export class SearchAnInstanceComponent {
 
   searchQuery: string = '';
-  suggestions: string[] = ['http://example.org/fhir/Patient/1', 'http://example.org/fhir/Patient/2', 'http://example.org/fhir/Patient/3', 'http://example.org/fhir/Patient/4'];
+  suggestions: string[] = ['http://example.org/fhir/Patient/1',
+    'http://example.org/fhir/Patient/2',
+    'http://example.org/fhir/Patient/3',
+    'http://example.org/fhir/Patient/4',
+    'http://example.org/fhir/Encounter/Encounter1',
+    'http://example.org/fhir/Encounter/Encounter2',
+    'http://example.org/fhir/Encounter/Encounter3',
+    'http://example.org/fhir/Observation/Obs1',
+    'http://example.org/fhir/Observation/Obs2',
+    'http://example.org/fhir/Observation/Obs3',
+    'http://example.org/fhir/DiagnosticReport/Report1',
+  ];
   filteredSuggestions: string[] = [];
 
   constructor(
