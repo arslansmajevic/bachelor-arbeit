@@ -72,6 +72,7 @@ export class GraphVisJsComponent implements OnInit {
     '#FDFEFE'  // Soft White
     ];
   previousNode = {nodeUri: "", color: ""};
+  currentPanel: CustomPanel = {};
 
   @Input() firstNode: GraphNode = {id: "null", label: "null", expanded: false};
 
@@ -147,8 +148,6 @@ export class GraphVisJsComponent implements OnInit {
       }
     };
 
-
-
     this.network = new Network(container, data, options);
 
     // Handle double-click event to expand nodes
@@ -175,6 +174,8 @@ export class GraphVisJsComponent implements OnInit {
       this.collapseNode(this.previousNode.nodeUri, this.previousNode.color)
       this.previousNode.nodeUri = nodeId;
       this.previousNode.color = node.color;
+
+      this.appointCurrentPanel(node.label)
     } else {
       if (node && !node.expanded) {
         node.expanded = true;
@@ -207,7 +208,7 @@ export class GraphVisJsComponent implements OnInit {
               this.rootNodes.push({ id: link.source, label: extractedLabelSource, expanded: false });
             }
 
-            let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
+
             // Check if the edge already exists before adding it
             const existingEdges = this.edgesDataSet.get({
               filter: (edge: any) => edge.from === link.source && edge.to === link.target
@@ -224,8 +225,6 @@ export class GraphVisJsComponent implements OnInit {
           nodeData.forEach((link) => {
             const sourceLabel = link.source.substring(link.source.lastIndexOf('/') + 1);
             const targetLabel = link.target.substring(link.target.lastIndexOf('/') + 1);
-
-            let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
 
             // Add new nodes if they don't already exist
             if (!this.nodesDataSet.get(link.source)) {
@@ -258,6 +257,7 @@ export class GraphVisJsComponent implements OnInit {
           // After all data has been processed, print the graph data
           // this.printGraphData();
           this.panels.push(this.createPanelForInstance(nodeId, node.label, randomColor));
+          this.appointCurrentPanel(node.label)
           if (this.previousNode.nodeUri !== "") {
             this.collapseNode(this.previousNode.nodeUri, this.previousNode.color)
           }
@@ -313,5 +313,10 @@ export class GraphVisJsComponent implements OnInit {
     })
   }
 
-
+  appointCurrentPanel(nodeTitle: string): void {
+    if (this.panels.find(panel => panel.title === nodeTitle) !== undefined) {
+      // @ts-ignore
+      this.currentPanel = this.panels.find(panel => panel.title === nodeTitle);
+    }
+  }
 }

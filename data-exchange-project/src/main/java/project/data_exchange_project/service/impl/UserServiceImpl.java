@@ -1,6 +1,5 @@
 package project.data_exchange_project.service.impl;
 
-
 import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -36,6 +36,7 @@ import {SearchAnInstanceComponent} from "./components/search-an-instance/search-
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
+import {MatSelect} from "@angular/material/select";
 
 
 @NgModule({
@@ -82,7 +83,8 @@ import {MatInput} from "@angular/material/input";
     MatAutocomplete,
     MatOption,
     MatFormField,
-    MatInput
+    MatInput,
+    MatSelect
   ],
   bootstrap: [AppComponent],
   providers: [

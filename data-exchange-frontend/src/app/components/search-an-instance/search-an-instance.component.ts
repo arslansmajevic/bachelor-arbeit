@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import {Router} from "@angular/router";
+import {DataService} from "../../services/data.service";
+import {catchError, debounceTime, distinctUntilChanged, of, switchMap} from "rxjs";
 
 @Component({
   selector: 'app-search-an-instance',
@@ -9,32 +11,36 @@ import {Router} from "@angular/router";
 export class SearchAnInstanceComponent {
 
   searchQuery: string = '';
-  suggestions: string[] = ['http://example.org/fhir/Patient/1',
-    'http://example.org/fhir/Patient/2',
-    'http://example.org/fhir/Patient/3',
-    'http://example.org/fhir/Patient/4',
-    'http://example.org/fhir/Encounter/Encounter1',
-    'http://example.org/fhir/Encounter/Encounter2',
-    'http://example.org/fhir/Encounter/Encounter3',
-    'http://example.org/fhir/Observation/Obs1',
-    'http://example.org/fhir/Observation/Obs2',
-    'http://example.org/fhir/Observation/Obs3',
-    'http://example.org/fhir/DiagnosticReport/Report1',
-  ];
   filteredSuggestions: string[] = [];
+  limits: number[] = [10, 20, 30, 50, 100]; // Define available limits
+  selectedLimit: number = 10; // Default limit
 
   constructor(
-    private router: Router
+    private router: Router,
+    private dataService: DataService
   ) {
   }
 
   onSearchChange() {
-    this.filteredSuggestions = this.suggestions.filter(suggestion =>
-      suggestion.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
+    if (this.searchQuery.trim()) {
+      this.dataService.autocomplete(this.searchQuery, this.selectedLimit)
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          switchMap(() => {
+            return this.dataService.autocomplete(this.searchQuery, this.selectedLimit);
+          }),
+          catchError(error => {
+            return of([]); // Return an empty array in case of error
+          })
+        )
+        .subscribe(suggestions => {
+          this.filteredSuggestions = suggestions;
+        });
+    } else {
+      this.filteredSuggestions = [];
+    }
   }
-
-
 
   search() {
     this.router.navigate(['graph-vis-js'], {

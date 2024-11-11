@@ -10,18 +10,36 @@
       <as-split direction="vertical">
         <as-split-area [size]="100">
 
-          <div *ngIf="panels.length !== 0; else noPanels">
-            <div *ngFor="let panel of panels">
-              <app-rec-show-panel [panel]="panel"></app-rec-show-panel>
-            </div>
-          </div>
+          <as-split direction="vertical">
+            <as-split-area [size]="35">
 
-          <ng-template #noPanels>
-            <div class="info-panel">
-              <h3>Click a node!</h3>
-              <p>Select a node in the graph to display the related panel information.</p>
-            </div>
-          </ng-template>
+              <div style="display: flex; justify-content: center; padding-top: 2px">
+                <h1 *ngIf="currentPanel.title !== undefined">Current expanded node</h1>
+                <h1 *ngIf="currentPanel.title === undefined">No node selected</h1>
+              </div>
+
+              <app-rec-show-panel *ngIf="currentPanel.title !== undefined" [panel]="currentPanel"></app-rec-show-panel>
+
+            </as-split-area>
+            <as-split-area [size]="65">
+              <div *ngIf="panels.length !== 0; else noPanels">
+                <div style="display: flex; justify-content: center; padding-top: 2px">
+                  <h1>Node history</h1>
+                </div>
+                <div *ngFor="let panel of panels">
+                  <app-rec-show-panel [panel]="panel"></app-rec-show-panel>
+                </div>
+              </div>
+
+
+              <ng-template #noPanels>
+                <div class="info-panel">
+                  <h3>Click a node!</h3>
+                  <p>Select a node in the graph to display the related panel information.</p>
+                </div>
+              </ng-template>
+            </as-split-area>
+          </as-split>
 
         </as-split-area>
       </as-split>

@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import project.data_exchange_project.repository.GraphDbRepository;
 import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 import project.data_exchange_project.rest.dto.node.GraphNode;
-import project.data_exchange_project.rest.dto.patient.PatientDataDto;
 import project.data_exchange_project.service.GraphDBService;
 
 import java.util.List;
@@ -19,12 +18,6 @@ public class GraphDBServiceImpl implements GraphDBService {
   }
 
   @Override
-  public List<PatientDataDto> getPatientData(String patientName) {
-
-    return graphDbRepository.getPatientInformation();
-  }
-
-  @Override
   public List<ExpandingEdge> expandNeighbouringNodes(GraphNode graphNode) {
     return graphDbRepository.expandNeighbouringNodes(graphNode.nodeUri());
   }
@@ -32,5 +25,15 @@ public class GraphDBServiceImpl implements GraphDBService {
   @Override
   public List<ExpandingEdge> expandNode(GraphNode graphNode) {
     return graphDbRepository.expandNode(graphNode.nodeUri());
+  }
+
+  @Override
+  public List<String> autoCompleteName(String keyword, Integer limit) {
+    if (limit != null) {
+      return graphDbRepository.autocompleteInstances(keyword, limit);
+    } else {
+      return graphDbRepository.autocompleteInstances(keyword, 10);
+    }
+
   }
 }
