@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {Router} from "@angular/router";
 import {DataService} from "../../services/data.service";
-import {catchError, debounceTime, distinctUntilChanged, of, switchMap} from "rxjs";
+import {catchError, debounceTime, distinctUntilChanged, of, Subject, switchMap} from "rxjs";
 
 @Component({
   selector: 'app-search-an-instance',
@@ -14,6 +14,7 @@ export class SearchAnInstanceComponent {
   filteredSuggestions: string[] = [];
   limits: number[] = [10, 20, 30, 50, 100]; // Define available limits
   selectedLimit: number = 10; // Default limit
+  private searchSubject = new Subject<string>(); // New subject for search input
 
   constructor(
     private router: Router,
@@ -21,22 +22,24 @@ export class SearchAnInstanceComponent {
   ) {
   }
 
+  ngOnInit() {
+    // Subscription to handle autocomplete logic with debounce and distinctUntilChanged
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      switchMap(query =>
+        this.dataService.autocomplete(query, this.selectedLimit).pipe(
+          catchError(() => of([])) // Return an empty array in case of error
+        )
+      )
+    ).subscribe(suggestions => {
+      this.filteredSuggestions = suggestions;
+    });
+  }
+
   onSearchChange() {
     if (this.searchQuery.trim()) {
-      this.dataService.autocomplete(this.searchQuery, this.selectedLimit)
-        .pipe(
-          debounceTime(300),
-          distinctUntilChanged(),
-          switchMap(() => {
-            return this.dataService.autocomplete(this.searchQuery, this.selectedLimit);
-          }),
-          catchError(error => {
-            return of([]); // Return an empty array in case of error
-          })
-        )
-        .subscribe(suggestions => {
-          this.filteredSuggestions = suggestions;
-        });
+      this.searchSubject.next(this.searchQuery); // Emit search query
     } else {
       this.filteredSuggestions = [];
     }

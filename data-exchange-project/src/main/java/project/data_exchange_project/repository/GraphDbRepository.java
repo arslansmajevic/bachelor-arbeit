@@ -215,11 +215,9 @@ public class GraphDbRepository {
 
     // Define variables
     Variable s = SparqlBuilder.var("s");
-    Variable p = SparqlBuilder.var("p");
-    Variable o = SparqlBuilder.var("o");
 
     // Define triple pattern
-    TriplePattern pattern = s.has(p, o);
+    TriplePattern pattern = s.has(SparqlBuilder.var("p"), SparqlBuilder.var("o"));
 
     // Define filter with case-insensitive check for "patient"
     RdfLiteral<String> keywordLiteral = Rdf.literalOf(keyword);

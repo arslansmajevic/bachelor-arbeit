@@ -132,15 +132,6 @@ export class GraphVisJsComponent implements OnInit {
           fit: true
         }
       },
-      layout: {
-        hierarchical: false,           // Disable hierarchical layout
-        improvedLayout: true,          // Keeps this to prevent overlap
-        randomSeed: undefined,         // Optional, allows for reproducible results if a seed is provided
-        circular: {                    // Enable circular layout
-          enabled: true,               // Ensure circular layout is active
-          sortMethod: 'hubsize'        // Sort by 'hubsize' or 'directed'
-        }
-      },
       edges: {
         arrows: {
           to: { enabled: true, scaleFactor: 1 } // Adds arrows to edges
@@ -163,7 +154,10 @@ export class GraphVisJsComponent implements OnInit {
   onNodeDoubleClick(nodeId: string): void {
     const node = this.nodesDataSet.get(nodeId);
 
-    console.log(node)
+
+    if (node.color === this.previousNode.color) {
+      return;
+    }
 
     if (node.id === this.previousNode.nodeUri) {
       return;

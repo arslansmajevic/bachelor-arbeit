@@ -58,4 +58,10 @@ h1 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add smooth transition */
+}
+
+.content-box:hover {
+  transform: scale(1.05); /* Slightly enlarges the box */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Deepens the shadow */
 }

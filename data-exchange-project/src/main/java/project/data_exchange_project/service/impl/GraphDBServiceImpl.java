@@ -7,6 +7,7 @@ import project.data_exchange_project.rest.dto.node.GraphNode;
 import project.data_exchange_project.service.GraphDBService;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GraphDBServiceImpl implements GraphDBService {
@@ -29,11 +30,6 @@ public class GraphDBServiceImpl implements GraphDBService {
 
   @Override
   public List<String> autoCompleteName(String keyword, Integer limit) {
-    if (limit != null) {
-      return graphDbRepository.autocompleteInstances(keyword, limit);
-    } else {
-      return graphDbRepository.autocompleteInstances(keyword, 10);
-    }
-
+    return graphDbRepository.autocompleteInstances(keyword, Objects.requireNonNullElse(limit, 10));
   }
 }
