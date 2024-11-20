@@ -21,6 +21,7 @@ import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class GraphDbRepository {
@@ -55,6 +56,8 @@ public class GraphDbRepository {
 
     List<ExpandingEdge> listOfExpandingEdges = new ArrayList<>();
 
+    int oneTime = 0;
+
     // Execute the query and process the result
     List<String> results = new ArrayList<>();
     try (RepositoryConnection repoConnection = sparqlRepository.getConnection()) {
@@ -66,20 +69,23 @@ public class GraphDbRepository {
                 ", Object Type: " + bindingSet.getValue("object_type") +
                 ", Connection: " + bindingSet.getValue("connection"));
 
-        listOfExpandingEdges.add(
-                new ExpandingEdge(
-                        bindingSet.getValue("object").stringValue(),
-                        nodeUri,
-                        bindingSet.getValue("connection").stringValue().concat(".reference")
-                )
-        );
+        if (!bindingSet.getValue("object").stringValue().contains("http")) {
+          if (oneTime++ == 0) {
+            listOfExpandingEdges.addAll(upstreamRecursiveNodeExpansion(nodeUri, 1));
+          }
+        } else {
+          listOfExpandingEdges.add(
+                  new ExpandingEdge(
+                          bindingSet.getValue("object").stringValue(),
+                          nodeUri,
+                          bindingSet.getValue("connection").stringValue().concat(".reference")
+                  )
+          );
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
-
-    // Output the results (you can adapt this to return or process differently)
-    results.forEach(System.out::println);
 
     return listOfExpandingEdges;
   }
@@ -129,7 +135,7 @@ public class GraphDbRepository {
 
         // if blank node, then perform recursion
         if (objectValue.startsWith("node") && oneTime++ == 1) {
-          listOfExpandingEdges.addAll(recursiveExpandOnNodes(nodeUri, 1));
+          listOfExpandingEdges.addAll(downstreamRecursiveNodeExpansion(nodeUri, 1));
         }
       }
     } catch (Exception e) {
@@ -142,7 +148,7 @@ public class GraphDbRepository {
     return listOfExpandingEdges;
   }
 
-  private List<ExpandingEdge> recursiveExpandOnNodes(String subject, int level) {
+  private List<ExpandingEdge> downstreamRecursiveNodeExpansion(String subject, int level) {
     List<TriplePattern> wherePatterns = new ArrayList<>();
     Variable currentSubject = SparqlBuilder.var("o1"); // Initialize with o1 (after ?subject)
 
@@ -201,7 +207,7 @@ public class GraphDbRepository {
 
         if (objectValue.startsWith("node") && oneTime++ == 0) {
           System.out.println("expanding on blank node: " + objectValue);
-          listOfExpandingEdges.addAll(recursiveExpandOnNodes(subject, level+1));
+          listOfExpandingEdges.addAll(downstreamRecursiveNodeExpansion(subject, level+1));
         }
       }
     } catch (Exception e) {
@@ -209,6 +215,75 @@ public class GraphDbRepository {
     }
 
     return listOfExpandingEdges;
+  }
+
+  private List<ExpandingEdge> upstreamRecursiveNodeExpansion(String subject, int level) {
+
+    List<TriplePattern> wherePatterns = new ArrayList<>();
+    Variable currentSubject = SparqlBuilder.var("s1"); // Initialize with o1 (after ?subject)
+
+    // The first triple pattern
+    Variable p = SparqlBuilder.var("p");
+    Variable s1 = SparqlBuilder.var("s1");
+    // wherePatterns.add(Rdf.iri(subject).has(p, o1));
+    wherePatterns.add(s1.has(p, Rdf.iri(subject)));
+
+    // Iteratively create the rest of the triple patterns based on the level
+    for (int i = 1; i <= level; i++) {
+      Variable nextP = SparqlBuilder.var("p" + i);
+      Variable nextS = SparqlBuilder.var("s" + (i + 1));
+
+      wherePatterns.add(nextS.has(nextP, currentSubject));
+      currentSubject = nextS;
+    }
+
+    // Create the SELECT query with all variable projections
+    SelectQuery selectQuery = Queries.SELECT();
+    for (int i = 1; i <= level; i++) {
+      selectQuery.select(SparqlBuilder.var("p" + i), SparqlBuilder.var("s" + i));
+    }
+    selectQuery.select(SparqlBuilder.var("s" + (level+1)));
+
+    selectQuery.prefix(fhir)
+            .where(wherePatterns.toArray(new TriplePattern[0]));
+
+    String sparqlQueryString = selectQuery.getQueryString();
+    List<ExpandingEdge> listOfExpandingEdges = new ArrayList<>();
+
+    int oneTime = 0;
+
+    try (RepositoryConnection repoConnection = sparqlRepository.getConnection()) {
+      TupleQueryResult result = repoConnection.prepareTupleQuery(sparqlQueryString).evaluate();
+
+      while (result.hasNext()) {
+        BindingSet bindingSet = result.next();
+
+        String objectAsSubject = bindingSet.getValue("s" + level).stringValue();
+        String predicate = bindingSet.getValue("p" + level).stringValue();
+        String subjectAsSubject = bindingSet.getValue("s" + (level+1)).stringValue();
+
+        if (!Objects.equals(predicate, "")) {
+          if (subjectAsSubject.contains("http")) {
+            listOfExpandingEdges.add(
+                    new ExpandingEdge(
+                            subject,
+                            subjectAsSubject,
+                            predicate + ".reference"
+                    )
+            );
+          } else {
+            if (oneTime++ == 0) {
+              listOfExpandingEdges.addAll(upstreamRecursiveNodeExpansion(subject, level+1));
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return listOfExpandingEdges;
+
   }
 
   public List<String> autocompleteInstances(String keyword, Integer limit) {

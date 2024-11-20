@@ -31,6 +31,12 @@ public class GraphDBConfigGenerator {
               .repositoryId("prof-data-repo")
               .build();
 
+      /*GraphDBConfiguration graphDBConfiguration = GraphDBConfiguration.builder()
+              .port(7200L)
+              .graphDbServerUrl("http://localhost")
+              .repositoryId("a-self-made-fhir-ttl")
+              .build();*/
+
       graphDBConfigRepository.save(graphDBConfiguration);
     }
   }
