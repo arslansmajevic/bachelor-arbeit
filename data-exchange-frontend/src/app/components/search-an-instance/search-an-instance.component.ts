@@ -47,7 +47,7 @@ export class SearchAnInstanceComponent {
 
   search() {
     this.router.navigate(['graph-vis-js'], {
-      state: { firstNode: { id: this.searchQuery, label: this.searchQuery.split('/').slice(-2).join('/'), expanded: false } }
+      state: { firstNode: [{ id: this.searchQuery, label: this.searchQuery.split('/').slice(-2).join('/'), expanded: false }] }
     });
   }
 }

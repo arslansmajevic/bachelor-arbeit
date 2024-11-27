@@ -74,7 +74,7 @@ export class GraphVisJsComponent implements OnInit {
   previousNode = {nodeUri: "", color: ""};
   currentPanel: CustomPanel = {};
 
-  @Input() firstNode: GraphNode = {id: "null", label: "null", expanded: false};
+  @Input() firstNode: GraphNode[] = [{id: "null", label: "null", expanded: false}];
 
   nodes: GraphNode[] = [
     { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
@@ -95,14 +95,17 @@ export class GraphVisJsComponent implements OnInit {
 
   ngOnInit(): void {
     this.firstNode = history.state.firstNode || { id: 'null', label: 'null', expanded: false };
-    if (this.firstNode.id === 'null') {
+    if (this.firstNode[0].id === 'null') {
       this.router.navigate(['search-instance'])
     }
     const container = this.visGraphContainer.nativeElement;
+    this.nodesDataSet = new DataSet([])
 
-    this.nodesDataSet = new DataSet([
-      { id: this.firstNode.id, label: this.firstNode.label, expanded: false }
-    ]);
+    for (let node of this.firstNode) {
+      this.nodesDataSet.add(
+        { id: node.id, label: node.label, expanded: false }
+      );
+    }
 
     this.edgesDataSet = new DataSet([]);
 

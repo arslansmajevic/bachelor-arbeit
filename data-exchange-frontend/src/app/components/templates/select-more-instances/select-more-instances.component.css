@@ -1,0 +1,49 @@
+.center-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Aligns content vertically at the top */
+  height: 100vh; /* Full height of the viewport */
+  margin-top: 2em; /* Space at the top */
+}
+
+.start-text {
+  margin-bottom: 1em; /* Space between "Start" and the search form */
+  font-size: 1.5em; /* Optional: adjust font size if needed */
+}
+
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+}
+
+.search-field {
+  min-width: 800px;
+}
+
+.limit-field {
+  max-width: 80px;
+}
+
+.search-button {
+  margin-left: 2em;
+  text-transform: uppercase;
+}
+
+table {
+  max-width: 600px; /* Optional: limits the table's maximum width */
+  margin: 1em auto; /* Centers the table horizontally */
+  border: 1px solid #ccc; /* Optional: adds a subtle border for better visibility */
+  border-collapse: collapse; /* Ensures border styles are consistent */
+}
+.mat-elevation-z8 {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: improves the elevation effect */
+  border-radius: 4px; /* Optional: rounds the table corners */
+}
+

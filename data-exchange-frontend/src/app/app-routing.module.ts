@@ -12,6 +12,7 @@ import {ExploreGraphComponent} from "./components/explore-graph/explore-graph.co
 import {ExploreGraphCytoscapeComponent} from "./components/explore-graph-cytoscape/explore-graph-cytoscape.component";
 import {GraphVisJsComponent} from "./components/graph-vis-js/graph-vis-js.component";
 import {SearchAnInstanceComponent} from "./components/search-an-instance/search-an-instance.component";
+import {SparqlTemplatesComponent} from "./components/sparql-templates/sparql-templates.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -34,7 +35,8 @@ const routes: Routes = [
       {path: 'dashboard', component: AdminDashboardComponent},
       {path: 'database-config', component: DatabaseConfigComponent}
     ]
-  }
+  },
+  { path: 'templates', component: SparqlTemplatesComponent}
 ]
 
 @NgModule({

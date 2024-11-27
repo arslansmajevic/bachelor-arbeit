@@ -1,0 +1,15 @@
+.example-container {
+  position: absolute;
+  top: 5.5em; /* Adjust this value based on your header height */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+}
+
+.example-radio-group {
+  display: block;
+  margin: 10px;
+  padding: 10px;
+  height: 100%;
+}

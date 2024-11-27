@@ -37,6 +37,11 @@ import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/mater
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatSelect} from "@angular/material/select";
+import {SparqlTemplatesComponent} from "./components/sparql-templates/sparql-templates.component";
+import {
+  SelectMoreInstancesComponent
+} from "./components/templates/select-more-instances/select-more-instances.component";
+import {MatDrawer, MatDrawerContainer, MatSidenav, MatSidenavModule} from "@angular/material/sidenav";
 
 
 @NgModule({
@@ -54,7 +59,9 @@ import {MatSelect} from "@angular/material/select";
     ExploreGraphCytoscapeComponent,
     GraphVisJsComponent,
     RecShowPanelComponent,
-    SearchAnInstanceComponent
+    SearchAnInstanceComponent,
+    SparqlTemplatesComponent,
+    SelectMoreInstancesComponent
   ],
   imports: [
     BrowserModule,
@@ -84,7 +91,11 @@ import {MatSelect} from "@angular/material/select";
     MatOption,
     MatFormField,
     MatInput,
-    MatSelect
+    MatSelect,
+    MatDrawerContainer,
+    MatDrawer,
+    MatSidenavModule,
+    MatExpansionModule
   ],
   bootstrap: [AppComponent],
   providers: [

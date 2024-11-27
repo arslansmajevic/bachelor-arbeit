@@ -22,6 +22,7 @@ import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Repository
 public class GraphDbRepository {
@@ -324,6 +325,6 @@ public class GraphDbRepository {
     }
 
     // Return the list of matching instances
-    return resultList;
+    return resultList.stream().distinct().collect(Collectors.toList());
   }
 }
