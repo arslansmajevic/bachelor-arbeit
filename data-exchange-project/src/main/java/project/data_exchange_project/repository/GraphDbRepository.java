@@ -1,8 +1,10 @@
 package project.data_exchange_project.repository;
 
 import org.eclipse.rdf4j.query.BindingSet;
+import org.eclipse.rdf4j.query.MalformedQueryException;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
 import org.eclipse.rdf4j.sparqlbuilder.constraint.Expression;
 import org.eclipse.rdf4j.sparqlbuilder.constraint.Expressions;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +35,7 @@ public class GraphDbRepository {
 
   Prefix fhir = SparqlBuilder.prefix("fhir", Rdf.iri("http://hl7.org/fhir/"));
 
-  public List<ExpandingEdge> expandNeighbouringNodes(String nodeUri) {
+  public List<ExpandingEdge> expandNeighbouringNodes(String nodeUri) throws ConnectException, MalformedQueryException {
     Variable object = SparqlBuilder.var("object");
     Variable objectType = SparqlBuilder.var("object_type");
     Variable connection = SparqlBuilder.var("connection");
@@ -61,31 +64,28 @@ public class GraphDbRepository {
 
     // Execute the query and process the result
     List<String> results = new ArrayList<>();
-    try (RepositoryConnection repoConnection = sparqlRepository.getConnection()) {
-      TupleQueryResult result = repoConnection.prepareTupleQuery(sparqlQueryString).evaluate();
+    RepositoryConnection repoConnection = sparqlRepository.getConnection();
+    TupleQueryResult result = repoConnection.prepareTupleQuery(sparqlQueryString).evaluate();
 
-      while (result.hasNext()) {
-        BindingSet bindingSet = result.next();
-        results.add("Object: " + bindingSet.getValue("object") +
-                ", Object Type: " + bindingSet.getValue("object_type") +
-                ", Connection: " + bindingSet.getValue("connection"));
+    while (result.hasNext()) {
+      BindingSet bindingSet = result.next();
+      results.add("Object: " + bindingSet.getValue("object") +
+              ", Object Type: " + bindingSet.getValue("object_type") +
+              ", Connection: " + bindingSet.getValue("connection"));
 
-        if (!bindingSet.getValue("object").stringValue().contains("http")) {
-          if (oneTime++ == 0) {
-            listOfExpandingEdges.addAll(upstreamRecursiveNodeExpansion(nodeUri, 1));
-          }
-        } else {
-          listOfExpandingEdges.add(
-                  new ExpandingEdge(
-                          bindingSet.getValue("object").stringValue(),
-                          nodeUri,
-                          bindingSet.getValue("connection").stringValue().concat(".reference")
-                  )
-          );
+      if (!bindingSet.getValue("object").stringValue().contains("http")) {
+        if (oneTime++ == 0) {
+          listOfExpandingEdges.addAll(upstreamRecursiveNodeExpansion(nodeUri, 1));
         }
+      } else {
+        listOfExpandingEdges.add(
+                new ExpandingEdge(
+                        bindingSet.getValue("object").stringValue(),
+                        nodeUri,
+                        bindingSet.getValue("connection").stringValue().concat(".reference")
+                )
+        );
       }
-    } catch (Exception e) {
-      e.printStackTrace();
     }
 
     return listOfExpandingEdges;

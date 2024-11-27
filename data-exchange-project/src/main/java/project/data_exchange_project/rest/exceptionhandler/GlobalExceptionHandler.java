@@ -1,5 +1,6 @@
 package project.data_exchange_project.rest.exceptionhandler;
 
+import org.eclipse.rdf4j.query.MalformedQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -9,11 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import project.data_exchange_project.exception.ErrorResponse;
 import project.data_exchange_project.exception.NotFoundException;
+import project.data_exchange_project.exception.PersistenceUnavailableException;
 
 import java.lang.invoke.MethodHandles;
+import java.net.ConnectException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +29,7 @@ import java.util.stream.Collectors;
  * If you have special cases which are only important for specific endpoints, use ResponseStatusExceptions
  * https://www.baeldung.com/exception-handling-for-rest-with-spring#responsestatusexception
  */
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -47,7 +52,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers,
                                                                   HttpStatusCode status, WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
-        log.info("ARSLAN WAS HERE !!!!");
         //Get all errors
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
@@ -58,5 +62,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(body.toString(), headers, status);
 
+    }
+
+    @ExceptionHandler(ConnectException.class)
+    public ResponseEntity<ErrorResponse> handlePersistenceUnavailableException(ConnectException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Service Unavailable",
+                ex.getMessage(),
+                HttpStatus.SERVICE_UNAVAILABLE.value()
+        );
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse);
+    }
+
+    @ExceptionHandler(MalformedQueryException.class)
+    public ResponseEntity<ErrorResponse> handleMalformedQueryException(MalformedQueryException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Malformed Query",
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }

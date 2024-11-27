@@ -1,11 +1,15 @@
 package project.data_exchange_project.service.impl;
 
+import org.eclipse.rdf4j.query.MalformedQueryException;
+import org.eclipse.rdf4j.repository.RepositoryException;
 import org.springframework.stereotype.Service;
+import project.data_exchange_project.exception.PersistenceUnavailableException;
 import project.data_exchange_project.repository.GraphDbRepository;
 import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 import project.data_exchange_project.rest.dto.node.GraphNode;
 import project.data_exchange_project.service.GraphDBService;
 
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,7 +24,13 @@ public class GraphDBServiceImpl implements GraphDBService {
 
   @Override
   public List<ExpandingEdge> expandNeighbouringNodes(GraphNode graphNode) {
-    return graphDbRepository.expandNeighbouringNodes(graphNode.nodeUri());
+    try {
+      return graphDbRepository.expandNeighbouringNodes(graphNode.nodeUri());
+    } catch (ConnectException c) {
+      throw new PersistenceUnavailableException();
+    } catch (MalformedQueryException m) {
+      throw new MalformedQueryException();
+    }
   }
 
   @Override
