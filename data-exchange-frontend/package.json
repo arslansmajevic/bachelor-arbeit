@@ -36,6 +36,7 @@
     "ngx-popperjs": "^17.0.0",
     "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
+    "sparql-http-client": "^3.0.1",
     "tslib": "^2.3.0",
     "vis-network": "^9.1.9",
     "zone.js": "~0.14.3"

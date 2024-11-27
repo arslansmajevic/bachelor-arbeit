@@ -1,0 +1,18 @@
+.sparql-container {
+  margin: 20px;
+}
+
+textarea {
+  width: 100%;
+  font-family: monospace;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.result {
+  margin-top: 20px;
+}

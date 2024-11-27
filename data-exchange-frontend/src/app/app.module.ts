@@ -42,7 +42,7 @@ import {
   SelectMoreInstancesComponent
 } from "./components/templates/select-more-instances/select-more-instances.component";
 import {MatDrawer, MatDrawerContainer, MatSidenav, MatSidenavModule} from "@angular/material/sidenav";
-
+import {SparqlEndpointComponent} from "./components/templates/sparql-endpoint/sparql-endpoint.component";
 
 @NgModule({
   declarations: [
@@ -61,7 +61,8 @@ import {MatDrawer, MatDrawerContainer, MatSidenav, MatSidenavModule} from "@angu
     RecShowPanelComponent,
     SearchAnInstanceComponent,
     SparqlTemplatesComponent,
-    SelectMoreInstancesComponent
+    SelectMoreInstancesComponent,
+    SparqlEndpointComponent
   ],
   imports: [
     BrowserModule,

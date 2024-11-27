@@ -1,0 +1,13 @@
+<div class="sparql-container">
+  <h2>SPARQL Endpoint</h2>
+  <form (ngSubmit)="executeQuery()">
+    <label for="sparqlQuery">Enter SPARQL Query:</label>
+    <textarea id="sparqlQuery" [(ngModel)]="sparqlQuery" name="sparqlQuery" rows="10" cols="80"></textarea>
+    <button type="submit">Execute Query</button>
+  </form>
+
+  <div class="result">
+    <h3>Results:</h3>
+    <pre>{{ result | json }}</pre> <!-- Use Angular's JSON pipe for display -->
+  </div>
+</div>
