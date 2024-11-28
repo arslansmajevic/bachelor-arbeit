@@ -1,5 +1,7 @@
 package project.data_exchange_project.service;
 
+import project.data_exchange_project.rest.dto.CustomQueryDto;
+import project.data_exchange_project.rest.dto.SparqlResult;
 import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 import project.data_exchange_project.rest.dto.node.GraphNode;
 import project.data_exchange_project.rest.dto.patient.PatientDataDto;
@@ -13,4 +15,6 @@ public interface GraphDBService {
   List<ExpandingEdge> expandNode(GraphNode graphNode);
 
   List<String> autoCompleteName(String keyword, Integer limit);
+
+  SparqlResult performCustomQuery(CustomQueryDto customQueryDto);
 }

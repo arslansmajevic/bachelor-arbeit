@@ -116,18 +116,3 @@ export class UserOverviewComponent implements AfterViewInit{
     return this.authService.getUserEmail() !== email;
   }
 }
-
-const usersData: UserInformationDto[] = [
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false}
-];

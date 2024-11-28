@@ -19,8 +19,12 @@ export class AuthInterceptor implements HttpInterceptor {
     const authUri = this.globals.backendUri + '/authentication';
     const registerUserUri = this.globals.backendUri + '/users/create'
     const resetPasswordUri = this.globals.backendUri + '/users/reset/password/user'
+    const sparqlEndpoint = 'http://localhost:7200/repositories/prof-data-repo';
 
-    if (req.url === authUri || req.url === registerUserUri || req.url === resetPasswordUri) {
+    console.log('aarslaan')
+    console.log(req.url)
+
+    if (req.url === authUri || req.url === registerUserUri || req.url === resetPasswordUri || req.url.startsWith('http://localhost:7200')) {
       return next.handle(req);
     }
 

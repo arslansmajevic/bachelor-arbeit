@@ -19,12 +19,11 @@ import org.eclipse.rdf4j.sparqlbuilder.rdf.Rdf;
 import org.eclipse.rdf4j.sparqlbuilder.rdf.RdfLiteral;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import project.data_exchange_project.rest.dto.SparqlResult;
 import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 
 import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -309,7 +308,7 @@ public class GraphDbRepository {
             .limit(limit);
 
     String sparqlQueryString = query.getQueryString();
-
+    // System.out.println(sparqlQueryString);
     List<String> resultList = new ArrayList<>();
 
     // Execute the query and process the result
@@ -326,5 +325,38 @@ public class GraphDbRepository {
 
     // Return the list of matching instances
     return resultList.stream().distinct().collect(Collectors.toList());
+  }
+
+  public SparqlResult performCustomQuery(String query) throws ConnectException, MalformedQueryException{
+
+    RepositoryConnection repoConnection = sparqlRepository.getConnection();
+    TupleQueryResult result = repoConnection.prepareTupleQuery(query).evaluate();
+    List<String> bindingNames = result.getBindingNames();
+    List<SparqlResult.Binding> bindings = new ArrayList<>();
+
+    while (result.hasNext()) {
+      BindingSet bindingSet = result.next();
+      Map<String, SparqlResult.Value> values = new HashMap<>();
+
+      for (String binding : bindingNames) {
+        var value = bindingSet.getValue(binding);
+
+        if (value != null) {
+          // Add the type and value of the binding
+          values.put(binding, new SparqlResult.Value(
+                  value.isIRI() ? "uri" : value.isBNode() ? "bnode" : "literal",
+                  value.stringValue()));
+        }
+      }
+
+      // Add the binding to the list of bindings
+      bindings.add(new SparqlResult.Binding(values));
+    }
+
+    // Construct the SparqlResult with head and results
+    return new SparqlResult(
+            new SparqlResult.Head(bindingNames),
+            new SparqlResult.Results(bindings)
+    );
   }
 }

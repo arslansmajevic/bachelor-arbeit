@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 import project.data_exchange_project.exception.ErrorResponse;
+import project.data_exchange_project.rest.dto.CustomQueryDto;
+import project.data_exchange_project.rest.dto.SparqlResult;
 import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 import project.data_exchange_project.rest.dto.node.GraphNode;
 import project.data_exchange_project.rest.dto.patient.PatientDataDto;
@@ -56,5 +58,10 @@ public class DataEndpoint {
   public List<String> autoCompleteName(@RequestParam("keyword") String keyword, @Param("limit") Integer limit) {
     log.info("GET /data/autocomplete?keyword={}&limit={}", keyword, limit);
     return graphDBService.autoCompleteName(keyword, limit);
+  }
+
+  @PutMapping("perform-query")
+  public SparqlResult customQuery(@RequestBody CustomQueryDto customQueryDto) {
+    return graphDBService.performCustomQuery(customQueryDto);
   }
 }

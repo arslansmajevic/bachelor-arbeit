@@ -5,6 +5,8 @@ import org.eclipse.rdf4j.repository.RepositoryException;
 import org.springframework.stereotype.Service;
 import project.data_exchange_project.exception.PersistenceUnavailableException;
 import project.data_exchange_project.repository.GraphDbRepository;
+import project.data_exchange_project.rest.dto.CustomQueryDto;
+import project.data_exchange_project.rest.dto.SparqlResult;
 import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 import project.data_exchange_project.rest.dto.node.GraphNode;
 import project.data_exchange_project.service.GraphDBService;
@@ -41,5 +43,16 @@ public class GraphDBServiceImpl implements GraphDBService {
   @Override
   public List<String> autoCompleteName(String keyword, Integer limit) {
     return graphDbRepository.autocompleteInstances(keyword, Objects.requireNonNullElse(limit, 10));
+  }
+
+  @Override
+  public SparqlResult performCustomQuery(CustomQueryDto customQueryDto) {
+    try {
+      return graphDbRepository.performCustomQuery(customQueryDto.query());
+    } catch (ConnectException c) {
+      throw new PersistenceUnavailableException();
+    } catch (MalformedQueryException m) {
+      throw new MalformedQueryException();
+    }
   }
 }
