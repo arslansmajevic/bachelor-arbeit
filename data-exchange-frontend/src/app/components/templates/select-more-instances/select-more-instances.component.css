@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: flex-start; /* Aligns content vertically at the top */
   height: 100vh; /* Full height of the viewport */
-  margin-top: 2em; /* Space at the top */
+  margin: 2em;
 }
 
 .start-text {

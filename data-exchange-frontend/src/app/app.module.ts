@@ -43,6 +43,7 @@ import {
 } from "./components/templates/select-more-instances/select-more-instances.component";
 import {MatDrawer, MatDrawerContainer, MatSidenav, MatSidenavModule} from "@angular/material/sidenav";
 import {SparqlEndpointComponent} from "./components/templates/sparql-endpoint/sparql-endpoint.component";
+import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card";
 
 @NgModule({
   declarations: [
@@ -96,7 +97,10 @@ import {SparqlEndpointComponent} from "./components/templates/sparql-endpoint/sp
     MatDrawerContainer,
     MatDrawer,
     MatSidenavModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatCard,
+    MatCardTitle,
+    MatCardContent
   ],
   bootstrap: [AppComponent],
   providers: [

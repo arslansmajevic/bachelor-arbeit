@@ -13,3 +13,32 @@
   padding: 10px;
   height: 100%;
 }
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping to the next row */
+  justify-content: center; /* Center cards in the container */
+  gap: 16px; /* Space between cards */
+  margin-top: 20px; /* Add some top margin for spacing */
+}
+
+.example-card {
+  width: 300px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Slight shadow for a modern look */
+  transition: transform 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+.example-card:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.example-card mat-card-title {
+  text-align: center; /* Center align the title */
+  font-weight: bold; /* Optional: Make the title bold for emphasis */
+}
+
+.example-card mat-card-content {
+  text-align: left; /* Ensure content remains left-aligned */
+}
