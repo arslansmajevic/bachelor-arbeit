@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {catchError, debounceTime, distinctUntilChanged, of, Subject, switchMap} from "rxjs";
 import {Router} from "@angular/router";
 import {DataService} from "../../../services/data.service";
@@ -10,80 +10,73 @@ import {book} from "ngx-bootstrap-icons";
   styleUrl: './select-more-instances.component.css'
 })
 export class SelectMoreInstancesComponent {
+  @ViewChild('searchInput', { static: false }) searchInput!: ElementRef;
+
   searchQuery: string = '';
   filteredSuggestions: string[] = [];
-  limits: number[] = [10, 20, 30, 50, 100]; // Define available limits
-  selectedLimit: number = 10; // Default limit
+  limits: number[] = [10, 20, 30, 50, 100];
+  selectedLimit: number = 10;
   savedNodes: { id: string; label: string; expanded: boolean }[] = [];
   displayedColumns: string[] = ['id'];
-  private searchSubject = new Subject<string>(); // New subject for search input
+  private searchSubject = new Subject<string>();
 
-  constructor(
-    private router: Router,
-    private dataService: DataService
-  ) {
-  }
+  constructor(private router: Router, private dataService: DataService) {}
 
   ngOnInit() {
-    // Subscription to handle autocomplete logic with debounce and distinctUntilChanged
-    this.searchSubject.pipe(
-      debounceTime(500),
-      distinctUntilChanged(),
-      switchMap(query =>
-        this.dataService.autocomplete(query, this.selectedLimit).pipe(
-          catchError(() => of([])) // Return an empty array in case of error
+    this.searchSubject
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap((query) =>
+          this.dataService.autocomplete(query, this.selectedLimit).pipe(
+            catchError(() => of([]))
+          )
         )
       )
-    ).subscribe(suggestions => {
-      this.filteredSuggestions = suggestions;
-    });
+      .subscribe((suggestions) => {
+        this.filteredSuggestions = suggestions;
+      });
   }
 
   onSearchChange() {
     if (this.searchQuery.trim()) {
-      this.searchSubject.next(this.searchQuery); // Emit search query
+      this.searchSubject.next(this.searchQuery);
     }
   }
 
   search() {
-
-
     this.router.navigate(['graph-vis-js'], {
       state: { firstNode: this.savedNodes }
     });
   }
 
-  function() {
-    console.log(this.savedNodes)
+  addInstanceAsSaved(flag: boolean, suggestion: string) {
+    const newInstance = {
+        id: suggestion,
+        label: suggestion?.split('/').slice(-2).join('/'),
+        expanded: false,
+      };
 
-    console.log("hello")
-  }
-
-  addInstanceAsSaved(flag: boolean, suggestion?: string) {
-
-    if (!flag) {
-      if (this.searchQuery.trim()) {
-        const newInstance = {
-          id: this.searchQuery,
-          label: this.searchQuery.split('/').slice(-2).join('/'),
-          expanded: false
-        };
-
-        this.savedNodes = [...this.savedNodes, newInstance]; // Reassign to trigger change detection
-        this.searchQuery = ""; // Clear the search query
-      }
-    } else {
-      if (suggestion) {
-        const newInstance = {
-          id: suggestion,
-          label: suggestion.split('/').slice(-2).join('/'),
-          expanded: false
-        };
-
-        this.savedNodes = [...this.savedNodes, newInstance]; // Reassign to trigger change detection
-        this.searchQuery = ""; // Clear the search query
-      }
+    // Check if the instance already exists in savedNodes
+    if (newInstance.id && !this.savedNodes.some(node => node.id === newInstance.id)) {
+      this.savedNodes = [...this.savedNodes, newInstance]; // Add to saved nodes if it doesn't exist
     }
-    this.searchQuery = ""; // Clear the search query
+
+    this.searchQuery = ''; // Clear the input field
   }
+
+  onOptionSelected(event: any) {
+    const selectedSuggestion = event.option.value;
+
+    // Add the selected suggestion to savedNodes
+    this.addInstanceAsSaved(true, selectedSuggestion);
+
+    // Clear the input field programmatically
+    this.searchInput.nativeElement.value = '';
+  }
+
+  removeNode(node: { id: string; label: string; expanded: boolean }) {
+    this.savedNodes = this.savedNodes.filter((savedNode) => savedNode !== node);
+  }
+
 }
