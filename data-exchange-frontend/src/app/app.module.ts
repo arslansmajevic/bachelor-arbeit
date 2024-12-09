@@ -44,6 +44,9 @@ import {
 import {MatDrawer, MatDrawerContainer, MatSidenav, MatSidenavModule} from "@angular/material/sidenav";
 import {SparqlEndpointComponent} from "./components/templates/sparql-endpoint/sparql-endpoint.component";
 import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card";
+import {CustomStatisticsComponent} from "./components/statistics/custom-statistics/custom-statistics.component";
+import {CodemirrorModule} from "@ctrl/ngx-codemirror";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   declarations: [
@@ -63,7 +66,8 @@ import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card";
     SearchAnInstanceComponent,
     SparqlTemplatesComponent,
     SelectMoreInstancesComponent,
-    SparqlEndpointComponent
+    SparqlEndpointComponent,
+    CustomStatisticsComponent
   ],
   imports: [
     BrowserModule,
@@ -100,7 +104,9 @@ import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card";
     MatExpansionModule,
     MatCard,
     MatCardTitle,
-    MatCardContent
+    MatCardContent,
+    CodemirrorModule,
+    MatSortModule
   ],
   bootstrap: [AppComponent],
   providers: [

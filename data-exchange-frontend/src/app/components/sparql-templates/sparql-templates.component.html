@@ -1,12 +1,5 @@
+<router-outlet></router-outlet>
 <mat-drawer-container class="example-container">
-  <mat-drawer
-    position="end"
-    mode="over"
-    [opened]="openSidenav"
-    (closed)="openSidenav = false"
-  >
-    <ng-template #drawerContent></ng-template>
-  </mat-drawer>
   <mat-drawer-content class="example-radio-group">
     <h1>Sparql Templates</h1>
 
@@ -15,7 +8,7 @@
       <mat-card
         *ngFor="let card of cards"
         class="example-card"
-        (click)="openCard(card)"
+        (click)="navigateToLink(card.link)"
       >
         <mat-card-title>{{ card.title }}</mat-card-title>
         <mat-card-content>{{ card.description }}</mat-card-content>

@@ -14,31 +14,42 @@ import {GraphVisJsComponent} from "./components/graph-vis-js/graph-vis-js.compon
 import {SearchAnInstanceComponent} from "./components/search-an-instance/search-an-instance.component";
 import {SparqlTemplatesComponent} from "./components/sparql-templates/sparql-templates.component";
 import {SparqlEndpointComponent} from "./components/templates/sparql-endpoint/sparql-endpoint.component";
+import {CustomStatisticsComponent} from "./components/statistics/custom-statistics/custom-statistics.component";
+import {
+  SelectMoreInstancesComponent
+} from "./components/templates/select-more-instances/select-more-instances.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {
     path: 'user', canActivate: ([AnonymousUserGuard]), children: [
-      {path: '', redirectTo: '/', pathMatch: 'full'},
-      {path: 'login', component: LoginComponent},
-      {path: 'reset-password', component: ResetPasswordComponent},
-      {path: 'register', component: RegisterUserComponent},
-      {path: 'reset-password', component: ResetPasswordComponent}
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
+      { path: 'login', component: LoginComponent },
+      { path: 'reset-password', component: ResetPasswordComponent },
+      { path: 'register', component: RegisterUserComponent }
     ]
   },
-  { path: 'search-instance', component: SearchAnInstanceComponent},
-  { path: 'graph-ngx', component: ExploreGraphComponent},
-  { path: 'graph-cytoscape', component: ExploreGraphCytoscapeComponent},
-  { path: 'graph-vis-js', component: GraphVisJsComponent},
+  { path: 'search-instance', component: SearchAnInstanceComponent },
+  { path: 'graph-ngx', component: ExploreGraphComponent },
+  { path: 'graph-cytoscape', component: ExploreGraphCytoscapeComponent },
+  { path: 'graph-vis-js', component: GraphVisJsComponent },
   {
     path: 'admin', canActivate: mapToCanActivate([AdminAuthGuard]), children: [
-      {path: '', redirectTo: '/', pathMatch: 'full'},
-      {path: 'dashboard', component: AdminDashboardComponent},
-      {path: 'database-config', component: DatabaseConfigComponent}
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: AdminDashboardComponent },
+      { path: 'database-config', component: DatabaseConfigComponent }
     ]
   },
-  { path: 'templates', component: SparqlTemplatesComponent},
-  { path: 'sparql-endpoint', component: SparqlEndpointComponent}
+  { path: 'templates', component: SparqlTemplatesComponent },
+  {
+    path: 'templates', children: [
+      {path: '', redirectTo: 'templates', pathMatch: 'full'}, // Redirect to the default child
+      {path: 'sparql-endpoint', component: SparqlEndpointComponent},
+      {path: 'multiple-instances', component: SelectMoreInstancesComponent}
+    ]
+  },
+  { path: 'statistics', component: CustomStatisticsComponent },
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ]
 
 @NgModule({

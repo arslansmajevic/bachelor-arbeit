@@ -16,3 +16,21 @@ button {
 .result {
   margin-top: 20px;
 }
+
+.table-container {
+  overflow-x: auto;
+  width: 100%;
+  margin-bottom: 16px;
+  border: 1px solid #ddd; /* Optional: Add a border */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add subtle shadow */
+}
+
+table {
+  min-width: 100%;
+}
+
+.paginator-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+}

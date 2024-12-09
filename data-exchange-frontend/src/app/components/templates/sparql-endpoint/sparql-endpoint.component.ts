@@ -3,6 +3,7 @@ import {DataService} from "../../../services/data.service";
 import {SparqlResult} from "../../../dtos/sparql/sparql";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-sparql-endpoint',
@@ -10,22 +11,27 @@ import {MatPaginator} from "@angular/material/paginator";
   styleUrls: ['./sparql-endpoint.component.css']
 })
 export class SparqlEndpointComponent {
-  sparqlQuery: string = 'SELECT ?s \n' +
-    'WHERE { ?s ?p ?o .\n' +
-    'FILTER ( CONTAINS( UCASE( STR( ?s ) ), UCASE( "observation" ) ) ) }\n' +
+  sparqlQuery: string = 'SELECT ?s ?p ?o ?p1 ?o2 ?p2 ?o3\n' +
+    'WHERE { \n' +
+    '  ?s ?p ?o .\n' +
+    '  ?o ?p1 ?o2 .\n' +
+    '  ?o2 ?p2 ?o3 .\n' +
+    '  FILTER ( CONTAINS( UCASE( STR( ?s ) ), UCASE( "observation" ) ) ) \n' +
+    '}\n' +
     'LIMIT 30'; // Query string entered by the user
   result: SparqlResult | null = null; // Stores the query result
   displayedColumns: string[] = []; // Table column headers
   dataSource = new MatTableDataSource<any>(); // Data source for MatTable
   @ViewChild(MatPaginator) paginator!: MatPaginator; // Reference to the paginator
+  @ViewChild(MatSort) sort!: MatSort; // Reference to sort
 
   constructor(
     private dataService: DataService
   ) {}
 
   ngAfterViewInit() {
-    // Ensure the paginator is attached after view initialization
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   executeQuery() {
@@ -33,6 +39,8 @@ export class SparqlEndpointComponent {
       alert('Please enter a SPARQL query.');
       return;
     }
+
+    console.log('query')
 
     this.dataService.performCustomQuery(this.sparqlQuery)
       .subscribe({
@@ -65,10 +73,10 @@ export class SparqlEndpointComponent {
       this.dataSource.data = rows;
 
       // Attach paginator after data source update
-      if (this.paginator) {
+      setTimeout(() => {
         this.dataSource.paginator = this.paginator;
-      }
-
+        this.dataSource.sort = this.sort;
+      });
     }
   }
 
