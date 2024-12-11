@@ -4,7 +4,6 @@ import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.MalformedQueryException;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
 import org.eclipse.rdf4j.sparqlbuilder.constraint.Expression;
 import org.eclipse.rdf4j.sparqlbuilder.constraint.Expressions;
@@ -17,6 +16,7 @@ import org.eclipse.rdf4j.sparqlbuilder.core.query.SelectQuery;
 import org.eclipse.rdf4j.sparqlbuilder.graphpattern.TriplePattern;
 import org.eclipse.rdf4j.sparqlbuilder.rdf.Rdf;
 import org.eclipse.rdf4j.sparqlbuilder.rdf.RdfLiteral;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import project.data_exchange_project.rest.dto.SparqlResult;
@@ -29,10 +29,15 @@ import java.util.stream.Collectors;
 @Repository
 public class GraphDbRepository {
 
-  @Autowired
+  private final ObjectFactory<SPARQLRepository> sparqlRepositoryFactory;
   private SPARQLRepository sparqlRepository;
 
   Prefix fhir = SparqlBuilder.prefix("fhir", Rdf.iri("http://hl7.org/fhir/"));
+
+  public GraphDbRepository(ObjectFactory<SPARQLRepository> sparqlRepositoryFactory) {
+    this.sparqlRepositoryFactory = sparqlRepositoryFactory;
+    this.sparqlRepository = sparqlRepositoryFactory.getObject();
+  }
 
   public List<ExpandingEdge> expandNeighbouringNodes(String nodeUri) throws ConnectException, MalformedQueryException {
     Variable object = SparqlBuilder.var("object");
@@ -358,5 +363,11 @@ public class GraphDbRepository {
             new SparqlResult.Head(bindingNames),
             new SparqlResult.Results(bindings)
     );
+  }
+
+  public void updateDatabaseEndpoint(String endpointUrl) {
+    this.sparqlRepository.shutDown();
+    this.sparqlRepository = new SPARQLRepository(endpointUrl);
+    this.sparqlRepository.init();
   }
 }

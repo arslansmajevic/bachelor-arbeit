@@ -11,7 +11,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {LoginComponent} from "./components/user-login/login/login.component";
 import {RegisterUserComponent} from "./components/user-login/register-user/register-user.component";
 import {HomeComponent} from "./components/home/home.component";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ResetPasswordComponent} from "./components/user-login/reset-password/reset-password.component";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {NgxPopperjsModule} from "ngx-popperjs";
@@ -47,6 +47,8 @@ import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card";
 import {CustomStatisticsComponent} from "./components/statistics/custom-statistics/custom-statistics.component";
 import {CodemirrorModule} from "@ctrl/ngx-codemirror";
 import {MatSortModule} from "@angular/material/sort";
+import {GoogleChartsModule} from "angular-google-charts";
+import {DatabaseConfigComponent} from "./components/admin/database-config/database-config.component";
 
 @NgModule({
   declarations: [
@@ -67,7 +69,8 @@ import {MatSortModule} from "@angular/material/sort";
     SparqlTemplatesComponent,
     SelectMoreInstancesComponent,
     SparqlEndpointComponent,
-    CustomStatisticsComponent
+    CustomStatisticsComponent,
+    DatabaseConfigComponent
   ],
   imports: [
     BrowserModule,
@@ -106,7 +109,9 @@ import {MatSortModule} from "@angular/material/sort";
     MatCardTitle,
     MatCardContent,
     CodemirrorModule,
-    MatSortModule
+    MatSortModule,
+    GoogleChartsModule,
+    ReactiveFormsModule
   ],
   bootstrap: [AppComponent],
   providers: [
