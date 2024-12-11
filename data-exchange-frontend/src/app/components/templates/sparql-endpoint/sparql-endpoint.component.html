@@ -40,15 +40,14 @@
       </mat-form-field>
 
       <!-- Save Query Button -->
-      <button mat-raised-button color="accent" (click)="saveQuery()">Save Query</button>
+      <div class="action-row">
+        <button mat-raised-button color="" (click)="executeQuery()">Execute Query</button>
+        <button mat-raised-button color="accent" (click)="saveQuery()">Save Query</button>
+        <button mat-raised-button color="accent" (click)="clearQuery()">Clear Query</button>
+      </div>
+
     </div>
 
-  </div>
-
-  <div class="action-row">
-    <form (ngSubmit)="executeQuery()" class="action-item">
-      <button type="submit" mat-raised-button color="primary">Execute Query</button>
-    </form>
   </div>
 
   <div class="result" *ngIf="result && checkSizeOfBindings()">

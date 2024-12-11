@@ -124,7 +124,7 @@ export class SparqlEndpointComponent {
       this.dataService.saveSparqlQuery(this.selectedQuery).subscribe(
         {
           next: (data) => {
-            this.selectedQuery = data;
+            // this.selectedQuery = data;
             console.log(this.sparqlQueries)
           },
           error: err => {
@@ -133,5 +133,16 @@ export class SparqlEndpointComponent {
         }
       )
     }
+  }
+
+  clearQuery(): void {
+    this.selectedQuery = {
+      id: 0,
+      name: '',
+      description: '',
+      query: ''
+    };
+
+    this.sparqlQuery = '';
   }
 }
