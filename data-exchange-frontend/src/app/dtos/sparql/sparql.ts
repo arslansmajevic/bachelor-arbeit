@@ -19,3 +19,10 @@ export interface Value {
   type: string;
   value: string;
 }
+
+export interface SparqlQuery {
+  id?: number;
+  name: string;
+  description: string;
+  query: string;
+}

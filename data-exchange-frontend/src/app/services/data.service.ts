@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Globals} from "../global/globals";
 import {Observable} from "rxjs";
 import {Link} from "../dtos/nodes/node";
-import {SparqlResult} from "../dtos/sparql/sparql";
+import {SparqlQuery, SparqlResult} from "../dtos/sparql/sparql";
 
 @Injectable({
   providedIn: 'root'
@@ -34,5 +34,18 @@ export class DataService {
 
   performCustomQuery(query: string): Observable<SparqlResult> {
     return this.http.put<SparqlResult>(this.baseUri + '/perform-query', {query: query})
+  }
+
+  loadSparqlQueries(): Observable<SparqlQuery[]> {
+    return this.http.get<SparqlQuery[]>(this.baseUri + '/queries');
+  }
+
+  saveSparqlQuery(selectedQuery: SparqlQuery): Observable<SparqlQuery> {
+    return this.http.put<SparqlQuery>(this.baseUri + '/queries', {
+      "id": selectedQuery.id,
+      "name": selectedQuery.name,
+      "description": selectedQuery.description,
+      "query": selectedQuery.query
+    });
   }
 }

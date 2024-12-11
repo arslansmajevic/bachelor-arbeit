@@ -34,9 +34,9 @@ import {MatExpansionModule, MatExpansionPanelContent} from "@angular/material/ex
 import {RecShowPanelComponent} from "./components/rec-show-panel/rec-show-panel.component";
 import {SearchAnInstanceComponent} from "./components/search-an-instance/search-an-instance.component";
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
-import {MatFormField} from "@angular/material/form-field";
+import {MatFormField, MatFormFieldModule, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
-import {MatSelect} from "@angular/material/select";
+import {MatSelect, MatSelectModule} from "@angular/material/select";
 import {SparqlTemplatesComponent} from "./components/sparql-templates/sparql-templates.component";
 import {
   SelectMoreInstancesComponent
@@ -111,7 +111,10 @@ import {DatabaseConfigComponent} from "./components/admin/database-config/databa
     CodemirrorModule,
     MatSortModule,
     GoogleChartsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatLabel,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   bootstrap: [AppComponent],
   providers: [

@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import project.data_exchange_project.exception.ErrorResponse;
 import project.data_exchange_project.rest.dto.CustomQueryDto;
 import project.data_exchange_project.rest.dto.SparqlResult;
+import project.data_exchange_project.rest.dto.configs.SparqlQueryDto;
 import project.data_exchange_project.rest.dto.node.ExpandingEdge;
 import project.data_exchange_project.rest.dto.node.GraphNode;
-import project.data_exchange_project.rest.dto.patient.PatientDataDto;
 import project.data_exchange_project.service.GraphDBService;
+import project.data_exchange_project.service.UserService;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -27,9 +28,11 @@ public class DataEndpoint {
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final GraphDBService graphDBService;
+  private final UserService userService;
 
-  public DataEndpoint(GraphDBService graphDBService) {
+  public DataEndpoint(GraphDBService graphDBService, UserService userService) {
     this.graphDBService = graphDBService;
+    this.userService = userService;
   }
 
 
@@ -63,5 +66,17 @@ public class DataEndpoint {
   @PutMapping("perform-query")
   public SparqlResult customQuery(@RequestBody CustomQueryDto customQueryDto) {
     return graphDBService.performCustomQuery(customQueryDto);
+  }
+
+  @GetMapping("queries")
+  public List<SparqlQueryDto> getSparqlQueries(@RequestParam(value = "id", required = false) Long id) {
+    log.info("GET /data/queries/");
+    return userService.getSparqlQueries(id);
+  }
+
+  @PutMapping("queries")
+  public SparqlQueryDto updateSparqlQuery(@RequestBody SparqlQueryDto sparqlQueryDto) {
+    log.info("PUT /data/queries/{}", sparqlQueryDto);
+    return userService.updateSparqlQuery(sparqlQueryDto);
   }
 }

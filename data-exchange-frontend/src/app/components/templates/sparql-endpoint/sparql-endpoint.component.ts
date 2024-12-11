@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {DataService} from "../../../services/data.service";
-import {SparqlResult} from "../../../dtos/sparql/sparql";
+import {SparqlQuery, SparqlResult} from "../../../dtos/sparql/sparql";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
@@ -11,17 +11,18 @@ import {MatSort} from "@angular/material/sort";
   styleUrls: ['./sparql-endpoint.component.css']
 })
 export class SparqlEndpointComponent {
-  sparqlQuery: string = 'SELECT ?s ?p ?o ?p1 ?o2 ?p2 ?o3\n' +
-    'WHERE { \n' +
-    '  ?s ?p ?o .\n' +
-    '  ?o ?p1 ?o2 .\n' +
-    '  ?o2 ?p2 ?o3 .\n' +
-    '  FILTER ( CONTAINS( UCASE( STR( ?s ) ), UCASE( "observation" ) ) ) \n' +
-    '}\n' +
-    'LIMIT 30'; // Query string entered by the user
+  sparqlQuery: string = ''; // Query string entered by the user
   result: SparqlResult | null = null; // Stores the query result
   displayedColumns: string[] = []; // Table column headers
   dataSource = new MatTableDataSource<any>(); // Data source for MatTable
+
+  sparqlQueries: SparqlQuery[] = [];
+  selectedQuery: SparqlQuery = {
+    id: 0,
+    name: '',
+    description: '',
+    query: ''
+  }; // Allow null initially
   @ViewChild(MatPaginator) paginator!: MatPaginator; // Reference to the paginator
   @ViewChild(MatSort) sort!: MatSort; // Reference to sort
 
@@ -32,6 +33,7 @@ export class SparqlEndpointComponent {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.loadQueries();
   }
 
   executeQuery() {
@@ -88,6 +90,48 @@ export class SparqlEndpointComponent {
       } else return false;
     } else {
       return false;
+    }
+  }
+
+  loadQueries(): void {
+    this.dataService.loadSparqlQueries()
+      .subscribe(
+        {
+          next: (data) => {
+            this.sparqlQueries = data;
+            console.log(data)
+          },
+          error: err => {
+          alert(err)
+          }
+        }
+      )
+  }
+
+  updateQuery(selectedQuery: SparqlQuery | null) {
+    if (selectedQuery !== null) {
+      this.sparqlQuery = selectedQuery.query;
+      this.selectedQuery = selectedQuery;
+    }
+  }
+
+  saveQuery(): void {
+
+    console.log(this.selectedQuery)
+
+    if (this.selectedQuery !== null) {
+      this.selectedQuery.query = this.sparqlQuery;
+      this.dataService.saveSparqlQuery(this.selectedQuery).subscribe(
+        {
+          next: (data) => {
+            this.selectedQuery = data;
+            console.log(this.sparqlQueries)
+          },
+          error: err => {
+            alert(err)
+          }
+        }
+      )
     }
   }
 }
