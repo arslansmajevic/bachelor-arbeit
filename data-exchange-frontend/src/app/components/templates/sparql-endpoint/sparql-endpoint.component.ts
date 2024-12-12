@@ -4,6 +4,7 @@ import {SparqlQuery, SparqlResult} from "../../../dtos/sparql/sparql";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-sparql-endpoint',
@@ -27,7 +28,8 @@ export class SparqlEndpointComponent {
   @ViewChild(MatSort) sort!: MatSort; // Reference to sort
 
   constructor(
-    private dataService: DataService
+    private dataService: DataService,
+    private notification: ToastrService
   ) {}
 
   ngAfterViewInit() {
@@ -38,11 +40,9 @@ export class SparqlEndpointComponent {
 
   executeQuery() {
     if (!this.sparqlQuery.trim()) {
-      alert('Please enter a SPARQL query.');
+      this.notification.warning("Provide a query!");
       return;
     }
-
-    console.log('query')
 
     this.dataService.performCustomQuery(this.sparqlQuery)
       .subscribe({
@@ -51,8 +51,12 @@ export class SparqlEndpointComponent {
           this.processSparqlResponse(data);
         },
         error: err => {
-          console.error(err);
-          alert('An error occurred while executing the query.');
+
+          if (err.status === 400) {
+            this.notification.error(err.error.error + ' | ' + err.error.message);
+          } else {
+            this.notification.error(err.error.error)
+          }
         }
       });
   }
@@ -102,7 +106,7 @@ export class SparqlEndpointComponent {
             console.log(data)
           },
           error: err => {
-          alert(err)
+          this.notification.error(err.error)
           }
         }
       )
@@ -117,18 +121,29 @@ export class SparqlEndpointComponent {
 
   saveQuery(): void {
 
-    console.log(this.selectedQuery)
+    if (this.sparqlQuery === '' || this.sparqlQuery === null) {
+      this.notification.warning("SPARQL query was not provided!")
+      return;
+    }
+
 
     if (this.selectedQuery !== null) {
+      if (this.selectedQuery.name === '' || this.selectedQuery.name === undefined) {
+        this.notification.warning("Name for query was not provided")
+        return;
+      }
+
       this.selectedQuery.query = this.sparqlQuery;
       this.dataService.saveSparqlQuery(this.selectedQuery).subscribe(
         {
           next: (data) => {
             // this.selectedQuery = data;
-            console.log(this.sparqlQueries)
+            this.sparqlQueries.push(data);
+            this.notification.success(data.name + " has been saved!")
+            this.selectedQuery = data;
           },
           error: err => {
-            alert(err)
+            this.notification.error(err.error)
           }
         }
       )

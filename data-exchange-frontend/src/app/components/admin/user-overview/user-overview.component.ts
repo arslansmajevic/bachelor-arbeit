@@ -85,11 +85,7 @@ export class UserOverviewComponent implements AfterViewInit{
           this.cdr.detectChanges();
         },
         error: err => {
-          // this.notification.error(this.errorFormatter.format(err), "Could not fetch users", {
-          //     enableHtml: true,
-          //     timeOut: 10000,
-          //   }
-          // )
+          this.notification.error(err.error)
         }
       })
   }

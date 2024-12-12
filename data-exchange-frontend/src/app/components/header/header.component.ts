@@ -29,7 +29,7 @@ export class HeaderComponent implements OnInit{
             this.numberOfPendingRequests = data.content.length;
           },
           error: err => {
-
+            this.notification.error(err.error)
           }
         })
     }
