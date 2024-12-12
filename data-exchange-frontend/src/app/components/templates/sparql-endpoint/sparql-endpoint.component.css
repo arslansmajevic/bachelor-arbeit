@@ -13,11 +13,20 @@
   flex: 1;
   gap: 16px;
 }
-
+/*
+.editor {
+  flex: 1;
+  border: 1px solid #ddd; !* Optional: Add border *!
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); !* Optional: Add subtle shadow *!
+}*/
 .editor {
   flex: 1;
   border: 1px solid #ddd; /* Optional: Add border */
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add subtle shadow */
+  overflow-x: auto; /* Enables horizontal scrolling */
+  overflow-y: auto; /* Enables vertical scrolling */
+  white-space: nowrap; /* Prevents line wrapping */
+  box-sizing: border-box; /* Ensures padding is within the dimensions */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .row {

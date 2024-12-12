@@ -49,6 +49,7 @@ import {CodemirrorModule} from "@ctrl/ngx-codemirror";
 import {MatSortModule} from "@angular/material/sort";
 import {GoogleChartsModule} from "angular-google-charts";
 import {DatabaseConfigComponent} from "./components/admin/database-config/database-config.component";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
 
 @NgModule({
   declarations: [
@@ -114,7 +115,8 @@ import {DatabaseConfigComponent} from "./components/admin/database-config/databa
     ReactiveFormsModule,
     MatLabel,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    NgxChartsModule
   ],
   bootstrap: [AppComponent],
   providers: [

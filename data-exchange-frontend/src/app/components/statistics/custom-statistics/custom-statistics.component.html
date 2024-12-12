@@ -1,7 +1,59 @@
-<google-chart #chart
-              [title]="title"
-              [data]="data"
-              [options]="options"
-              [width]="width"
-              [height]="height">
-</google-chart>
+<div style="display: flex; height: 100%; overflow: hidden;">
+  <!-- 70% width for the chart -->
+  <div style="flex: 6; padding: 10px; border-right: 1px solid #ddd; overflow: hidden;">
+    <ngx-charts-bar-vertical
+      [results]="data"
+      [gradient]="gradient"
+      [xAxis]="showXAxis"
+      [yAxis]="showYAxis"
+      [legend]="showLegend"
+      [xAxisLabel]="xAxisLabel"
+      [yAxisLabel]="yAxisLabel">
+    </ngx-charts-bar-vertical>
+  </div>
+
+  <!-- 30% width for the other content -->
+  <div style="flex: 4; padding: 10px; display: flex; flex-direction: column; gap: 15px; overflow: hidden;">
+    <h2>SPARQL Endpoint</h2>
+    <div style="width: 100%; border: 1px solid #ccc; padding: 5px; overflow: auto;">
+      <ngx-codemirror
+        [(ngModel)]="sparqlQuery"
+        [options]="{
+          lineNumbers: true,
+          theme: 'default',
+          mode: 'sparql'
+        }"
+        class="editor"
+      ></ngx-codemirror>
+    </div>
+
+    <!-- Action Row -->
+    <div class="action-row" style="display: flex; justify-content: space-between; gap: 10px;">
+      <button mat-raised-button color="primary" (click)="executeQuery()">Execute Query</button>
+      <button mat-raised-button (click)="saveQuery()">Save Query</button>
+      <button mat-raised-button color="accent" (click)="clearQuery()">Clear Query</button>
+    </div>
+
+    <!-- Mat Select -->
+    <mat-form-field appearance="fill" class="action-item" style="width: 100%;">
+      <mat-label>Select a query</mat-label>
+      <mat-select [(value)]="selectedQuery" (selectionChange)="updateQuery(selectedQuery)">
+        <mat-option *ngFor="let query of sparqlQueries" [value]="query">
+          {{ query.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="action-item">
+      <mat-label>Query Name</mat-label>
+      <input matInput [(ngModel)]="selectedQuery.name" />
+    </mat-form-field>
+
+    <!-- Query Description -->
+    <mat-form-field appearance="fill" class="action-item">
+      <mat-label>Query Description</mat-label>
+      <textarea matInput [(ngModel)]="selectedQuery.description"></textarea>
+    </mat-form-field>
+
+  </div>
+</div>

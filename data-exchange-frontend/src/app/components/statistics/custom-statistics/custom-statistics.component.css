@@ -1,0 +1,8 @@
+.editor {
+  width: 100%;
+  height: 100%;
+  overflow-x: auto; /* Enables horizontal scrolling */
+  overflow-y: auto; /* Enables vertical scrolling */
+  white-space: nowrap; /* Prevents line wrapping */
+  box-sizing: border-box; /* Ensures padding is within the dimensions */
+}

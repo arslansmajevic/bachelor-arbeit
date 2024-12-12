@@ -24,6 +24,7 @@
     "@floating-ui/dom": "^1.6.8",
     "@ng-bootstrap/ng-bootstrap": "^16.0.0",
     "@popperjs/core": "^2.11.8",
+    "@swimlane/ngx-charts": "^21.0.0",
     "@swimlane/ngx-graph": "^9.0.1",
     "angular-google-charts": "^16.0.1",
     "angular-popper": "^2.0.1",
