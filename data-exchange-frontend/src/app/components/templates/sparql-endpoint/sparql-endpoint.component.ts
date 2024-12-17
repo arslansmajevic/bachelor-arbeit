@@ -12,7 +12,7 @@ import {ToastrService} from "ngx-toastr";
   styleUrls: ['./sparql-endpoint.component.css']
 })
 export class SparqlEndpointComponent {
-  sparqlQuery: string = ''; // Query string entered by the user
+  sparqlQuery: string = 'SELECT * {?s ?p ?o} LIMIT 10'; // Query string entered by the user
   result: SparqlResult | null = null; // Stores the query result
   displayedColumns: string[] = []; // Table column headers
   dataSource = new MatTableDataSource<any>(); // Data source for MatTable

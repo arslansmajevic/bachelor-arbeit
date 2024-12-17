@@ -3,6 +3,14 @@ import {SparqlQuery, SparqlResult} from "../../../dtos/sparql/sparql";
 import {ToastrService} from "ngx-toastr";
 import {DataService} from "../../../services/data.service";
 
+interface ChartData {
+  id: number;
+  name: string;
+  results: any[];
+  type: 'bar' | 'line' | 'pie' | 'area' | 'number-card'; // Supported chart types
+}
+
+
 @Component({
   selector: 'app-custom-statistics',
   templateUrl: './custom-statistics.component.html',
@@ -27,7 +35,13 @@ export class CustomStatisticsComponent {
   showYAxisLabel = true;
   yAxisLabel = 'Distinct Literal Count';
   colorScheme = { domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'] };
-  sparqlQuery = '';
+  sparqlQuery = 'SELECT ?property (COUNT(DISTINCT ?literal) AS ?distinctLiteralCount)\n' +
+    'WHERE {\n' +
+    '  ?subject ?property ?literal .\n' +
+    '  FILTER(isLiteral(?literal))\n' +
+    '}\n' +
+    'GROUP BY ?property\n' +
+    'ORDER BY DESC(?distinctLiteralCount) \n';
 
   sparqlQueries: SparqlQuery[] = [];
   selectedQuery: SparqlQuery = {
@@ -37,14 +51,22 @@ export class CustomStatisticsComponent {
     query: ''
   };
 
+  charts: ChartData[] = []; // Array of charts
+  chartCounter = 0; // Unique chart IDs
+  chartName: string = '';
+
   ngOnInit() {
     this.loadQueries();
   }
 
-
-
   clearQuery(): void {
     this.sparqlQuery = '';
+    this.selectedQuery = {
+      id: 0,
+      name: '',
+      description: '',
+      query: ''
+    };
   }
 
   executeQuery() {
@@ -56,7 +78,7 @@ export class CustomStatisticsComponent {
     this.dataService.performCustomQuery(this.sparqlQuery)
       .subscribe({
         next: (data: SparqlResult) => {
-          this.drawChart(data);
+          this.addChart(data);
         },
         error: err => {
 
@@ -133,5 +155,32 @@ export class CustomStatisticsComponent {
         }
       )
     }
+  }
+
+  addChart(sparqlResult: any): void {
+    try {
+      const chartData = sparqlResult.results.bindings.map((binding: any) => ({
+        name: binding.values.property.value.split('/').pop(),
+        value: Number(binding.values.distinctLiteralCount.value)
+      }));
+
+      this.charts.unshift({
+        id: ++this.chartCounter,
+        name: this.chartName === '' ? `Chart ${this.chartCounter}` : this.chartName,
+        results: chartData,
+        type: 'bar' // Default chart type
+      });
+
+      this.chartName = '';
+
+      this.notification.success(`Chart ${this.chartCounter} added successfully!`);
+    } catch (error) {
+      this.notification.error("This query could not be presented on a chart!");
+    }
+  }
+
+  clearCharts(): void {
+    this.charts = [];
+    this.notification.info("All charts cleared.");
   }
 }
