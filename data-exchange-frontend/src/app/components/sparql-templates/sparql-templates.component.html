@@ -1,0 +1,17 @@
+<mat-drawer-container class="example-container">
+  <mat-drawer-content class="example-radio-group">
+    <h1>Sparql Templates</h1>
+
+    <div class="card-container">
+      <!-- Cards -->
+      <mat-card
+        *ngFor="let card of cards"
+        class="example-card"
+        (click)="navigateToLink(card.link)"
+      >
+        <mat-card-title>{{ card.title }}</mat-card-title>
+        <mat-card-content>{{ card.description }}</mat-card-content>
+      </mat-card>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

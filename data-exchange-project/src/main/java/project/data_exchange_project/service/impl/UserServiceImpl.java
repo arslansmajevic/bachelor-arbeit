@@ -1,6 +1,5 @@
 package project.data_exchange_project.service.impl;
 
-
 import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +16,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import project.data_exchange_project.config.database.GraphDBConfig;
 import project.data_exchange_project.entity.ApplicationUser;
+import project.data_exchange_project.entity.SparqlQuery;
+import project.data_exchange_project.mapper.SparqlQueryMapper;
 import project.data_exchange_project.mapper.UserMapper;
+import project.data_exchange_project.repository.GraphDBConfigRepository;
+import project.data_exchange_project.repository.GraphDbRepository;
+import project.data_exchange_project.repository.SparqlQueryRepository;
 import project.data_exchange_project.repository.UserRepository;
+import project.data_exchange_project.rest.dto.configs.GraphDatabaseConfigDto;
+import project.data_exchange_project.rest.dto.configs.SparqlQueryDto;
 import project.data_exchange_project.rest.dto.user.UserInformationDto;
 import project.data_exchange_project.rest.dto.user.UserLoginDto;
 import project.data_exchange_project.rest.dto.user.UserSearchDto;
@@ -38,13 +45,23 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenizer jwtTokenizer;
     private final UserMapper userMapper;
     private final UserAuthentication userAuthentication;
+    private final GraphDBConfigRepository graphDBConfigRepository;
+    private final GraphDBConfig graphDBConfig;
+    private final GraphDbRepository graphDbRepository;
+    private final SparqlQueryRepository sparqlQueryRepository;
+    private final SparqlQueryMapper sparqlQueryMapper;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, UserMapper userMapper, UserAuthentication userAuthentication) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenizer jwtTokenizer, UserMapper userMapper, UserAuthentication userAuthentication, GraphDBConfigRepository graphDBConfigRepository, GraphDBConfig graphDBConfig, GraphDbRepository graphDbRepository, SparqlQueryRepository sparqlQueryRepository, SparqlQueryMapper sparqlQueryMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenizer = jwtTokenizer;
         this.userMapper = userMapper;
         this.userAuthentication = userAuthentication;
+        this.graphDBConfigRepository = graphDBConfigRepository;
+        this.graphDBConfig = graphDBConfig;
+        this.graphDbRepository = graphDbRepository;
+        this.sparqlQueryRepository = sparqlQueryRepository;
+      this.sparqlQueryMapper = sparqlQueryMapper;
     }
 
     @Override
@@ -125,6 +142,86 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public GraphDatabaseConfigDto getDatabaseConfig() {
+        var config = graphDBConfigRepository.getDevGraphDBConfiguration();
+
+        return new GraphDatabaseConfigDto(
+                config.getGraphDbServerUrl(),
+                config.getRepositoryId(),
+                config.getPort(),
+                config.getGeneratedUrl()
+        );
+    }
+
+    @Override
+    public GraphDatabaseConfigDto updateDatabaseConfig(GraphDatabaseConfigDto graphDatabaseConfigDto) {
+
+        graphDBConfigRepository.updateDatabaseConfig(
+                graphDatabaseConfigDto.graphDbServerUrl(),
+                graphDatabaseConfigDto.repositoryId(),
+                graphDatabaseConfigDto.port(),
+                String.format("%s:%d/repositories/%s",
+                        graphDatabaseConfigDto.graphDbServerUrl(),
+                        graphDatabaseConfigDto.port(),
+                        graphDatabaseConfigDto.repositoryId())
+        );
+
+        /*graphDBConfig.updateRepository(
+                graphDatabaseConfigDto.graphDbServerUrl(),
+                graphDatabaseConfigDto.repositoryId(),
+                graphDatabaseConfigDto.port().intValue()
+        );*/
+
+        updateDatabaseConfig(graphDatabaseConfigDto.generatedUrl());
+
+        return graphDatabaseConfigDto;
+    }
+
+    @Override
+    public List<SparqlQueryDto> getSparqlQueries(Long id) {
+
+        if (id == null) {
+            return sparqlQueryRepository.findAll().stream()
+                    .map(sparqlQueryMapper::sparqlQueryToDto)
+                    .toList();
+        }
+
+        return sparqlQueryRepository.findById(id)
+                .map(sparqlQuery -> List.of(sparqlQueryMapper.sparqlQueryToDto(sparqlQuery)))
+                .orElse(List.of());
+    }
+
+    @Override
+    public SparqlQueryDto updateSparqlQuery(SparqlQueryDto sparqlQueryDto) {
+
+        if (sparqlQueryDto.id() != null) {
+            if (sparqlQueryRepository.findById(sparqlQueryDto.id()).isPresent()) {
+                // Update the existing query
+                sparqlQueryRepository.updateSparqlQuery(
+                        sparqlQueryDto.id(),
+                        sparqlQueryDto.name(),
+                        sparqlQueryDto.description(),
+                        sparqlQueryDto.query()
+                );
+
+                // Return the updated DTO
+                return sparqlQueryMapper.sparqlQueryToDto(sparqlQueryRepository.findById(sparqlQueryDto.id()).get());
+            }
+        }
+
+        // If no ID is provided or the entity doesn't exist, create a new query
+        SparqlQuery newQuery = sparqlQueryRepository.save(
+                SparqlQuery.builder()
+                        .name(sparqlQueryDto.name())
+                        .description(sparqlQueryDto.description())
+                        .query(sparqlQueryDto.query())
+                        .build()
+        );
+
+        return sparqlQueryMapper.sparqlQueryToDto(newQuery);
+    }
+
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         log.trace("loadByUsername[{}]", email);
 
@@ -159,5 +256,9 @@ public class UserServiceImpl implements UserService {
         log.trace("blockUser({})", email);
         userRepository.updateIsLocked(email, true);
         userRepository.setLoginAttempts(email, 5);
+    }
+
+    private void updateDatabaseConfig(String endpointUrl) {
+        graphDbRepository.updateDatabaseEndpoint(endpointUrl);
     }
 }

@@ -85,11 +85,7 @@ export class UserOverviewComponent implements AfterViewInit{
           this.cdr.detectChanges();
         },
         error: err => {
-          // this.notification.error(this.errorFormatter.format(err), "Could not fetch users", {
-          //     enableHtml: true,
-          //     timeOut: 10000,
-          //   }
-          // )
+          this.notification.error(err.error)
         }
       })
   }
@@ -116,18 +112,3 @@ export class UserOverviewComponent implements AfterViewInit{
     return this.authService.getUserEmail() !== email;
   }
 }
-
-const usersData: UserInformationDto[] = [
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false},
-  {firstName: "Arslan", lastName: "Smajevic", email: "iamarslanb@gmail.com", isBlocked: true, isPending: false}
-];

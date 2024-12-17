@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="form-container">
+    <h2>Database Configuration</h2>
+    <form (ngSubmit)="saveConfig()">
+      <div class="form-group">
+        <label for="graphDbServerUrl">Server URL</label>
+        <input
+          id="graphDbServerUrl"
+          type="text"
+          [(ngModel)]="graphDatabaseConfig.graphDbServerUrl"
+          name="graphDbServerUrl"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="repositoryId">Repository ID</label>
+        <input
+          id="repositoryId"
+          type="text"
+          [(ngModel)]="graphDatabaseConfig.repositoryId"
+          name="repositoryId"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="port">Port</label>
+        <input
+          id="port"
+          type="number"
+          [(ngModel)]="graphDatabaseConfig.port"
+          name="port"
+          class="form-control"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="generatedUrl">Generated URL</label>
+        <input
+          id="generatedUrl"
+          type="text"
+          [value]="generateUrl()"
+          class="form-control"
+          disabled
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        Save Configuration
+      </button>
+    </form>
+
+    <div *ngIf="successMessage" class="alert alert-success mt-3">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>

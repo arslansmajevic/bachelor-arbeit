@@ -38,7 +38,7 @@ export class LoginComponent {
       },
       error: error => {
 
-        console.log(error.detail);
+        this.notification.error(error.error)
       }
     });
   }

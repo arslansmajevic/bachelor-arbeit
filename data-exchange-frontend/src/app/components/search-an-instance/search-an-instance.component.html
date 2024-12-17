@@ -1,0 +1,40 @@
+<div class="center-wrapper">
+  <div>
+    <p class="start-text">Start typing to find instances. Click search to explore the graph.</p>
+  </div>
+
+  <div class="search-container">
+    <form (ngSubmit)="search()" class="search-form">
+      <mat-form-field class="search-field" appearance="outline">
+        <input
+          type="text"
+          matInput
+          placeholder="Search for an instance..."
+          [matAutocomplete]="auto"
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+          name="searchQuery"
+          autocomplete="off"
+        />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let suggestion of filteredSuggestions" [value]="suggestion">
+            {{ suggestion }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <!-- New wrapper for limit field and button -->
+      <div class="limit-button-wrapper">
+        <mat-form-field class="limit-field" appearance="outline">
+          <mat-select [(ngModel)]="selectedLimit" name="limit" (selectionChange)="onSearchChange()">
+            <mat-option *ngFor="let limit of limits" [value]="limit">{{ limit }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" class="search-button">
+          Search
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

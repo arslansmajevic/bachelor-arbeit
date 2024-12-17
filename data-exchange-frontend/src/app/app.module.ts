@@ -11,7 +11,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {LoginComponent} from "./components/user-login/login/login.component";
 import {RegisterUserComponent} from "./components/user-login/register-user/register-user.component";
 import {HomeComponent} from "./components/home/home.component";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ResetPasswordComponent} from "./components/user-login/reset-password/reset-password.component";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {NgxPopperjsModule} from "ngx-popperjs";
@@ -25,7 +25,31 @@ import {MatTable, MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {httpInterceptorProviders} from "./interceptors";
 import {MatBadge} from "@angular/material/badge";
-
+import {NgxGraphModule} from "@swimlane/ngx-graph";
+import {ExploreGraphComponent} from "./components/explore-graph/explore-graph.component";
+import {AngularSplitModule} from "angular-split";
+import {ExploreGraphCytoscapeComponent} from "./components/explore-graph-cytoscape/explore-graph-cytoscape.component";
+import {GraphVisJsComponent} from "./components/graph-vis-js/graph-vis-js.component";
+import {MatExpansionModule, MatExpansionPanelContent} from "@angular/material/expansion";
+import {RecShowPanelComponent} from "./components/rec-show-panel/rec-show-panel.component";
+import {SearchAnInstanceComponent} from "./components/search-an-instance/search-an-instance.component";
+import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
+import {MatFormField, MatFormFieldModule, MatLabel} from "@angular/material/form-field";
+import {MatInput} from "@angular/material/input";
+import {MatSelect, MatSelectModule} from "@angular/material/select";
+import {SparqlTemplatesComponent} from "./components/sparql-templates/sparql-templates.component";
+import {
+  SelectMoreInstancesComponent
+} from "./components/templates/select-more-instances/select-more-instances.component";
+import {MatDrawer, MatDrawerContainer, MatSidenav, MatSidenavModule} from "@angular/material/sidenav";
+import {SparqlEndpointComponent} from "./components/templates/sparql-endpoint/sparql-endpoint.component";
+import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card";
+import {CustomStatisticsComponent} from "./components/statistics/custom-statistics/custom-statistics.component";
+import {CodemirrorModule} from "@ctrl/ngx-codemirror";
+import {MatSortModule} from "@angular/material/sort";
+import {GoogleChartsModule} from "angular-google-charts";
+import {DatabaseConfigComponent} from "./components/admin/database-config/database-config.component";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
 
 @NgModule({
   declarations: [
@@ -37,7 +61,17 @@ import {MatBadge} from "@angular/material/badge";
     FooterComponent,
     ResetPasswordComponent,
     AdminDashboardComponent,
-    UserOverviewComponent
+    UserOverviewComponent,
+    ExploreGraphComponent,
+    ExploreGraphCytoscapeComponent,
+    GraphVisJsComponent,
+    RecShowPanelComponent,
+    SearchAnInstanceComponent,
+    SparqlTemplatesComponent,
+    SelectMoreInstancesComponent,
+    SparqlEndpointComponent,
+    CustomStatisticsComponent,
+    DatabaseConfigComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +89,34 @@ import {MatBadge} from "@angular/material/badge";
     MatTable,
     MatTableModule,
     MatPaginatorModule,
-    MatBadge
+    MatBadge,
+    NgxGraphModule,
+    AngularSplitModule,
+    MatExpansionModule,
+    MatExpansionPanelContent,
+    MatExpansionModule,
+    MatButtonModule,
+    MatAutocompleteTrigger,
+    MatAutocomplete,
+    MatOption,
+    MatFormField,
+    MatInput,
+    MatSelect,
+    MatDrawerContainer,
+    MatDrawer,
+    MatSidenavModule,
+    MatExpansionModule,
+    MatCard,
+    MatCardTitle,
+    MatCardContent,
+    CodemirrorModule,
+    MatSortModule,
+    GoogleChartsModule,
+    ReactiveFormsModule,
+    MatLabel,
+    MatFormFieldModule,
+    MatSelectModule,
+    NgxChartsModule
   ],
   bootstrap: [AppComponent],
   providers: [

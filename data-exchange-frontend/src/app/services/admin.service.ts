@@ -4,6 +4,7 @@ import {UserInformationDto, UserSearchDto} from "../dtos/user/user";
 import {Observable} from "rxjs";
 import {PaginatedResponse} from "../dtos/user/paginator";
 import {Globals} from "../global/globals";
+import {GraphDatabaseDto} from "../dtos/configs/configs";
 
 class UserListDto {
 }
@@ -67,5 +68,13 @@ export class AdminService {
 
   grantUserPermission(email: String): Observable<UserInformationDto> {
     return this.http.put<UserInformationDto>(this.baseUri + '/grant-permission/' + email, {})
+  }
+
+  getDatabaseConfig(): Observable<GraphDatabaseDto> {
+    return this.http.get<GraphDatabaseDto>(this.baseUri + '/database');
+  }
+
+  updateDatabaseConfig(databaseConfig: GraphDatabaseDto): Observable<GraphDatabaseDto> {
+    return this.http.put<GraphDatabaseDto>(this.baseUri + '/database', databaseConfig);
   }
 }

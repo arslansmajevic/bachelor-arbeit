@@ -1,0 +1,86 @@
+.sparql-container {
+  margin: 20px;
+}
+
+.editor-container {
+  display: flex;
+  gap: 16px;
+}
+
+.inputs-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 16px;
+}
+/*
+.editor {
+  flex: 1;
+  border: 1px solid #ddd; !* Optional: Add border *!
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); !* Optional: Add subtle shadow *!
+}*/
+.editor {
+  flex: 1;
+  border: 1px solid #ddd; /* Optional: Add border */
+  overflow-x: auto; /* Enables horizontal scrolling */
+  overflow-y: auto; /* Enables vertical scrolling */
+  white-space: nowrap; /* Prevents line wrapping */
+  box-sizing: border-box; /* Ensures padding is within the dimensions */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+}
+
+textarea {
+  width: 100%;
+  font-family: monospace;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+.result {
+  margin-top: 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+  width: 100%;
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  min-width: 100%;
+}
+
+.paginator-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+}
+
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.action-item button {
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+
+.action-item mat-form-field {
+  height: 56px;
+  display: flex;
+  justify-content: center;
+}

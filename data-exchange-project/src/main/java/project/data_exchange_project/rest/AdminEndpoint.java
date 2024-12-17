@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import project.data_exchange_project.rest.dto.configs.GraphDatabaseConfigDto;
 import project.data_exchange_project.rest.dto.user.UserInformationDto;
 import project.data_exchange_project.rest.dto.user.UserSearchDto;
 import project.data_exchange_project.service.UserService;
@@ -52,5 +53,19 @@ public class AdminEndpoint {
     public UserInformationDto grantPermissionToUser(@PathVariable("email") @Email String email) {
         log.info("PUT /api/v1/admin/grant-permission/{}", email);
         return userService.grantPermissionToUser(email);
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping("database")
+    public GraphDatabaseConfigDto getDatabaseConfig() {
+        log.info("GET /api/v1/admin/database");
+        return userService.getDatabaseConfig();
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PutMapping("database")
+    public GraphDatabaseConfigDto updateDatabaseConfig(@RequestBody GraphDatabaseConfigDto graphDatabaseConfigDto) {
+        log.info("PUT /api/v1/admin/database/{}", graphDatabaseConfigDto);
+        return userService.updateDatabaseConfig(graphDatabaseConfigDto);
     }
 }
