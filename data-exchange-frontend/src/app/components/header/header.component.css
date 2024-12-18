@@ -1,3 +1,48 @@
 .height-header {
   height: 5.5em;
 }
+
+/* General link hover effect */
+.nav-link:hover {
+  color: #ffc107; /* Change text color to a yellowish tint */
+  text-decoration: underline; /* Optional: underline on hover */
+  transition: color 0.3s ease-in-out; /* Smooth color transition */
+}
+
+/* Button hover effect */
+.btn-outline-light:hover {
+  background-color: #ffffff; /* Change to white background */
+  color: #000; /* Change text color to black */
+  border-color: #ffffff; /* Adjust border color */
+  transition: all 0.3s ease-in-out; /* Smooth transition for all properties */
+}
+
+.btn-warning:hover {
+  background-color: #e0a800; /* Darker yellow */
+  color: #fff; /* Ensure text is readable */
+  transition: background-color 0.3s ease-in-out; /* Smooth background transition */
+}
+
+/* Menu button hover effect */
+mat-menu button.mat-menu-item:hover {
+  background-color: #ffc107; /* Highlight the menu item */
+  color: #000; /* Make text stand out */
+  transition: background-color 0.3s ease-in-out; /* Smooth background transition */
+}
+
+/* Account icon hover effect */
+mat-icon:hover {
+  color: #ffc107; /* Change icon color */
+  cursor: pointer; /* Indicate interactivity */
+  transition: color 0.3s ease-in-out; /* Smooth color transition */
+}
+
+/* Header height consistency */
+.height-header {
+  height: 5.5em;
+}
+
+/* Optional: Smooth scaling effect for links */
+.nav-link:hover, .btn:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
