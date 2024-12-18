@@ -8,6 +8,7 @@ interface ChartData {
   name: string;
   results: any[];
   type: 'bar' | 'line' | 'pie' | 'area' | 'number-card'; // Supported chart types
+  xAxisLabel: string;
 }
 
 
@@ -18,23 +19,13 @@ interface ChartData {
 })
 export class CustomStatisticsComponent {
   data: any[] = [];
-  view: [number, number] = [1200, 550]; // Chart dimensions
-
   constructor(
     private dataService: DataService,
     private notification: ToastrService
   ) {}
 
-  // Chart options
-  showXAxis = true;
-  showYAxis = true;
-  gradient = false;
-  showLegend = false;
-  showXAxisLabel = true;
-  xAxisLabel = 'Property';
-  showYAxisLabel = true;
-  yAxisLabel = 'Distinct Literal Count';
-  colorScheme = { domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'] };
+  xAxisProperty: string = '';
+
   sparqlQuery = 'SELECT ?property (COUNT(DISTINCT ?literal) AS ?distinctLiteralCount)\n' +
     'WHERE {\n' +
     '  ?subject ?property ?literal .\n' +
@@ -42,6 +33,31 @@ export class CustomStatisticsComponent {
     '}\n' +
     'GROUP BY ?property\n' +
     'ORDER BY DESC(?distinctLiteralCount) \n';
+
+  initialQueries: any[] = [
+    {
+      query: "SELECT \n" +
+        "  (COUNT(DISTINCT ?property) AS ?totalProperties)\n" +
+        "  ?property (COUNT(?property) AS ?propertyCount)\n" +
+        "WHERE {\n" +
+        "  ?subject ?property ?object .\n" +
+        "}\n" +
+        "GROUP BY ?property\n" +
+        "ORDER BY DESC(?propertyCount)",
+      name: "Count Properties"
+    },
+    {
+      query: 'SELECT ?property (COUNT(DISTINCT ?literal) AS ?distinctLiteralCount)\n' +
+        'WHERE {\n' +
+        '  ?subject ?property ?literal .\n' +
+        '  FILTER(isLiteral(?literal))\n' +
+        '}\n' +
+        'GROUP BY ?property\n' +
+        'ORDER BY DESC(?distinctLiteralCount) \n',
+
+      name: "Count Properties"
+    }
+  ]
 
   sparqlQueries: SparqlQuery[] = [];
   selectedQuery: SparqlQuery = {
@@ -51,12 +67,21 @@ export class CustomStatisticsComponent {
     query: ''
   };
 
+
   charts: ChartData[] = []; // Array of charts
   chartCounter = 0; // Unique chart IDs
   chartName: string = '';
+  sparqlResult: SparqlResult = {head: null, results: null};
 
   ngOnInit() {
     this.loadQueries();
+
+    for (let i = 0; i < this.initialQueries.length; i++) {
+      this.sparqlQuery = this.initialQueries[i].query;
+      this.executeQuery(true, this.initialQueries[i].name, 'property');
+    }
+
+    this.sparqlQuery = '';
   }
 
   clearQuery(): void {
@@ -69,16 +94,21 @@ export class CustomStatisticsComponent {
     };
   }
 
-  executeQuery() {
+  executeQuery(preload?: boolean, chartName?: string, xAxisProperty?: string) {
     if (!this.sparqlQuery.trim()) {
       this.notification.warning("Provide a query!");
+      return;
+    }
+
+    if (this.xAxisProperty === '' && !xAxisProperty) {
+      this.notification.warning("Provide a xAxis Property!!");
       return;
     }
 
     this.dataService.performCustomQuery(this.sparqlQuery)
       .subscribe({
         next: (data: SparqlResult) => {
-          this.addChart(data);
+          this.addChart(data, preload, chartName, xAxisProperty);
         },
         error: err => {
 
@@ -91,26 +121,13 @@ export class CustomStatisticsComponent {
       });
   }
 
-  drawChart(sparqlResult: any): void {
-    // Transform SPARQL data into ngx-charts format
-    try {
-      this.data = [];
-      this.data = sparqlResult.results.bindings.map((binding: any) => ({
-        name: binding.values.property.value.split('/').pop(), // Extract property name
-        value: Number(binding.values.distinctLiteralCount.value) // Parse literal count as number
-      }));
-    } catch (error) {
-      this.notification.error("This query could not be presented on a chart!")
-    }
-  }
-
   loadQueries(): void {
     this.dataService.loadSparqlQueries()
       .subscribe(
         {
           next: (data) => {
             this.sparqlQueries = data;
-            console.log(data)
+
           },
           error: err => {
             this.notification.error(err.error)
@@ -157,30 +174,89 @@ export class CustomStatisticsComponent {
     }
   }
 
-  addChart(sparqlResult: any): void {
+  addChart(sparqlResult: SparqlResult, preload?: boolean, chartName?: string, xAxisProperty?: string): void {
     try {
-      const chartData = sparqlResult.results.bindings.map((binding: any) => ({
-        name: binding.values.property.value.split('/').pop(),
-        value: Number(binding.values.distinctLiteralCount.value)
-      }));
+      // Parse SPARQL result to chart data format
+      var chartData = [];
+      if (xAxisProperty) {
+        chartData = this.parseSparqlResult(sparqlResult, xAxisProperty);
+      } else {
+        chartData = this.parseSparqlResult(sparqlResult, this.xAxisProperty);
 
-      this.charts.unshift({
-        id: ++this.chartCounter,
-        name: this.chartName === '' ? `Chart ${this.chartCounter}` : this.chartName,
-        results: chartData,
-        type: 'bar' // Default chart type
-      });
+      }
+
+      if (chartData.length === 0) {
+        return;
+      }
+
+      if (chartName) {
+        this.charts.unshift({
+          id: ++this.chartCounter,
+          name: chartName,
+          results: chartData,
+          type: 'bar', // Default chart type
+          xAxisLabel: this.xAxisProperty
+        });
+      } else {
+        this.charts.unshift({
+          id: ++this.chartCounter,
+          name: this.chartName === '' ? `Chart ${this.chartCounter}` : this.chartName,
+          results: chartData,
+          type: 'bar', // Default chart type
+          xAxisLabel: this.xAxisProperty
+        });
+      }
 
       this.chartName = '';
 
-      this.notification.success(`Chart ${this.chartCounter} added successfully!`);
+      if (!preload) {
+        this.notification.success(`Chart ${this.chartCounter} added successfully!`);
+      }
     } catch (error) {
-      this.notification.error("This query could not be presented on a chart!");
+      this.notification.error("Error parsing SPARQL result: ");
     }
   }
 
-  clearCharts(): void {
-    this.charts = [];
-    this.notification.info("All charts cleared.");
+  parseSparqlResult(sparqlResult: SparqlResult, xAxisProperty: string): any[] {
+    const vars = sparqlResult.head?.vars;
+    const bindings = sparqlResult.results?.bindings;
+
+    if (!vars || !bindings || !vars.includes(xAxisProperty)) {
+      this.notification.warning("The data could not be parsed for chart!");
+      return [];
+    }
+
+    const chartData: any[] = [];
+    const seriesKeys = vars.filter((v) => v !== xAxisProperty); // All columns except xAxis
+
+    // Group data by xAxisProperty
+    bindings.forEach((binding: any) => {
+      const xAxisValue = binding.values[xAxisProperty]?.value || "Unknown";
+
+      const series = seriesKeys.map((key) => ({
+        name: key,
+        value: Number(binding.values[key]?.value || 0),
+      }));
+
+      chartData.push({
+        name: xAxisValue.split('/').pop(), // Simplify URI if needed
+        series: series,
+      });
+    });
+
+    return chartData;
+  }
+
+  expandedChart: ChartData | null = null;
+
+  expandChart(chartId: number): void {
+    const chart = this.charts.find((c) => c.id === chartId);
+    if (chart) {
+      this.expandedChart = chart;
+    }
+  }
+
+  closeExpandedChart(): void {
+    this.expandedChart = null;
   }
 }

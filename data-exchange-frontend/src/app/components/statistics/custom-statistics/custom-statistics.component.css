@@ -6,3 +6,25 @@
   white-space: nowrap; /* Prevents line wrapping */
   box-sizing: border-box; /* Ensures padding is within the dimensions */
 }
+
+/* Optional Styles */
+button {
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+div[style*="fixed"] {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

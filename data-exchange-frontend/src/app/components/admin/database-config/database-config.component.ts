@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {AdminService} from "../../../services/admin.service";
 import {GraphDatabaseDto} from "../../../dtos/configs/configs";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-database-config',
@@ -19,7 +20,10 @@ export class DatabaseConfigComponent {
   errorMessage?: string; // For error handling
   successMessage?: string; // For showing a success message
 
-  constructor(private adminService: AdminService) {}
+  constructor(
+    private adminService: AdminService,
+    private notification: ToastrService
+              ) {}
 
   ngOnInit(): void {
     this.loadDatabaseConfig();
@@ -28,11 +32,11 @@ export class DatabaseConfigComponent {
   private loadDatabaseConfig(): void {
     this.adminService.getDatabaseConfig().subscribe({
       next: (config) => {
-        this.graphDatabaseConfig = config; // Bind the received data to the instance
+        this.graphDatabaseConfig = config;
       },
       error: (err) => {
         this.errorMessage = 'Failed to load database configuration.';
-        console.error(err); // For debugging purposes
+
       },
     });
   }
@@ -40,7 +44,7 @@ export class DatabaseConfigComponent {
   saveConfig(): void {
 
     if (this.graphDatabaseConfig.graphDbServerUrl === '' || this.graphDatabaseConfig.port === null || this.graphDatabaseConfig.port < 0 || this.graphDatabaseConfig.repositoryId === '') {
-      alert('Invalid input!')
+      this.notification.warning("Invalid input")
       return;
     }
 
@@ -48,10 +52,11 @@ export class DatabaseConfigComponent {
       {
         next: config => {
           this.graphDatabaseConfig = config;
+          this.notification.success("Config has been updated. Backend will restart!")
         },
         error: (err) => {
           this.errorMessage = 'Failed to update database configuration.';
-          console.error(err); // For debugging purposes
+          this.notification.warning('Failed to update database configuration.')
         },
       }
     )
