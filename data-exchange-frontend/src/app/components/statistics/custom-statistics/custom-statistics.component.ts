@@ -44,7 +44,8 @@ export class CustomStatisticsComponent {
         "}\n" +
         "GROUP BY ?property\n" +
         "ORDER BY DESC(?propertyCount)",
-      name: "Count Properties"
+      name: "Count Properties",
+      property: 'property'
     },
     {
       query: 'SELECT ?property (COUNT(DISTINCT ?literal) AS ?distinctLiteralCount)\n' +
@@ -54,9 +55,34 @@ export class CustomStatisticsComponent {
         '}\n' +
         'GROUP BY ?property\n' +
         'ORDER BY DESC(?distinctLiteralCount) \n',
-
-      name: "Count Properties"
+      property: 'property',
+      name: "Literal Data Types"
+    },
+    {
+      query: `
+    SELECT ?class (COUNT(?subject) AS ?instanceCount)
+    WHERE {
+      ?subject a ?class .
     }
+    GROUP BY ?class
+    ORDER BY DESC(?instanceCount)
+  `,
+      name: "Instances per Class",
+      property: 'class'
+    },
+    {
+      query: `
+    SELECT ?predicate (COUNT(?predicate) AS ?predicateUsage)
+    WHERE {
+      ?subject ?predicate ?object .
+    }
+    GROUP BY ?predicate
+    ORDER BY DESC(?predicateUsage)
+  `,
+      name: "Predicate Usage Statistics",
+      property: 'predicate'
+    }
+
   ]
 
   sparqlQueries: SparqlQuery[] = [];
@@ -78,7 +104,7 @@ export class CustomStatisticsComponent {
 
     for (let i = 0; i < this.initialQueries.length; i++) {
       this.sparqlQuery = this.initialQueries[i].query;
-      this.executeQuery(true, this.initialQueries[i].name, 'property');
+      this.executeQuery(true, this.initialQueries[i].name, this.initialQueries[i].property);
     }
 
     this.sparqlQuery = '';
