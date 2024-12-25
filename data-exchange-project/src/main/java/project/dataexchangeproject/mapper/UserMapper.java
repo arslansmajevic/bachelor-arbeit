@@ -8,8 +8,11 @@ import project.dataexchangeproject.rest.dto.user.UserInformationDto;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-  @Mapping(target = "isAdmin", source = "admin")
-  @Mapping(target = "isBlocked", source = "locked")
-  @Mapping(target = "isPending", source = "pending")
+  @Mapping(target = "isAdmin",
+      source = "admin")
+  @Mapping(target = "isBlocked",
+      source = "locked")
+  @Mapping(target = "isPending",
+      source = "pending")
   UserInformationDto userToInformationDto(ApplicationUser user);
 }

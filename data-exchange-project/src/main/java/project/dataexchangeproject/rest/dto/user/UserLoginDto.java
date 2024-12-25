@@ -8,15 +8,16 @@ import jakarta.validation.constraints.Size;
 
 public record UserLoginDto(
 
-        @NotNull(message = "Email field can't be null")
-        @Email(message = "Email must be valid")
-        @NotEmpty(message = "Email field can't be empty")
-        @NotBlank(message = "Email field can't be empty")
-        @Size(message = "Email must be less than 100 characters long", max = 100)
-        String email,
-        @NotNull(message = "Password field can't be null")
-        @NotEmpty(message = "Password field can't be empty")
-        @NotBlank(message = "Password field can't be empty")
-        String password
+    @NotNull(message = "Email field can't be null")
+    @Email(message = "Email must be valid")
+    @NotEmpty(message = "Email field can't be empty")
+    @NotBlank(message = "Email field can't be empty")
+    @Size(message = "Email must be less than 100 characters long",
+        max = 100)
+    String email,
+    @NotNull(message = "Password field can't be null")
+    @NotEmpty(message = "Password field can't be empty")
+    @NotBlank(message = "Password field can't be empty")
+    String password
 ) {
 }

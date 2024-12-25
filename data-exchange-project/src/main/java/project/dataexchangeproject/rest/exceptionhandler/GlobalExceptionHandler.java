@@ -52,12 +52,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     Map<String, Object> body = new LinkedHashMap<>();
     //Get all errors
     List<String> errors = ex.getBindingResult()
-            .getFieldErrors()
-            .stream()
-            .map(err -> err.getField()
-                    + " "
-                    + err.getDefaultMessage())
-            .collect(Collectors.toList());
+        .getFieldErrors()
+        .stream()
+        .map(err -> err.getField()
+            + " "
+            + err.getDefaultMessage())
+        .collect(Collectors.toList());
     body.put("Validation errors", errors);
 
     return new ResponseEntity<>(body.toString(), headers, status);
@@ -67,9 +67,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(ConnectException.class)
   public ResponseEntity<ErrorResponse> handlePersistenceUnavailableException(ConnectException ex) {
     ErrorResponse errorResponse = new ErrorResponse(
-            "Service Unavailable",
-            ex.getMessage(),
-            HttpStatus.SERVICE_UNAVAILABLE.value()
+        "Service Unavailable",
+        ex.getMessage(),
+        HttpStatus.SERVICE_UNAVAILABLE.value()
     );
     return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse);
   }
@@ -77,9 +77,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(MalformedQueryException.class)
   public ResponseEntity<ErrorResponse> handleMalformedQueryException(MalformedQueryException ex) {
     ErrorResponse errorResponse = new ErrorResponse(
-            "Malformed Query",
-            ex.getMessage(),
-            HttpStatus.BAD_REQUEST.value()
+        "Malformed Query",
+        ex.getMessage(),
+        HttpStatus.BAD_REQUEST.value()
     );
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
   }

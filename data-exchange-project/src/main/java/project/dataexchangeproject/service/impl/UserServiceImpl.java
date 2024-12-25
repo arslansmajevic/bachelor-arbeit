@@ -84,18 +84,18 @@ public class UserServiceImpl implements UserService {
     }
 
     if (userDetails
-            != null) {
+        != null) {
       if (!userDetails.isAccountNonLocked()) {
         throw new LockedException("User account is locked");
       }
 
       if (userDetails.isAccountNonExpired()
-              && userDetails.isCredentialsNonExpired()
-              && passwordEncoder.matches(userLoginDto.password(), userDetails.getPassword())) {
+          && userDetails.isCredentialsNonExpired()
+          && passwordEncoder.matches(userLoginDto.password(), userDetails.getPassword())) {
         List<String> roles = userDetails.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
+            .stream()
+            .map(GrantedAuthority::getAuthority)
+            .toList();
 
         userRepository.setLoginAttempts(userLoginDto.email(), 0);
         return jwtTokenizer.getAuthToken(userDetails.getUsername(), roles);
@@ -116,14 +116,14 @@ public class UserServiceImpl implements UserService {
     int pageIndex;
     int pageSize;
     if (userSearchDto.pageIndex()
-            == null) {
+        == null) {
       pageIndex = 0;
     } else {
       pageIndex = userSearchDto.pageIndex();
     }
 
     if (userSearchDto.pageSize()
-            == null) {
+        == null) {
       pageSize = 10;
     } else {
       pageSize = userSearchDto.pageSize();
@@ -132,18 +132,18 @@ public class UserServiceImpl implements UserService {
     Pageable pageable = PageRequest.of(pageIndex, pageSize);
 
     Page<ApplicationUser> users = userRepository.findBySearch(
-            userSearchDto.firstName(),
-            userSearchDto.lastName(),
-            userSearchDto.email(),
-            userSearchDto.isAdmin(),
-            userSearchDto.isBlocked(),
-            userSearchDto.isPending(),
-            pageable
+        userSearchDto.firstName(),
+        userSearchDto.lastName(),
+        userSearchDto.email(),
+        userSearchDto.isAdmin(),
+        userSearchDto.isBlocked(),
+        userSearchDto.isPending(),
+        pageable
     );
 
     List<UserInformationDto> usersInformationDto = users.stream()
-            .map(userMapper::userToInformationDto)
-            .toList();
+        .map(userMapper::userToInformationDto)
+        .toList();
 
     return new PageImpl<>(usersInformationDto, pageable, users.getTotalElements());
   }
@@ -160,10 +160,10 @@ public class UserServiceImpl implements UserService {
     var config = graphDBConfigRepository.getDevGraphDBConfiguration();
 
     return new GraphDatabaseConfigDto(
-            config.getGraphDbServerUrl(),
-            config.getRepositoryId(),
-            config.getPort(),
-            config.getGeneratedUrl()
+        config.getGraphDbServerUrl(),
+        config.getRepositoryId(),
+        config.getPort(),
+        config.getGeneratedUrl()
     );
   }
 
@@ -171,13 +171,13 @@ public class UserServiceImpl implements UserService {
   public GraphDatabaseConfigDto updateDatabaseConfig(GraphDatabaseConfigDto graphDatabaseConfigDto) {
 
     graphDBConfigRepository.updateDatabaseConfig(
+        graphDatabaseConfigDto.graphDbServerUrl(),
+        graphDatabaseConfigDto.repositoryId(),
+        graphDatabaseConfigDto.port(),
+        String.format("%s:%d/repositories/%s",
             graphDatabaseConfigDto.graphDbServerUrl(),
-            graphDatabaseConfigDto.repositoryId(),
             graphDatabaseConfigDto.port(),
-            String.format("%s:%d/repositories/%s",
-                    graphDatabaseConfigDto.graphDbServerUrl(),
-                    graphDatabaseConfigDto.port(),
-                    graphDatabaseConfigDto.repositoryId())
+            graphDatabaseConfigDto.repositoryId())
     );
 
     /*graphDBConfig.updateRepository(
@@ -195,29 +195,29 @@ public class UserServiceImpl implements UserService {
   public List<SparqlQueryDto> getSparqlQueries(Long id) {
 
     if (id
-            == null) {
+        == null) {
       return sparqlQueryRepository.findAll().stream()
-              .map(sparqlQueryMapper::sparqlQueryToDto)
-              .toList();
+          .map(sparqlQueryMapper::sparqlQueryToDto)
+          .toList();
     }
 
     return sparqlQueryRepository.findById(id)
-            .map(sparqlQuery -> List.of(sparqlQueryMapper.sparqlQueryToDto(sparqlQuery)))
-            .orElse(List.of());
+        .map(sparqlQuery -> List.of(sparqlQueryMapper.sparqlQueryToDto(sparqlQuery)))
+        .orElse(List.of());
   }
 
   @Override
   public SparqlQueryDto updateSparqlQuery(SparqlQueryDto sparqlQueryDto) {
 
     if (sparqlQueryDto.id()
-            != null) {
+        != null) {
       if (sparqlQueryRepository.findById(sparqlQueryDto.id()).isPresent()) {
         // Update the existing query
         sparqlQueryRepository.updateSparqlQuery(
-                sparqlQueryDto.id(),
-                sparqlQueryDto.name(),
-                sparqlQueryDto.description(),
-                sparqlQueryDto.query()
+            sparqlQueryDto.id(),
+            sparqlQueryDto.name(),
+            sparqlQueryDto.description(),
+            sparqlQueryDto.query()
         );
 
         // Return the updated DTO
@@ -227,11 +227,11 @@ public class UserServiceImpl implements UserService {
 
     // If no ID is provided or the entity doesn't exist, create a new query
     SparqlQuery newQuery = sparqlQueryRepository.save(
-            SparqlQuery.builder()
-                    .name(sparqlQueryDto.name())
-                    .description(sparqlQueryDto.description())
-                    .query(sparqlQueryDto.query())
-                    .build()
+        SparqlQuery.builder()
+            .name(sparqlQueryDto.name())
+            .description(sparqlQueryDto.description())
+            .query(sparqlQueryDto.query())
+            .build()
     );
 
     return sparqlQueryMapper.sparqlQueryToDto(newQuery);
@@ -243,7 +243,7 @@ public class UserServiceImpl implements UserService {
     ApplicationUser user = userRepository.findUserByEmail(email);
 
     if (user
-            == null) {
+        == null) {
       throw new UsernameNotFoundException(email);
     }
 
@@ -260,13 +260,13 @@ public class UserServiceImpl implements UserService {
     }
 
     if (user.getLoginAttempts()
-            + 1
-            > 5
-            && !user.isAdmin()) {
+        + 1
+        > 5
+        && !user.isAdmin()) {
       blockUser(email);
     } else {
       userRepository.setLoginAttempts(email, user.getLoginAttempts()
-              + 1);
+          + 1);
     }
 
     return new User(user.getEmail(), user.getPassword(), true, true, true, !user.isLocked(), grantedAuthorities);

@@ -28,7 +28,7 @@ public abstract class ErrorListException extends Exception {
   @Override
   public String getMessage() {
     return "%s. %s: %s."
-            .formatted(messageSummary, errorListDescriptor, String.join(", ", errors));
+        .formatted(messageSummary, errorListDescriptor, String.join(", ", errors));
   }
 
   public String summary() {

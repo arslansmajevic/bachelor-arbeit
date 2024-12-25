@@ -33,18 +33,18 @@ public class AdminEndpoint {
   }
 
   @Operation(
-          description = "Endpoint for searching users. If no parameters are given, every users is returned.",
-          summary = "Returns a pageable of users",
-          responses = {
-              @ApiResponse(
-                      description = "Success",
-                      responseCode = "200"
-              ),
-              @ApiResponse(
-                      description = "Unauthorized",
-                      responseCode = "403"
-              )
-          }
+      description = "Endpoint for searching users. If no parameters are given, every users is returned.",
+      summary = "Returns a pageable of users",
+      responses = {
+          @ApiResponse(
+              description = "Success",
+              responseCode = "200"
+          ),
+          @ApiResponse(
+              description = "Unauthorized",
+              responseCode = "403"
+          )
+      }
   )
   @Secured("ROLE_ADMIN")
   @GetMapping("search")

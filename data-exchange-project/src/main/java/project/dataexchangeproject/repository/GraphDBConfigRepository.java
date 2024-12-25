@@ -16,6 +16,6 @@ public interface GraphDBConfigRepository extends JpaRepository<GraphDBConfigurat
   @Modifying
   @Transactional
   @Query("update GraphDBConfiguration g set g.graphDbServerUrl = :graphDbServerUrl, "
-          + "g.repositoryId = :repositoryId, g.port = :port, g.generatedUrl = :generatedUrl where g.id = 1")
+      + "g.repositoryId = :repositoryId, g.port = :port, g.generatedUrl = :generatedUrl where g.id = 1")
   void updateDatabaseConfig(String graphDbServerUrl, String repositoryId, Long port, String generatedUrl);
 }

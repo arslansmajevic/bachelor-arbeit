@@ -58,13 +58,13 @@ public class GraphDbRepository {
             );*/
 
     SelectQuery selectQuery = Queries.SELECT(object, objectType, connection)
-            .where(
-                    object.has(connection, Rdf.iri(nodeUri))
-            );
+        .where(
+            object.has(connection, Rdf.iri(nodeUri))
+        );
 
     String sparqlQueryString = selectQuery.getQueryString();
     System.out.println("SPARQL Query: "
-            + sparqlQueryString);
+        + sparqlQueryString);
 
     List<ExpandingEdge> listOfExpandingEdges = new ArrayList<>();
 
@@ -78,26 +78,26 @@ public class GraphDbRepository {
     while (result.hasNext()) {
       BindingSet bindingSet = result.next();
       results.add("Object: "
-              + bindingSet.getValue("object")
-              +
-              ", Object Type: "
-              + bindingSet.getValue("object_type")
-              +
-              ", Connection: "
-              + bindingSet.getValue("connection"));
+          + bindingSet.getValue("object")
+          +
+          ", Object Type: "
+          + bindingSet.getValue("object_type")
+          +
+          ", Connection: "
+          + bindingSet.getValue("connection"));
 
       if (!bindingSet.getValue("object").stringValue().contains("http")) {
         if (oneTime++
-                == 0) {
+            == 0) {
           listOfExpandingEdges.addAll(upstreamRecursiveNodeExpansion(nodeUri, 1));
         }
       } else {
         listOfExpandingEdges.add(
-                new ExpandingEdge(
-                        bindingSet.getValue("object").stringValue(),
-                        nodeUri,
-                        bindingSet.getValue("connection").stringValue().concat(".reference")
-                )
+            new ExpandingEdge(
+                bindingSet.getValue("object").stringValue(),
+                nodeUri,
+                bindingSet.getValue("connection").stringValue().concat(".reference")
+            )
         );
       }
     }
@@ -111,12 +111,12 @@ public class GraphDbRepository {
     Variable connection = SparqlBuilder.var("connection");
 
     System.out.println("nodeUri "
-            + nodeUri);
+        + nodeUri);
     SelectQuery selectQuery = Queries.SELECT(object, connection)
-            .prefix(fhir)
-            .where(
-                    Rdf.iri(nodeUri).has(connection, object)
-            );
+        .prefix(fhir)
+        .where(
+            Rdf.iri(nodeUri).has(connection, object)
+        );
 
     String sparqlQueryString = selectQuery.getQueryString();
 
@@ -132,31 +132,31 @@ public class GraphDbRepository {
       while (result.hasNext()) {
         BindingSet bindingSet = result.next();
         results.add("Predicate: "
-                + bindingSet.getValue("connection")
-                +
-                ", Object: "
-                + bindingSet.getValue("object"));
+            + bindingSet.getValue("connection")
+            +
+            ", Object: "
+            + bindingSet.getValue("object"));
 
         String predicateValue = bindingSet.getValue("connection").stringValue();
         String objectValue = bindingSet.getValue("object").stringValue();
 
         // skipping some predicates
         if (!(predicateValue.contains("rdf-syntax-ns#type")
-                ||
-                predicateValue.contains("fhir/nodeRole"))) {
+            ||
+            predicateValue.contains("fhir/nodeRole"))) {
           listOfExpandingEdges.add(
-                  new ExpandingEdge(
-                          nodeUri,
-                          objectValue,
-                          predicateValue
-                  )
+              new ExpandingEdge(
+                  nodeUri,
+                  objectValue,
+                  predicateValue
+              )
           );
         }
 
         // if blank node, then perform recursion
         if (objectValue.startsWith("node")
-                && oneTime++
-                == 1) {
+            && oneTime++
+            == 1) {
           listOfExpandingEdges.addAll(downstreamRecursiveNodeExpansion(nodeUri, 1));
         }
       }
@@ -181,12 +181,12 @@ public class GraphDbRepository {
 
     // Iteratively create the rest of the triple patterns based on the level
     for (int i = 1; i
-            <= level; i++) {
+        <= level; i++) {
       Variable nextP = SparqlBuilder.var("p"
-              + i);
+          + i);
       Variable nextO = SparqlBuilder.var("o"
-              + (i
-              + 1));
+          + (i
+          + 1));
       wherePatterns.add(currentSubject.has(nextP, nextO));
       currentSubject = nextO;  // Update current subject to next object
     }
@@ -194,17 +194,17 @@ public class GraphDbRepository {
     // Create the SELECT query with all variable projections
     SelectQuery selectQuery = Queries.SELECT();
     for (int i = 1; i
-            <= level; i++) {
+        <= level; i++) {
       selectQuery.select(SparqlBuilder.var("p"
-              + i), SparqlBuilder.var("o"
-              + i));
+          + i), SparqlBuilder.var("o"
+          + i));
     }
     selectQuery.select(SparqlBuilder.var("o"
-            + (level
-            + 1)));
+        + (level
+        + 1)));
 
     selectQuery.prefix(fhir)
-            .where(wherePatterns.toArray(new TriplePattern[0]));
+        .where(wherePatterns.toArray(new TriplePattern[0]));
 
     System.out.println(selectQuery.getQueryString());
 
@@ -220,34 +220,34 @@ public class GraphDbRepository {
         BindingSet bindingSet = result.next();
 
         String subjectBlankNode = bindingSet.getValue("o"
-                + level).stringValue();
+            + level).stringValue();
         String predicate = bindingSet.getValue("p"
-                + level).stringValue();
+            + level).stringValue();
         String objectValue = bindingSet.getValue("o"
-                + (level
-                + 1)).stringValue();
+            + (level
+            + 1)).stringValue();
 
         if (!(predicate.contains("rdf-syntax-ns#type")
-                ||
-                predicate.contains("fhir/nodeRole"))) {
+            ||
+            predicate.contains("fhir/nodeRole"))) {
           listOfExpandingEdges.add(
-                  new ExpandingEdge(
-                          subjectBlankNode,
-                          objectValue,
-                          predicate
-                  )
+              new ExpandingEdge(
+                  subjectBlankNode,
+                  objectValue,
+                  predicate
+              )
           );
         }
 
         System.out.println(listOfExpandingEdges);
 
         if (objectValue.startsWith("node")
-                && oneTime++
-                == 0) {
+            && oneTime++
+            == 0) {
           System.out.println("expanding on blank node: "
-                  + objectValue);
+              + objectValue);
           listOfExpandingEdges.addAll(downstreamRecursiveNodeExpansion(subject, level
-                  + 1));
+              + 1));
         }
       }
     } catch (Exception e) {
@@ -270,12 +270,12 @@ public class GraphDbRepository {
 
     // Iteratively create the rest of the triple patterns based on the level
     for (int i = 1; i
-            <= level; i++) {
+        <= level; i++) {
       Variable nextP = SparqlBuilder.var("p"
-              + i);
+          + i);
       Variable nextS = SparqlBuilder.var("s"
-              + (i
-              + 1));
+          + (i
+          + 1));
 
       wherePatterns.add(nextS.has(nextP, currentSubject));
       currentSubject = nextS;
@@ -284,17 +284,17 @@ public class GraphDbRepository {
     // Create the SELECT query with all variable projections
     SelectQuery selectQuery = Queries.SELECT();
     for (int i = 1; i
-            <= level; i++) {
+        <= level; i++) {
       selectQuery.select(SparqlBuilder.var("p"
-              + i), SparqlBuilder.var("s"
-              + i));
+          + i), SparqlBuilder.var("s"
+          + i));
     }
     selectQuery.select(SparqlBuilder.var("s"
-            + (level
-            + 1)));
+        + (level
+        + 1)));
 
     selectQuery.prefix(fhir)
-            .where(wherePatterns.toArray(new TriplePattern[0]));
+        .where(wherePatterns.toArray(new TriplePattern[0]));
 
     String sparqlQueryString = selectQuery.getQueryString();
     List<ExpandingEdge> listOfExpandingEdges = new ArrayList<>();
@@ -308,28 +308,28 @@ public class GraphDbRepository {
         BindingSet bindingSet = result.next();
 
         String objectAsSubject = bindingSet.getValue("s"
-                + level).stringValue();
+            + level).stringValue();
         String predicate = bindingSet.getValue("p"
-                + level).stringValue();
+            + level).stringValue();
         String subjectAsSubject = bindingSet.getValue("s"
-                + (level
-                + 1)).stringValue();
+            + (level
+            + 1)).stringValue();
 
         if (!Objects.equals(predicate, "")) {
           if (subjectAsSubject.contains("http")) {
             listOfExpandingEdges.add(
-                    new ExpandingEdge(
-                            subject,
-                            subjectAsSubject,
-                            predicate
-                                    + ".reference"
-                    )
+                new ExpandingEdge(
+                    subject,
+                    subjectAsSubject,
+                    predicate
+                        + ".reference"
+                )
             );
           } else {
             if (oneTime++
-                    == 0) {
+                == 0) {
               listOfExpandingEdges.addAll(upstreamRecursiveNodeExpansion(subject, level
-                      + 1));
+                  + 1));
             }
           }
         }
@@ -353,15 +353,15 @@ public class GraphDbRepository {
     // Define filter with case-insensitive check for "patient"
     RdfLiteral<String> keywordLiteral = Rdf.literalOf(keyword);
     Expression<?> caseInsensitiveFilter = Expressions.function(
-            SparqlFunction.valueOf("CONTAINS"),
-            Expressions.function(SparqlFunction.valueOf("UCASE"), Expressions.function(SparqlFunction.valueOf("STR"), s)),
-            Expressions.function(SparqlFunction.valueOf("UCASE"), keywordLiteral)
+        SparqlFunction.valueOf("CONTAINS"),
+        Expressions.function(SparqlFunction.valueOf("UCASE"), Expressions.function(SparqlFunction.valueOf("STR"), s)),
+        Expressions.function(SparqlFunction.valueOf("UCASE"), keywordLiteral)
     );
 
     // Build the query
     SelectQuery query = Queries.SELECT().distinct()
-            .where(pattern.filter(caseInsensitiveFilter))
-            .limit(limit);
+        .where(pattern.filter(caseInsensitiveFilter))
+        .limit(limit);
 
     String sparqlQueryString = query.getQueryString();
     // System.out.println(sparqlQueryString);
@@ -398,11 +398,11 @@ public class GraphDbRepository {
         var value = bindingSet.getValue(binding);
 
         if (value
-                != null) {
+            != null) {
           // Add the type and value of the binding
           values.put(binding, new SparqlResult.Value(
-                  value.isIRI() ? "uri" : value.isBNode() ? "bnode" : "literal",
-                  value.stringValue()));
+              value.isIRI() ? "uri" : value.isBNode() ? "bnode" : "literal",
+              value.stringValue()));
         }
       }
 
@@ -412,8 +412,8 @@ public class GraphDbRepository {
 
     // Construct the SparqlResult with head and results
     return new SparqlResult(
-            new SparqlResult.Head(bindingNames),
-            new SparqlResult.Results(bindings)
+        new SparqlResult.Head(bindingNames),
+        new SparqlResult.Results(bindings)
     );
   }
 

@@ -43,13 +43,16 @@ public class DataEndpoint {
 
   @PutMapping("expand-neighbour")
   @Operation(summary = "Expand neighbouring nodes",
-          description = "Fetches the neighbouring nodes (other nodes that reference the graph node) for a given graph node. ")
+      description = "Fetches the neighbouring nodes (other nodes that reference the graph node) for a given graph node. ")
   @ApiResponses(value = {
-      @ApiResponse(responseCode = "200", description = "Successfully retrieved the expanding edges"),
-      @ApiResponse(responseCode = "503", description = "Database service is unavailable",
-              content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-      @ApiResponse(responseCode = "400", description = "Malformed query",
-              content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+      @ApiResponse(responseCode = "200",
+          description = "Successfully retrieved the expanding edges"),
+      @ApiResponse(responseCode = "503",
+          description = "Database service is unavailable",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+      @ApiResponse(responseCode = "400",
+          description = "Malformed query",
+          content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
   })
   public List<ExpandingEdge> expandNeighbouringNodes(@RequestBody GraphNode graphNode) {
     log.info("PUT /data/expand-neighbour {}", graphNode);
@@ -74,7 +77,8 @@ public class DataEndpoint {
   }
 
   @GetMapping("queries")
-  public List<SparqlQueryDto> getSparqlQueries(@RequestParam(value = "id", required = false) Long id) {
+  public List<SparqlQueryDto> getSparqlQueries(@RequestParam(value = "id",
+      required = false) Long id) {
     log.info("GET /data/queries/");
     return userService.getSparqlQueries(id);
   }

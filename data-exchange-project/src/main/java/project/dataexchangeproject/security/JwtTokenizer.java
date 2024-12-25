@@ -20,16 +20,16 @@ public class JwtTokenizer {
   public String getAuthToken(String user, List<String> roles) {
     byte[] signingKey = securityProperties.getJwtSecret().getBytes();
     String token = Jwts.builder()
-            .signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
-            .setHeaderParam("typ", securityProperties.getJwtType())
-            .setIssuer(securityProperties.getJwtIssuer())
-            .setAudience(securityProperties.getJwtAudience())
-            .setSubject(user)
-            .setExpiration(new Date(System.currentTimeMillis()
-                    + securityProperties.getJwtExpirationTime()))
-            .claim("rol", roles)
-            .compact();
+        .signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
+        .setHeaderParam("typ", securityProperties.getJwtType())
+        .setIssuer(securityProperties.getJwtIssuer())
+        .setAudience(securityProperties.getJwtAudience())
+        .setSubject(user)
+        .setExpiration(new Date(System.currentTimeMillis()
+            + securityProperties.getJwtExpirationTime()))
+        .claim("rol", roles)
+        .compact();
     return securityProperties.getAuthTokenPrefix()
-            + token;
+        + token;
   }
 }

@@ -32,41 +32,41 @@ public class UserDataGenerator {
       log.info("Generating users...");
 
       ApplicationUser adminUser = ApplicationUser.builder()
-              .email("admin@admin.com")
-              .password(password)
-              .firstName("Admin")
-              .lastName("Boss")
-              .isAdmin(Boolean.TRUE)
-              .isLocked(Boolean.FALSE)
-              .loginAttempts(0)
-              .isPending(false)
-              .build();
+          .email("admin@admin.com")
+          .password(password)
+          .firstName("Admin")
+          .lastName("Boss")
+          .isAdmin(Boolean.TRUE)
+          .isLocked(Boolean.FALSE)
+          .loginAttempts(0)
+          .isPending(false)
+          .build();
 
       userRepository.save(adminUser);
 
       ApplicationUser defaultUser = ApplicationUser.builder()
-              .email("user@user.com")
-              .password(password)
-              .firstName("Arslan")
-              .lastName("Smajevic")
-              .isAdmin(Boolean.FALSE)
-              .isLocked(Boolean.FALSE)
-              .loginAttempts(0)
-              .isPending(false)
-              .build();
+          .email("user@user.com")
+          .password(password)
+          .firstName("Arslan")
+          .lastName("Smajevic")
+          .isAdmin(Boolean.FALSE)
+          .isLocked(Boolean.FALSE)
+          .loginAttempts(0)
+          .isPending(false)
+          .build();
 
       userRepository.save(defaultUser);
 
       ApplicationUser pendingUser = ApplicationUser.builder()
-              .email("pending@pending.com")
-              .password(password)
-              .firstName("Pending")
-              .lastName("User")
-              .isAdmin(Boolean.FALSE)
-              .isLocked(Boolean.FALSE)
-              .loginAttempts(0)
-              .isPending(true)
-              .build();
+          .email("pending@pending.com")
+          .password(password)
+          .firstName("Pending")
+          .lastName("User")
+          .isAdmin(Boolean.FALSE)
+          .isLocked(Boolean.FALSE)
+          .loginAttempts(0)
+          .isPending(true)
+          .build();
 
       userRepository.save(pendingUser);
     }

@@ -26,7 +26,7 @@ import java.util.List;
 
 @Service
 @Order(Ordered.LOWEST_PRECEDENCE
-        - 1)
+    - 1)
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -38,11 +38,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-          throws IOException, ServletException {
+      throws IOException, ServletException {
     try {
       UsernamePasswordAuthenticationToken authToken = getAuthToken(request);
       if (authToken
-              != null) {
+          != null) {
         SecurityContextHolder.getContext().setAuthentication(authToken);
       }
     } catch (IllegalArgumentException | JwtException e) {
@@ -55,11 +55,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   }
 
   private UsernamePasswordAuthenticationToken getAuthToken(HttpServletRequest request)
-          throws JwtException, IllegalArgumentException {
+      throws JwtException, IllegalArgumentException {
     String token = request.getHeader(securityProperties.getAuthHeader());
     if (token
-            == null
-            || token.isEmpty()) {
+        == null
+        || token.isEmpty()) {
       return null;
     }
 
@@ -73,19 +73,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
       throw new IllegalArgumentException("Token must start with 'Bearer'");
     }
     Claims claims = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(signingKey)).build()
-            .parseSignedClaims(token.replace(securityProperties.getAuthTokenPrefix(), ""))
-            .getPayload();
+        .parseSignedClaims(token.replace(securityProperties.getAuthTokenPrefix(), ""))
+        .getPayload();
 
     String username = claims.getSubject();
 
     List<SimpleGrantedAuthority> authorities = ((List<?>) claims
-            .get("rol")).stream()
-            .map(authority -> new SimpleGrantedAuthority((String) authority))
-            .toList();
+        .get("rol")).stream()
+        .map(authority -> new SimpleGrantedAuthority((String) authority))
+        .toList();
 
     if (username
-            == null
-            || username.isEmpty()) {
+        == null
+        || username.isEmpty()) {
       throw new IllegalArgumentException("Token contains no user");
     }
 

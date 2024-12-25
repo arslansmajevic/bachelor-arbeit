@@ -26,10 +26,10 @@ public class GraphDBConfigGenerator {
       log.info("GraphDB Config has been generated...");
     } else {
       GraphDBConfiguration graphDBConfiguration = GraphDBConfiguration.builder()
-              .port(7200L)
-              .graphDbServerUrl("http://localhost")
-              .repositoryId("prof-data-repo")
-              .build();
+          .port(7200L)
+          .graphDbServerUrl("http://localhost")
+          .repositoryId("prof-data-repo")
+          .build();
 
       /*GraphDBConfiguration graphDBConfiguration = GraphDBConfiguration.builder()
               .port(7200L)

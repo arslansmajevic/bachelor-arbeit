@@ -22,27 +22,34 @@ public class ApplicationUser {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false,
+      unique = true)
   private String email;
 
-  @Column(name = "first_name", nullable = false)
+  @Column(name = "first_name",
+      nullable = false)
   private String firstName;
 
-  @Column(name = "last_name", nullable = false)
+  @Column(name = "last_name",
+      nullable = false)
   private String lastName;
 
   @Column(nullable = false)
   private String password;
 
-  @Column(name = "is_admin", nullable = false)
+  @Column(name = "is_admin",
+      nullable = false)
   private boolean isAdmin;
 
-  @Column(name = "login_attempts", nullable = false)
+  @Column(name = "login_attempts",
+      nullable = false)
   private int loginAttempts;
 
-  @Column(name = "is_locked", nullable = false)
+  @Column(name = "is_locked",
+      nullable = false)
   private boolean isLocked;
 
-  @Column(name = "login_pending", nullable = false)
+  @Column(name = "login_pending",
+      nullable = false)
   private boolean isPending;
 }

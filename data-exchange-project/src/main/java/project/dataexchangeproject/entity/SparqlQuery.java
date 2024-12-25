@@ -23,12 +23,14 @@ public class SparqlQuery {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false,
+      unique = true)
   private String name;
 
   @Column(length = 1000) // Adjust length if needed
   private String description;
 
-  @Column(nullable = false, columnDefinition = "TEXT")
+  @Column(nullable = false,
+      columnDefinition = "TEXT")
   private String query;
 }

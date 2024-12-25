@@ -29,16 +29,16 @@ public class UserAuthentication {
   public boolean checkBlockedStatus(String userEmail) throws SecurityException {
     log.trace("Checking blocked status for {}", userEmail);
     if (userRepository.findApplicationUserByEmail(userEmail)
-            == null) {
+        == null) {
       throw new SecurityException("User with email "
-              + userEmail
-              + " is unknown");
+          + userEmail
+          + " is unknown");
     }
 
     if (userRepository.findApplicationUserByEmail(userEmail).isLocked()) {
       throw new SecurityException("User "
-              + userEmail
-              + " is blocked");
+          + userEmail
+          + " is blocked");
     }
     return true;
   }
@@ -46,14 +46,14 @@ public class UserAuthentication {
   public void checkAdminRequest(String currentlyLoggedIn, String targetEmail) throws SecurityException {
     log.trace("Checking admin {} request for {}", currentlyLoggedIn, targetEmail);
     if (currentlyLoggedIn
-            == null) {
+        == null) {
       throw new SecurityException("Unknown user trying to access admin request");
     }
 
     if (currentlyLoggedIn.equals(targetEmail)) {
       throw new SecurityException(currentlyLoggedIn
-              + " is an admin trying to block "
-              + targetEmail);
+          + " is an admin trying to block "
+          + targetEmail);
     }
   }
 }

@@ -16,7 +16,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import project.dataexchangeproject.security.JwtAuthorizationFilter;
 
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
+@EnableMethodSecurity(securedEnabled = true,
+    jsr250Enabled = true,
+    prePostEnabled = true)
 @Configuration
 public class SecurityConfig {
 
@@ -30,11 +32,11 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http
-            .csrf(AbstractHttpConfigurer::disable)
-            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
-            .build();
+        .csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+        .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
   }
 
   @Configuration
@@ -42,8 +44,8 @@ public class SecurityConfig {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
       registry.addMapping("/**")
-              .allowedOriginPatterns("http://localhost:4200", "https://*.apps.student.inso-w.at") // TODO: add frontend domain
-              .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD");
+          .allowedOriginPatterns("http://localhost:4200", "https://*.apps.student.inso-w.at") // TODO: add frontend domain
+          .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "HEAD");
     }
   }
 }

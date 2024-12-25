@@ -25,26 +25,30 @@ public class GraphDBConfiguration {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "graph_db_url", nullable = false)
+  @Column(name = "graph_db_url",
+      nullable = false)
   private String graphDbServerUrl;
 
-  @Column(name = "repository_id", nullable = false)
+  @Column(name = "repository_id",
+      nullable = false)
   private String repositoryId;
 
-  @Column(name = "port", nullable = false)
+  @Column(name = "port",
+      nullable = false)
   private Long port;
 
-  @Column(name = "generated_url", nullable = false)
+  @Column(name = "generated_url",
+      nullable = false)
   private String generatedUrl;
 
   @PrePersist
   private void prePersist() {
     if (this.graphDbServerUrl
-            != null
-            && this.repositoryId
-            != null
-            && this.port
-            != null) {
+        != null
+        && this.repositoryId
+        != null
+        && this.port
+        != null) {
       this.generatedUrl = String.format("%s:%d/repositories/%s", this.graphDbServerUrl, this.port, this.repositoryId);
     }
   }

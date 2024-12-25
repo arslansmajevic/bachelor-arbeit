@@ -31,19 +31,19 @@ public class LoginEndpoint {
   }
 
   @Operation(
-          description = "Endpoint used for authentication",
-          summary = "Returns JWT String if successful",
-          responses = {
-              @ApiResponse(
-                      description = "Success",
-                      responseCode = "200"),
-              @ApiResponse(
-                      description = "Unauthorized",
-                      responseCode = "401"),
-              @ApiResponse(
-                      description = "Forbidden",
-                      responseCode = "403")
-          }
+      description = "Endpoint used for authentication",
+      summary = "Returns JWT String if successful",
+      responses = {
+          @ApiResponse(
+              description = "Success",
+              responseCode = "200"),
+          @ApiResponse(
+              description = "Unauthorized",
+              responseCode = "401"),
+          @ApiResponse(
+              description = "Forbidden",
+              responseCode = "403")
+      }
   )
   @PermitAll
   @PutMapping()

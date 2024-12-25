@@ -4,27 +4,27 @@ import java.util.List;
 import java.util.Map;
 
 public record SparqlResult(
-        Head head,
-        Results results
+    Head head,
+    Results results
 ) {
   public record Head(
-          List<String> vars
+      List<String> vars
   ) {
   }
 
   public record Results(
-          List<Binding> bindings
+      List<Binding> bindings
   ) {
   }
 
   public record Binding(
-          Map<String, Value> values
+      Map<String, Value> values
   ) {
   }
 
   public record Value(
-          String type,
-          String value
+      String type,
+      String value
   ) {
   }
 
