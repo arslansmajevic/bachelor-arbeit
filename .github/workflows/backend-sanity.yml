@@ -1,0 +1,51 @@
+name: Backend Sanity Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '22' # Matches the <java.version> in your Spring Boot application's pom.xml
+
+    - name: Cache Maven repository
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-m2-${{ hashFiles('data-exchange-project/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-m2
+
+    - name: Navigate to Spring Boot application folder
+      working-directory: ./data-exchange-project
+      run: echo "Switched to Spring Boot application folder."
+
+    - name: Run Maven validate
+      working-directory: ./data-exchange-project
+      run: mvn validate
+      env:
+        MAVEN_OPTS: "-Dmaven.test.failure.ignore=true"
+
+    - name: Run Checkstyle
+      working-directory: ./data-exchange-project
+      run: mvn checkstyle:check
+
+    - name: Run Maven tests
+      working-directory: ./data-exchange-project
+      run: mvn clean test
+      env:
+        MAVEN_OPTS: "-Dmaven.test.failure.ignore=true"
