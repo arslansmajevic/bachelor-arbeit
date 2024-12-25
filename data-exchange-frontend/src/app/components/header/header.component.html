@@ -22,11 +22,11 @@
         <mat-icon matBadge="{{numberOfPendingRequests === 0 ? '' : numberOfPendingRequests}}">account_circle</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button *ngIf="authService.getUserRole() === 'ADMIN'" mat-menu-item routerLink="admin/dashboard">
+        <button *ngIf="checkAdminRole()" mat-menu-item routerLink="admin/dashboard">
           <mat-icon matBadge="{{numberOfPendingRequests === 0 ? '' : numberOfPendingRequests}}">manage_accounts</mat-icon>
           <span>User management</span>
         </button>
-        <button *ngIf="authService.getUserRole() === 'ADMIN'" mat-menu-item routerLink="admin/database-config">
+        <button *ngIf="checkAdminRole()" mat-menu-item routerLink="admin/database-config">
           <mat-icon>analytics</mat-icon>
           <span>Database config</span>
         </button>

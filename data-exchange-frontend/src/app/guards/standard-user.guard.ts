@@ -14,7 +14,7 @@ export class StandardUserGuard  {
     if (this.authService.isLoggedIn()) {
       return true;
     } else {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/user/login']);
       return false;
     }
   }

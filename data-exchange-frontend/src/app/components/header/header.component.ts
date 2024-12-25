@@ -41,5 +41,20 @@ export class HeaderComponent implements OnInit{
     this.router.navigate(['']);
   }
 
+  checkUserRole(): boolean {
+    if (this.authService.isLoggedIn()) {
+      if (this.authService.getUserRole() === 'USER')
+        return true;
+    }
+    return false;
+  }
+
+  checkAdminRole(): boolean {
+    if (this.authService.isLoggedIn()) {
+      if (this.authService.getUserRole() === 'ADMIN')
+        return true;
+    }
+    return false;
+  }
 
 }
