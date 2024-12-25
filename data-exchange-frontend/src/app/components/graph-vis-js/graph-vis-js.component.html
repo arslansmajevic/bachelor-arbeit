@@ -15,6 +15,7 @@
 
               <div style="display: flex; justify-content: center; padding-top: 2px">
                 <h1 *ngIf="currentPanel.title !== undefined">Current expanded node</h1>
+                <button (click)="expandAllNodes()">Expand All Nodes</button>
                 <h1 *ngIf="currentPanel.title === undefined">No node selected</h1>
               </div>
 

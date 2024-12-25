@@ -76,17 +76,8 @@ export class GraphVisJsComponent implements OnInit {
 
   @Input() firstNode: GraphNode[] = [{id: "null", label: "null", expanded: false}];
 
-  nodes: GraphNode[] = [
-    { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
-    /*{ id: 'http://example.org/fhir/Patient/T1357', label: 'Patient/T1357', expanded: false }*/
-  ];
-
-  rootNodes: GraphNode[] = [
-    { id: 'http://example.org/fhir/Patient/1', label: 'Patient/1', expanded: false }
-  ];
-
+  rootNodes: GraphNode[] = [];
   panels: CustomPanel[] = [];
-
 
   constructor(
     private dataService: DataService,
@@ -119,27 +110,28 @@ export class GraphVisJsComponent implements OnInit {
         enabled: true,
         solver: 'forceAtlas2Based', // You can keep physics settings or disable them for a static layout
         forceAtlas2Based: {
-          gravitationalConstant: -50,
-          centralGravity: 0.01,
-          springLength: 100,
+          gravitationalConstant: -75,
+          centralGravity: 0.015,
+          springLength: 1,
           springConstant: 0.08,
-          damping: 0.4
+          damping: 0.9
         },
-        maxVelocity: 50,
+        /*maxVelocity: 50,
         minVelocity: 0.1,
         stabilization: {
-          enabled: true,
-          iterations: 1000,
+          enabled: false,
+          iterations: 5,
           updateInterval: 25,
           onlyDynamicEdges: false,
           fit: true
-        }
+        }*/
       },
       edges: {
         arrows: {
           to: { enabled: true, scaleFactor: 1 } // Adds arrows to edges
         }
-      }
+      },
+      autoResize: true
     };
 
     this.network = new Network(container, data, options);
@@ -151,17 +143,17 @@ export class GraphVisJsComponent implements OnInit {
         this.onNodeDoubleClick(nodeId);
       }
     });
-
   }
 
   onNodeDoubleClick(nodeId: string): void {
     const node = this.nodesDataSet.get(nodeId);
 
-
+    // ignore same color clicks
     if (node.color === this.previousNode.color) {
       return;
     }
 
+    // ignore same node clicks
     if (node.id === this.previousNode.nodeUri) {
       return;
     }
@@ -205,17 +197,7 @@ export class GraphVisJsComponent implements OnInit {
               this.rootNodes.push({ id: link.source, label: extractedLabelSource, expanded: false });
             }
 
-
-            // Check if the edge already exists before adding it
-            const existingEdges = this.edgesDataSet.get({
-              filter: (edge: any) => edge.from === link.source && edge.to === link.target
-            });
-
-            if (existingEdges.length === 0) {
-              // Edge does not exist, so add it
-              let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
-              this.edgesDataSet.add({ from: link.source, to: link.target, label: extractedLabel });
-            }
+            this.addEdgeToDataSet(link);
           });
 
           // Handle node expansion data
@@ -239,16 +221,7 @@ export class GraphVisJsComponent implements OnInit {
               }
             }
 
-            // Check if the edge already exists before adding it
-            const existingEdges = this.edgesDataSet.get({
-              filter: (edge: any) => edge.from === link.source && edge.to === link.target
-            });
-
-            if (existingEdges.length === 0) {
-              // Edge does not exist, so add it
-              let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
-              this.edgesDataSet.add({ from: link.source, to: link.target, label: extractedLabel });
-            }
+            this.addEdgeToDataSet(link);
           });
 
           // After all data has been processed, print the graph data
@@ -257,12 +230,27 @@ export class GraphVisJsComponent implements OnInit {
           this.appointCurrentPanel(node.label)
           if (this.previousNode.nodeUri !== "") {
             this.collapseNode(this.previousNode.nodeUri, this.previousNode.color)
+            this.showNode(nodeId, node.color)
           }
 
           this.previousNode.nodeUri = nodeId;
           this.previousNode.color = randomColor;
+
         });
       }
+    }
+  }
+
+  addEdgeToDataSet(link: Link): void {
+    // Check if the edge already exists before adding it
+    const existingEdges = this.edgesDataSet.get({
+      filter: (edge: any) => edge.from === link.source && edge.to === link.target
+    });
+
+    if (existingEdges.length === 0) {
+      // Edge does not exist, so add it
+      let extractedLabel = link.label.substring(link.label.lastIndexOf('/') + 1);
+      this.edgesDataSet.add({ from: link.source, to: link.target, label: extractedLabel });
     }
   }
 
@@ -308,6 +296,18 @@ export class GraphVisJsComponent implements OnInit {
         this.nodesDataSet.update( {id: node.id, hidden: false, color: nodeColor})
       }
     })
+
+    const connectedEdges = this.edgesDataSet.get({
+      filter: (edge) => edge.from === nodeId,
+    });
+
+    connectedEdges.forEach((edge) => {
+      this.nodesDataSet.forEach( (node) => {
+        if (node.id === edge.to) {
+          this.nodesDataSet.update({ id: edge.to, hidden: false, color: node.color } );
+        }
+      })
+    });
   }
 
   appointCurrentPanel(nodeTitle: string): void {
@@ -315,5 +315,13 @@ export class GraphVisJsComponent implements OnInit {
       // @ts-ignore
       this.currentPanel = this.panels.find(panel => panel.title === nodeTitle);
     }
+  }
+
+  expandAllNodes(): void {
+    this.nodesDataSet.forEach((node) => {
+      if (!node.color) {
+        this.onNodeDoubleClick(node.id);
+      }
+    })
   }
 }
