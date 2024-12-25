@@ -1,0 +1,43 @@
+<div class="full-width-container" xmlns:svg="">
+  <as-split direction="horizontal" class="as-split-container" (dragEnd)="onResize($event)">
+    <as-split-area [size]="65">
+      <as-split direction="vertical">
+        <ngx-graph style=""
+          class="chart-container"
+          [showMiniMap]="true"
+          [links]="links"
+          [nodes]="nodes"
+        >
+          <ng-template #nodeTemplate let-node>
+            <svg:g class="node" (dblclick)="onNodeDoubleClick(node)">
+              <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
+              <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.label}}</svg:text>
+            </svg:g>
+          </ng-template>
+
+          <ng-template #linkTemplate let-link>
+            <svg:g class="edge">
+              <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
+              </svg:path>
+              <svg:text class="edge-label" text-anchor="middle">
+                <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
+                  {{link.label}}
+                </textPath>
+              </svg:text>
+            </svg:g>
+          </ng-template>
+
+        </ngx-graph>
+      </as-split>
+    </as-split-area>
+    <as-split-area [size]="35">
+      <as-split direction="vertical">
+        <as-split-area [size]="100">
+          <p>
+            Arslan
+          </p>
+        </as-split-area>
+      </as-split>
+    </as-split-area>
+  </as-split>
+</div>

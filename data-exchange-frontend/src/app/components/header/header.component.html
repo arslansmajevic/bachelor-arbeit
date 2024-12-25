@@ -1,0 +1,50 @@
+<header class="p-3 bg-dark text-white height-header">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+      </a>
+
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="#" class="nav-link px-2 text-secondary">Home</a></li>
+        <li><a routerLink="search-instance" class="nav-link px-2 text-secondary">Explore Database</a></li>
+        <li><a routerLink="statistics" class="nav-link px-2 text-secondary">Statistics</a></li>
+        <li><a routerLink="templates" class="nav-link px-2 text-secondary">SPARQL Playground</a></li>
+      </ul>
+
+
+      <div class="text-end" *ngIf="!authService.isLoggedIn()">
+        <button type="button" class="btn btn-outline-light me-2" routerLink="user/login">Login</button>
+        <button type="button" class="btn btn-warning" routerLink="user/register">Sign-up</button>
+      </div>
+
+      <button *ngIf="authService.isLoggedIn()" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <mat-icon matBadge="{{numberOfPendingRequests === 0 ? '' : numberOfPendingRequests}}">account_circle</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button *ngIf="authService.getUserRole() === 'ADMIN'" mat-menu-item routerLink="admin/dashboard">
+          <mat-icon matBadge="{{numberOfPendingRequests === 0 ? '' : numberOfPendingRequests}}">manage_accounts</mat-icon>
+          <span>User management</span>
+        </button>
+        <button *ngIf="authService.getUserRole() === 'ADMIN'" mat-menu-item routerLink="admin/database-config">
+          <mat-icon>analytics</mat-icon>
+          <span>Database config</span>
+        </button>
+        <button mat-menu-item (click)="logoutUser()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+
+      <!--<div class="nav-item dropdown" *ngIf="!authService.isLoggedIn()">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <i class="bi bi-person"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUser">
+          <a class="dropdown-item" (click)="authService.logoutUser()" routerLink="/login"><i class="bi bi-box-arrow-left"></i> Log Out</a>
+        </div>
+      </div>-->
+    </div>
+  </div>
+</header>

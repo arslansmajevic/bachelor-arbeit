@@ -1,0 +1,107 @@
+<div style="display: flex; height: 100%; overflow: hidden;">
+  <!-- 70% width for the chart -->
+  <div style="flex: 6; padding: 10px; border-right: 1px solid #ddd; overflow: hidden;">
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; overflow-y: auto; padding: 10px; align-items: flex-start;">
+      <div *ngFor="let chart of charts"
+           style="max-width: 600px; max-height: 600px; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); position: relative;">
+         <h3 style="margin: 0 0 10px;">{{ chart.name }}</h3>
+
+          <button
+            style="position: absolute; top: 10px; right: 10px; background: #007bff; color: white; border: none; border-radius: 3px; padding: 5px 10px; cursor: pointer;"
+            (click)="expandChart(chart.id)">
+            Expand
+          </button>
+
+          <ngx-charts-bar-vertical-2d
+            [results]="chart.results"
+            [xAxis]="true"
+            [yAxis]="true"
+            [legend]="true"
+            [showXAxisLabel]="true"
+            [xAxisLabel]="chart.xAxisLabel">
+          </ngx-charts-bar-vertical-2d>
+
+
+        <!-- Popup for Expanded Chart -->
+        <div
+          *ngIf="expandedChart && expandedChart.id === chart.id"
+          style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+          <div
+            style="width: 80%; height: 80%; background: white; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); position: relative; overflow: auto;">
+            <button
+              style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; border-radius: 3px; padding: 5px 10px; cursor: pointer;"
+              (click)="closeExpandedChart()">
+              Close
+            </button>
+            <h2>{{ expandedChart.name }}</h2>
+            <ngx-charts-bar-vertical-2d
+              [results]="expandedChart.results"
+              [xAxis]="true"
+              [yAxis]="true"
+              [legend]="true"
+              [showXAxisLabel]="true"
+              [xAxisLabel]="expandedChart.xAxisLabel">
+            </ngx-charts-bar-vertical-2d>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 30% width for the other content -->
+  <div style="flex: 4; padding: 10px; display: flex; flex-direction: column; gap: 15px; overflow: hidden;">
+    <h2>Chart Builder</h2>
+
+    <mat-form-field appearance="fill" class="action-item">
+      <mat-label>Name the chart</mat-label>
+      <input matInput [(ngModel)]="chartName"/>
+    </mat-form-field>
+
+    <div style="width: 100%; border: 1px solid #ccc; padding: 5px; overflow: auto;">
+      <ngx-codemirror
+        [(ngModel)]="sparqlQuery"
+        [options]="{
+          lineNumbers: true,
+          theme: 'default',
+          mode: 'sparql'
+        }"
+        class="editor"
+      ></ngx-codemirror>
+    </div>
+
+    <!-- Action Row -->
+    <div class="action-row" style="display: flex; justify-content: space-between; gap: 10px;">
+      <button mat-raised-button color="primary" (click)="executeQuery()">Execute Query</button>
+      <button mat-raised-button (click)="saveQuery()">Save Query</button>
+      <button mat-raised-button color="accent" (click)="clearQuery()">Clear Query</button>
+    </div>
+
+    <mat-form-field appearance="fill" class="action-item">
+      <mat-label>xAxis Property</mat-label>
+      <input matInput [(ngModel)]="xAxisProperty" />
+    </mat-form-field>
+
+    <!-- Mat Select -->
+    <mat-form-field appearance="fill" class="action-item" style="width: 100%;">
+      <mat-label>Select a query</mat-label>
+      <mat-select [(value)]="selectedQuery" (selectionChange)="updateQuery(selectedQuery)">
+        <mat-option *ngFor="let query of sparqlQueries" [value]="query">
+          {{ query.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="action-item">
+      <mat-label>Query Name</mat-label>
+      <input matInput [(ngModel)]="selectedQuery.name" />
+    </mat-form-field>
+
+    <!-- Query Description -->
+    <mat-form-field appearance="fill" class="action-item">
+      <mat-label>Query Description</mat-label>
+      <textarea matInput [(ngModel)]="selectedQuery.description"></textarea>
+    </mat-form-field>
+
+  </div>
+</div>
