@@ -214,17 +214,11 @@ public class GraphDbRepository {
       while (result.hasNext()) {
         BindingSet bindingSet = result.next();
 
-        String subjectBlankNode = bindingSet.getValue("o"
-            + level).stringValue();
-        String predicate = bindingSet.getValue("p"
-            + level).stringValue();
-        String objectValue = bindingSet.getValue("o"
-            + (level
-            + 1)).stringValue();
+        String subjectBlankNode = bindingSet.getValue("o" + level).stringValue();
+        String predicate = bindingSet.getValue("p" + level).stringValue();
+        String objectValue = bindingSet.getValue("o" + (level + 1)).stringValue();
 
-        if (!(predicate.contains("rdf-syntax-ns#type")
-            ||
-            predicate.contains("fhir/nodeRole"))) {
+        if (!(predicate.contains("rdf-syntax-ns#type") || predicate.contains("fhir/nodeRole"))) {
           listOfExpandingEdges.add(
               new ExpandingEdge(
                   subjectBlankNode,
@@ -234,13 +228,9 @@ public class GraphDbRepository {
           );
         }
 
-        // System.out.println(listOfExpandingEdges);
-
         if (objectValue.startsWith("node")
             && oneTime++
             == 0) {
-          /*System.out.println("expanding on blank node: "
-              + objectValue);*/
           listOfExpandingEdges.addAll(downstreamRecursiveNodeExpansion(subject, level
               + 1));
         }

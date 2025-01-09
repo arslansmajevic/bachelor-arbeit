@@ -14,6 +14,7 @@ import {Router} from "@angular/router";
 })
 export class GraphVisJsComponent implements OnInit {
   @ViewChild('visGraphContainer', { static: true }) visGraphContainer!: ElementRef;
+  @ViewChild('contextMenu', { static: true }) contextMenu!: ElementRef;
 
   nodesDataSet!: DataSet<any>;
   edgesDataSet!: DataSet<any>;
@@ -130,8 +131,7 @@ export class GraphVisJsComponent implements OnInit {
         arrows: {
           to: { enabled: true, scaleFactor: 1 } // Adds arrows to edges
         }
-      },
-      autoResize: true
+      }
     };
 
     this.network = new Network(container, data, options);
@@ -210,14 +210,14 @@ export class GraphVisJsComponent implements OnInit {
               if (sourceLabel.startsWith('node')) {
                 this.nodesDataSet.add({ id: link.source, expanded: true, shape: 'diamond', color: randomColor, group: this.groupId - 1 })
               } else {
-                this.nodesDataSet.add({ id: link.source, expanded: true, color: randomColor, shape: 'rectangle', group: this.groupId - 1 });
+                this.nodesDataSet.add({ id: link.source, expanded: true, color: randomColor, shape: 'box', group: this.groupId - 1 });
               }
             }
             if (!this.nodesDataSet.get(link.target)) {
               if (targetLabel.startsWith('node')) {
                 this.nodesDataSet.add({ id: link.target, expanded: true, shape: 'diamond', color: randomColor, group: this.groupId - 1 });
               } else {
-                this.nodesDataSet.add({ id: link.target, label: targetLabel, shape: 'rectangle', expanded: true, color: randomColor, group: this.groupId - 1 });
+                this.nodesDataSet.add({ id: link.target, label: targetLabel, shape: 'box', expanded: true, color: randomColor, group: this.groupId - 1 });
               }
             }
 
