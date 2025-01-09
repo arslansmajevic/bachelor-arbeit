@@ -18,6 +18,7 @@ import {CustomStatisticsComponent} from "./components/statistics/custom-statisti
 import {
   SelectMoreInstancesComponent
 } from "./components/templates/select-more-instances/select-more-instances.component";
+import {StandardUserGuard} from "./guards/standard-user.guard";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -29,10 +30,8 @@ const routes: Routes = [
       { path: 'register', component: RegisterUserComponent }
     ]
   },
-  { path: 'search-instance', component: SearchAnInstanceComponent },
-  { path: 'graph-ngx', component: ExploreGraphComponent },
-  { path: 'graph-cytoscape', component: ExploreGraphCytoscapeComponent },
-  { path: 'graph-vis-js', component: GraphVisJsComponent },
+  { path: 'search-instance', canActivate: ([StandardUserGuard]), component: SearchAnInstanceComponent },
+  { path: 'graph-vis-js', canActivate: ([StandardUserGuard]), component: GraphVisJsComponent },
   {
     path: 'admin', canActivate: mapToCanActivate([AdminAuthGuard]), children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -40,15 +39,15 @@ const routes: Routes = [
       { path: 'database-config', component: DatabaseConfigComponent }
     ]
   },
-  { path: 'templates', component: SparqlTemplatesComponent },
+  { path: 'templates', canActivate: ([StandardUserGuard]), component: SparqlTemplatesComponent },
   {
-    path: 'templates', children: [
+    path: 'templates', canActivate: ([StandardUserGuard]), children: [
       {path: '', redirectTo: 'templates', pathMatch: 'full'}, // Redirect to the default child
       {path: 'sparql-endpoint', component: SparqlEndpointComponent},
       {path: 'multiple-instances', component: SelectMoreInstancesComponent}
     ]
   },
-  { path: 'statistics', component: CustomStatisticsComponent },
+  { path: 'statistics', canActivate: ([StandardUserGuard]), component: CustomStatisticsComponent },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ]
 

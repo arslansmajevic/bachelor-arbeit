@@ -63,9 +63,6 @@ public class GraphDbRepository {
         );
 
     String sparqlQueryString = selectQuery.getQueryString();
-    System.out.println("SPARQL Query: "
-        + sparqlQueryString);
-
     List<ExpandingEdge> listOfExpandingEdges = new ArrayList<>();
 
     int oneTime = 0;
@@ -110,8 +107,6 @@ public class GraphDbRepository {
     Variable object = SparqlBuilder.var("object");
     Variable connection = SparqlBuilder.var("connection");
 
-    System.out.println("nodeUri "
-        + nodeUri);
     SelectQuery selectQuery = Queries.SELECT(object, connection)
         .prefix(fhir)
         .where(
@@ -165,7 +160,7 @@ public class GraphDbRepository {
     }
 
     // Output the results (you can adapt this to return or process differently)
-    results.forEach(System.out::println);
+    // results.forEach(System.out::println);
 
     return listOfExpandingEdges;
   }
@@ -206,7 +201,7 @@ public class GraphDbRepository {
     selectQuery.prefix(fhir)
         .where(wherePatterns.toArray(new TriplePattern[0]));
 
-    System.out.println(selectQuery.getQueryString());
+    // System.out.println(selectQuery.getQueryString());
 
     String sparqlQueryString = selectQuery.getQueryString();
     List<ExpandingEdge> listOfExpandingEdges = new ArrayList<>();
@@ -219,17 +214,11 @@ public class GraphDbRepository {
       while (result.hasNext()) {
         BindingSet bindingSet = result.next();
 
-        String subjectBlankNode = bindingSet.getValue("o"
-            + level).stringValue();
-        String predicate = bindingSet.getValue("p"
-            + level).stringValue();
-        String objectValue = bindingSet.getValue("o"
-            + (level
-            + 1)).stringValue();
+        String subjectBlankNode = bindingSet.getValue("o" + level).stringValue();
+        String predicate = bindingSet.getValue("p" + level).stringValue();
+        String objectValue = bindingSet.getValue("o" + (level + 1)).stringValue();
 
-        if (!(predicate.contains("rdf-syntax-ns#type")
-            ||
-            predicate.contains("fhir/nodeRole"))) {
+        if (!(predicate.contains("rdf-syntax-ns#type") || predicate.contains("fhir/nodeRole"))) {
           listOfExpandingEdges.add(
               new ExpandingEdge(
                   subjectBlankNode,
@@ -239,13 +228,9 @@ public class GraphDbRepository {
           );
         }
 
-        System.out.println(listOfExpandingEdges);
-
         if (objectValue.startsWith("node")
             && oneTime++
             == 0) {
-          System.out.println("expanding on blank node: "
-              + objectValue);
           listOfExpandingEdges.addAll(downstreamRecursiveNodeExpansion(subject, level
               + 1));
         }

@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>project</groupId>
-    <artifactId>data-exchange-project</artifactId>
+    <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>data-exchange-project</name>
     <description>A platform for exchange and representation of medical data</description>

@@ -13,11 +13,15 @@
           <as-split direction="vertical">
             <as-split-area [size]="35">
 
-              <div style="display: flex; justify-content: center; padding-top: 2px">
+              <div style="display: flex; justify-content: center;">
                 <h1 *ngIf="currentPanel.title !== undefined">Current expanded node</h1>
                 <h1 *ngIf="currentPanel.title === undefined">No node selected</h1>
               </div>
-
+              <div class="d-flex justify-content-center align-items-center flex-wrap gap-3">
+                <div class="card ">
+                  <button type="button" class="btn btn-primary w-100" (click)="expandAllNodes()">Expand all nodes</button>
+                </div>
+              </div>
               <app-rec-show-panel *ngIf="currentPanel.title !== undefined" [panel]="currentPanel"></app-rec-show-panel>
 
             </as-split-area>
