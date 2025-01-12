@@ -22,3 +22,7 @@ This is probabbly the simplest way to have a ready instance of GraphDB for the b
 If you want a clean GraphDB instance, then you can just delete the folder ```graphdb-data``` when pulled. When running compose again and a new instance will be created, a new clean ```graphdb-data``` folder. THIS FOLDER WILL NOT CONTAIN THE REPOSITORY NEEDED FROM THE BACKEND, so you have to create this manually! 
 
 Also this configuration is only intended for local use. 
+
+Don't forget to run when finished:
+```docker compose down```
+Also, if changes are made to code - you have to delete the old images, as docker compose relies heavily on caching and does not look for changes.
