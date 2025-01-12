@@ -11,15 +11,15 @@ import project.dataexchangeproject.repository.UserRepository;
 
 import java.lang.invoke.MethodHandles;
 
-@Profile("generateData")
+@Profile("productionData")
 @Component
-public class UserDataGenerator {
+public class ProdUserDataGenerator {
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final UserRepository userRepository;
   private String password = "password";
 
-  public UserDataGenerator(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+  public ProdUserDataGenerator(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.password = passwordEncoder.encode(password);
   }
@@ -35,7 +35,7 @@ public class UserDataGenerator {
           .email("admin@admin.com")
           .password(password)
           .firstName("Admin")
-          .lastName("Boss")
+          .lastName("Admin")
           .isAdmin(Boolean.TRUE)
           .isLocked(Boolean.FALSE)
           .loginAttempts(0)
@@ -43,32 +43,6 @@ public class UserDataGenerator {
           .build();
 
       userRepository.save(adminUser);
-
-      ApplicationUser defaultUser = ApplicationUser.builder()
-          .email("user@user.com")
-          .password(password)
-          .firstName("Arslan")
-          .lastName("Smajevic")
-          .isAdmin(Boolean.FALSE)
-          .isLocked(Boolean.FALSE)
-          .loginAttempts(0)
-          .isPending(false)
-          .build();
-
-      userRepository.save(defaultUser);
-
-      ApplicationUser pendingUser = ApplicationUser.builder()
-          .email("pending@pending.com")
-          .password(password)
-          .firstName("Pending")
-          .lastName("User")
-          .isAdmin(Boolean.FALSE)
-          .isLocked(Boolean.FALSE)
-          .loginAttempts(0)
-          .isPending(true)
-          .build();
-
-      userRepository.save(pendingUser);
     }
   }
 }

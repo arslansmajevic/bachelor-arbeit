@@ -11,7 +11,10 @@ export class Globals {
       return 'http://localhost:8080/api/v1';
     } else {
       // assume deployed somewhere and backend is available at same host/port as frontend
-      return window.location.protocol + '//' + window.location.host + window.location.pathname + 'api/v1';
+      // TODO: this needs some clearing up
+      // return 'http://backend-spring-boot-1:8080/api/v1';
+      return 'http://localhost:8080/api/v1';
+      // return window.location.protocol + '//' + window.location.host + window.location.pathname + 'api/v1';
     }
   }
 }

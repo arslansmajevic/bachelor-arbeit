@@ -10,13 +10,14 @@ import project.dataexchangeproject.repository.GraphDBConfigRepository;
 
 import java.lang.invoke.MethodHandles;
 
-@Profile("generateData")
+@Profile("productionData")
 @Component
-public class GraphDBConfigGenerator {
+public class ProdGraphDBConfigGenerator {
+
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final GraphDBConfigRepository graphDBConfigRepository;
 
-  public GraphDBConfigGenerator(GraphDBConfigRepository graphDBConfigRepository) {
+  public ProdGraphDBConfigGenerator(GraphDBConfigRepository graphDBConfigRepository) {
     this.graphDBConfigRepository = graphDBConfigRepository;
   }
 
@@ -27,15 +28,9 @@ public class GraphDBConfigGenerator {
     } else {
       GraphDBConfiguration graphDBConfiguration = GraphDBConfiguration.builder()
           .port(7200L)
-          .graphDbServerUrl("http://localhost")
-          .repositoryId("prof-data-repo")
+          .graphDbServerUrl("http://database-graphdb")
+          .repositoryId("production-repo")
           .build();
-
-      /*GraphDBConfiguration graphDBConfiguration = GraphDBConfiguration.builder()
-              .port(7200L)
-              .graphDbServerUrl("http://localhost")
-              .repositoryId("a-self-made-fhir-ttl")
-              .build();*/
 
       graphDBConfigRepository.save(graphDBConfiguration);
     }

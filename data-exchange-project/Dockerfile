@@ -27,9 +27,9 @@ COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
 
 # Add an environment variable for the Spring profile
-ENV SPRING_PROFILES_ACTIVE=generateData
+ENV SPRING_PROFILES_ACTIVE=productionData
 
 # Command to run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
-# docker run -e SPRING_PROFILES_ACTIVE=generateData -p 8080:8080 spring-boot-app
+# docker run -e SPRING_PROFILES_ACTIVE=productionData -p 8080:8080 spring-boot-app
