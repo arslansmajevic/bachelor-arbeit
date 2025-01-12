@@ -3,6 +3,8 @@ services:
     build:
       context: ./data-exchange-frontend
       dockerfile: Dockerfile
+    image: fhirdatafy/frontend-angular:latest
+    container_name: fhirdatafy-frontend
     ports:
       - "80:80"
     networks:
@@ -12,6 +14,8 @@ services:
     build:
       context: ./data-exchange-project
       dockerfile: Dockerfile
+    image: fhirdatafy/backend-spring-boot:latest
+    container_name: fhirdatafy-backend
     ports:
       - "8080:8080"
     environment:
