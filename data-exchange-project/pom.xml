@@ -14,7 +14,7 @@
     <name>data-exchange-project</name>
     <description>A platform for exchange and representation of medical data</description>
     <properties>
-        <java.version>22</java.version>
+        <java.version>17</java.version>
         <h2.version>2.2.224</h2.version>
         <jjwt.version>0.12.5</jjwt.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>

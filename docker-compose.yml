@@ -1,0 +1,42 @@
+services:
+  frontend-angular:
+    build:
+      context: ./data-exchange-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+  backend-spring-boot:
+    build:
+      context: ./data-exchange-project
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: productionData
+    networks:
+      - app-network
+
+  database-graphdb:
+    image: ontotext/graphdb:10.6.4
+    container_name: graphdb
+    ports:
+      - "7200:7200" # Expose the GraphDB web interface
+    volumes:
+      - ./graphdb-data:/opt/graphdb/home # Persistent storage
+      # - ./import:/root/import # Mount local import folder
+    networks:
+      - app-network
+
+  # graphdb-init:
+  #   build:
+  #     context: ./graphdb
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,145 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <http://example.org/fhir/Encounter/> .
+@prefix pat: <http://example.org/fhir/Patient/> .
+
+:Encounter1 a fhir:Encounter ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "finished"^^xsd:string ;
+    fhir:class [
+        a fhir:Coding ;
+        fhir:system "http://terminology.hl7.org/CodeSystem/v3-ActCode"^^xsd:string ;
+        fhir:code "AMB"^^xsd:string ;
+        fhir:display "Ambulatory"^^xsd:string
+    ] ;
+    fhir:type [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://example.org/fhir/CodeSystem/encounter-type"^^xsd:string ;
+            fhir:code "general"^^xsd:string ;
+            fhir:display "General Consultation"^^xsd:string
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:1 ;
+        fhir:display "John A. Smith"
+    ] ;
+    fhir:period [
+        a fhir:Period ;
+        fhir:start "2023-04-01T09:00:00"^^xsd:dateTime ;
+        fhir:end "2023-04-01T09:30:00"^^xsd:dateTime
+    ] .
+
+:Encounter2 a fhir:Encounter ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "finished"^^xsd:string ;
+    fhir:class [
+        a fhir:Coding ;
+        fhir:system "http://terminology.hl7.org/CodeSystem/v3-ActCode"^^xsd:string ;
+        fhir:code "AMB"^^xsd:string ;
+        fhir:display "Ambulatory"^^xsd:string
+    ] ;
+    fhir:type [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://example.org/fhir/CodeSystem/encounter-type"^^xsd:string ;
+            fhir:code "follow-up"^^xsd:string ;
+            fhir:display "Follow-up Visit"^^xsd:string
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:2 ;
+        fhir:display "Emma L. Johnson"
+    ] ;
+    fhir:period [
+        a fhir:Period ;
+        fhir:start "2023-05-10T10:15:00"^^xsd:dateTime ;
+        fhir:end "2023-05-10T10:45:00"^^xsd:dateTime
+    ] .
+
+:Encounter3 a fhir:Encounter ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "finished"^^xsd:string ;
+    fhir:class [
+        a fhir:Coding ;
+        fhir:system "http://terminology.hl7.org/CodeSystem/v3-ActCode"^^xsd:string ;
+        fhir:code "IMP"^^xsd:string ;  # Inpatient Encounter
+        fhir:display "Inpatient"^^xsd:string
+    ] ;
+    fhir:type [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://example.org/fhir/CodeSystem/encounter-type"^^xsd:string ;
+            fhir:code "surgery"^^xsd:string ;
+            fhir:display "Surgical Procedure"^^xsd:string
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:3 ;
+        fhir:display "Liam J. Brown"
+    ] ;
+    fhir:period [
+        a fhir:Period ;
+        fhir:start "2023-06-21T13:00:00"^^xsd:dateTime ;
+        fhir:end "2023-06-21T15:00:00"^^xsd:dateTime
+    ] .
+
+:Encounter4 a fhir:Encounter ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "planned"^^xsd:string ;
+    fhir:class [
+        a fhir:Coding ;
+        fhir:system "http://terminology.hl7.org/CodeSystem/v3-ActCode"^^xsd:string ;
+        fhir:code "AMB"^^xsd:string ;
+        fhir:display "Ambulatory"^^xsd:string
+    ] ;
+    fhir:type [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://example.org/fhir/CodeSystem/encounter-type"^^xsd:string ;
+            fhir:code "consultation"^^xsd:string ;
+            fhir:display "Specialist Consultation"^^xsd:string
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:4 ;
+        fhir:display "Sophia K. Davis"
+    ] ;
+    fhir:period [
+        a fhir:Period ;
+        fhir:start "2023-07-05T11:00:00"^^xsd:dateTime ;
+        fhir:end "2023-07-05T11:30:00"^^xsd:dateTime
+    ] .
+
+:Encounter5 a fhir:Encounter ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "finished"^^xsd:string ;
+    fhir:class [
+        a fhir:Coding ;
+        fhir:system "http://terminology.hl7.org/CodeSystem/v3-ActCode"^^xsd:string ;
+        fhir:code "AMB"^^xsd:string ;
+        fhir:display "Ambulatory"^^xsd:string
+    ] ;
+    fhir:type [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://example.org/fhir/CodeSystem/encounter-type"^^xsd:string ;
+            fhir:code "emergency"^^xsd:string ;
+            fhir:display "Emergency Room Visit"^^xsd:string
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:1 ;
+        fhir:display "John A. Smith"
+    ] ;
+    fhir:period [
+        a fhir:Period ;
+        fhir:start "2023-07-15T22:00:00"^^xsd:dateTime ;
+        fhir:end "2023-07-15T23:00:00"^^xsd:dateTime
+    ] .
