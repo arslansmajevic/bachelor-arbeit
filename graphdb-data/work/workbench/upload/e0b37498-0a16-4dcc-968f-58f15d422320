@@ -1,0 +1,192 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <http://example.org/fhir/DiagnosticReport/> .
+@prefix pat: <http://example.org/fhir/Patient/> .
+@prefix obs: <http://example.org/fhir/Observation/> .
+
+:Report1 a fhir:DiagnosticReport ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "final"^^xsd:string ;
+    fhir:category [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://terminology.hl7.org/CodeSystem/v2-0074"^^xsd:string ;
+            fhir:code "LAB"^^xsd:string ;
+            fhir:display "Laboratory"
+        ]
+    ] ;
+    fhir:code [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://loinc.org"^^xsd:string ;
+            fhir:code "45033-8"^^xsd:string ;
+            fhir:display "Laboratory report"
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:1 ;
+        fhir:display "John Smith"
+    ] ;
+    fhir:effectiveDateTime "2023-04-15T10:00:00"^^xsd:dateTime ;
+    fhir:result [
+        fhir:reference obs:Obs1 ;
+        fhir:display "CBC Complete Blood Count"
+    ] .
+
+:Report2 a fhir:DiagnosticReport ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "final"^^xsd:string ;
+    fhir:category [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://terminology.hl7.org/CodeSystem/v2-0074"^^xsd:string ;
+            fhir:code "RAD"^^xsd:string ;
+            fhir:display "Radiology"
+        ]
+    ] ;
+    fhir:code [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://loinc.org"^^xsd:string ;
+            fhir:code "24700-5"^^xsd:string ;
+            fhir:display "Chest X-ray"
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:2 ;
+        fhir:display "Emma L. Johnson"
+    ] ;
+    fhir:effectiveDateTime "2023-05-10T11:00:00"^^xsd:dateTime ;
+    fhir:result [
+        fhir:reference obs:Obs2 ;
+        fhir:display "Body Temperature"
+    ] .
+
+:Report3 a fhir:DiagnosticReport ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "final"^^xsd:string ;
+    fhir:category [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://terminology.hl7.org/CodeSystem/v2-0074"^^xsd:string ;
+            fhir:code "LAB"^^xsd:string ;
+            fhir:display "Laboratory"
+        ]
+    ] ;
+    fhir:code [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://loinc.org"^^xsd:string ;
+            fhir:code "39156-5"^^xsd:string ;
+            fhir:display "Body Mass Index (BMI)"
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:3 ;
+        fhir:display "Liam J. Brown"
+    ] ;
+    fhir:effectiveDateTime "2023-06-21T08:30:00"^^xsd:dateTime ;
+    fhir:result [
+        fhir:reference obs:Obs3 ;
+        fhir:display "Body Weight"
+    ] .
+
+:Report4 a fhir:DiagnosticReport ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "final"^^xsd:string ;
+    fhir:category [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://terminology.hl7.org/CodeSystem/v2-0074"^^xsd:string ;
+            fhir:code "RAD"^^xsd:string ;
+            fhir:display "Radiology"
+        ]
+    ] ;
+    fhir:code [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://loinc.org"^^xsd:string ;
+            fhir:code "36340-4"^^xsd:string ;
+            fhir:display "Knee MRI"
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:4 ;
+        fhir:display "Sophia K. Davis"
+    ] ;
+    fhir:effectiveDateTime "2023-07-05T12:00:00"^^xsd:dateTime ;
+    fhir:result [
+        fhir:reference obs:Obs4 ;
+        fhir:display "Body Height"
+    ] .
+
+:Report5 a fhir:DiagnosticReport ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "final"^^xsd:string ;
+    fhir:category [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://terminology.hl7.org/CodeSystem/v2-0074"^^xsd:string ;
+            fhir:code "LAB"^^xsd:string ;
+            fhir:display "Laboratory"
+        ]
+    ] ;
+    fhir:code [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://loinc.org"^^xsd:string ;
+            fhir:code "85354-9"^^xsd:string ;
+            fhir:display "Complete Blood Count"
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:1 ;
+        fhir:display "John Smith"
+    ] ;
+    fhir:effectiveDateTime "2023-08-01T14:30:00"^^xsd:dateTime ;
+    fhir:result [
+        fhir:reference obs:Obs5 ;
+        fhir:display "Heart Rate"
+    ] .
+
+:Report6 a fhir:DiagnosticReport ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "final"^^xsd:string ;
+    fhir:category [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://terminology.hl7.org/CodeSystem/v2-0074"^^xsd:string ;
+            fhir:code "LAB"^^xsd:string ;
+            fhir:display "Laboratory"
+        ]
+    ] ;
+    fhir:code [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://loinc.org"^^xsd:string ;
+            fhir:code "8480-6"^^xsd:string ;
+            fhir:display "Systolic Blood Pressure"
+        ]
+    ] ;
+    fhir:subject [
+        fhir:reference pat:4 ;
+        fhir:display "Sophia K. Davis"
+    ] ;
+    fhir:effectiveDateTime "2023-08-15T10:00:00"^^xsd:dateTime ;
+    fhir:result [
+        fhir:reference obs:Obs6 ;
+        fhir:display "Systolic Blood Pressure"
+    ] .

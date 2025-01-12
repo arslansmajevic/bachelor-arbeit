@@ -1,0 +1,51 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <http://example.org/fhir/Medication/> .
+
+:Med1 a fhir:Medication ;
+    fhir:nodeRole fhir:treeRoot ;  # Root of the tree for RDF graph
+    fhir:status "active"^^xsd:string ;
+    fhir:code [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://www.whocc.no/atc"^^xsd:string ;
+            fhir:code "N02BE01"^^xsd:string ;
+            fhir:display "Paracetamol"
+        ]
+    ] ;
+    fhir:form [
+        a fhir:CodeableConcept ;
+        fhir:coding [
+            a fhir:Coding ;
+            fhir:system "http://snomed.info/sct"^^xsd:string ;
+            fhir:code "385055001"^^xsd:string ;
+            fhir:display "Tablet"
+        ]
+    ] ;
+    fhir:ingredient [
+        a fhir:MedicationIngredient ;
+        fhir:item [
+            a fhir:Reference ;
+            fhir:reference :ActiveIngredient123 ;  # Reference to the active ingredient details
+            fhir:display "Paracetamol"
+        ] ;
+        fhir:strength [
+            a fhir:Ratio ;
+            fhir:numerator [
+                a fhir:Quantity ;
+                fhir:value "500"^^xsd:decimal ;
+                fhir:unit "mg"^^xsd:string ;
+                fhir:system "http://unitsofmeasure.org"^^xsd:string ;
+                fhir:code "mg"^^xsd:string
+            ] ;
+            fhir:denominator [
+                a fhir:Quantity ;
+                fhir:value "1"^^xsd:decimal ;
+                fhir:unit "tablet"^^xsd:string ;
+                fhir:system "http://unitsofmeasure.org"^^xsd:string ;
+                fhir:code "tablet"^^xsd:string
+            ]
+        ]
+    ] .

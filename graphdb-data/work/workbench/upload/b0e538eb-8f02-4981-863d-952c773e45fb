@@ -1,0 +1,189 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <http://example.org/fhir/CarePlan/> .
+@prefix pat: <http://example.org/fhir/Patient/> .
+
+:CarePlan1 a fhir:CarePlan ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "active"^^xsd:string ;
+    fhir:intent "plan"^^xsd:string ;
+    fhir:subject [
+        
+        fhir:reference pat:1 ;
+        fhir:display "John Smith"
+    ] ;
+    fhir:period [
+        a fhir:Period ;
+        fhir:start "2023-01-01"^^xsd:date ;
+        fhir:end "2023-12-31"^^xsd:date
+    ] ;
+    fhir:goal [
+        
+        fhir:reference :Goal1 ;
+        fhir:display "Manage hypertension"
+    ] ;
+    fhir:activity [
+        a fhir:CarePlanActivity ;
+        fhir:detail [
+            a fhir:CarePlanActivityDetail ;
+            fhir:status "scheduled"^^xsd:string ;
+            fhir:code [
+                a fhir:CodeableConcept ;
+                fhir:coding [
+                    a fhir:Coding ;
+                    fhir:system "http://example.org/fhir/CodeSystem/activity-codes"^^xsd:string ;
+                    fhir:code "exercise"^^xsd:string ;
+                    fhir:display "Regular exercise"
+                ]
+            ] ;
+            fhir:scheduledTiming [
+                a fhir:Timing ;
+                fhir:repeat [
+                    a fhir:TimingRepeat ;
+                    fhir:frequency 3 ;
+                    fhir:period 1 ;
+                    fhir:periodUnit "wk"
+                ]
+            ] ;
+            fhir:description "30 minutes of moderate exercise, three times a week"
+        ]
+    ] .
+
+:CarePlan2 a fhir:CarePlan ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "active"^^xsd:string ;
+    fhir:intent "plan"^^xsd:string ;
+    fhir:subject [
+        
+        fhir:reference pat:2 ;
+        fhir:display "Emma L. Johnson"
+    ] ;
+    fhir:period [
+        a fhir:Period ;
+        fhir:start "2023-02-01"^^xsd:date ;
+        fhir:end "2023-11-30"^^xsd:date
+    ] ;
+    fhir:goal [
+        
+        fhir:reference :Goal2 ;
+        fhir:display "Manage diabetes"
+    ] ;
+    fhir:activity [
+        a fhir:CarePlanActivity ;
+        fhir:detail [
+            a fhir:CarePlanActivityDetail ;
+            fhir:status "scheduled"^^xsd:string ;
+            fhir:code [
+                a fhir:CodeableConcept ;
+                fhir:coding [
+                    a fhir:Coding ;
+                    fhir:system "http://example.org/fhir/CodeSystem/activity-codes"^^xsd:string ;
+                    fhir:code "diet"^^xsd:string ;
+                    fhir:display "Diet management"
+                ]
+            ] ;
+            fhir:scheduledTiming [
+                a fhir:Timing ;
+                fhir:repeat [
+                    a fhir:TimingRepeat ;
+                    fhir:frequency 1 ;
+                    fhir:period 1 ;
+                    fhir:periodUnit "day"
+                ]
+            ] ;
+            fhir:description "Follow a low-carb diet plan"
+        ]
+    ] .
+
+:CarePlan3 a fhir:CarePlan ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "completed"^^xsd:string ;
+    fhir:intent "plan"^^xsd:string ;
+    fhir:subject [
+        
+        fhir:reference pat:3 ;
+        fhir:display "Liam J. Brown"
+    ] ;
+    fhir:period [
+        a fhir:Period ;
+        fhir:start "2023-03-01"^^xsd:date ;
+        fhir:end "2023-06-30"^^xsd:date
+    ] ;
+    fhir:goal [
+        
+        fhir:reference :Goal3 ;
+        fhir:display "Recover from surgery"
+    ] ;
+    fhir:activity [
+        a fhir:CarePlanActivity ;
+        fhir:detail [
+            a fhir:CarePlanActivityDetail ;
+            fhir:status "completed"^^xsd:string ;
+            fhir:code [
+                a fhir:CodeableConcept ;
+                fhir:coding [
+                    a fhir:Coding ;
+                    fhir:system "http://example.org/fhir/CodeSystem/activity-codes"^^xsd:string ;
+                    fhir:code "physiotherapy"^^xsd:string ;
+                    fhir:display "Physiotherapy sessions"
+                ]
+            ] ;
+            fhir:scheduledTiming [
+                a fhir:Timing ;
+                fhir:repeat [
+                    a fhir:TimingRepeat ;
+                    fhir:frequency 2 ;
+                    fhir:period 1 ;
+                    fhir:periodUnit "wk"
+                ]
+            ] ;
+            fhir:description "Two physiotherapy sessions per week"
+        ]
+    ] .
+
+:CarePlan4 a fhir:CarePlan ;
+    fhir:nodeRole fhir:treeRoot ;
+    fhir:status "active"^^xsd:string ;
+    fhir:intent "plan"^^xsd:string ;
+    fhir:subject [
+        
+        fhir:reference pat:4 ;
+        fhir:display "Sophia K. Davis"
+    ] ;
+    fhir:period [
+        a fhir:Period ;
+        fhir:start "2023-04-01"^^xsd:date ;
+        fhir:end "2023-12-31"^^xsd:date
+    ] ;
+    fhir:goal [
+        
+        fhir:reference :Goal4 ;
+        fhir:display "Manage cancer treatment"
+    ] ;
+    fhir:activity [
+        a fhir:CarePlanActivity ;
+        fhir:detail [
+            a fhir:CarePlanActivityDetail ;
+            fhir:status "scheduled"^^xsd:string ;
+            fhir:code [
+                a fhir:CodeableConcept ;
+                fhir:coding [
+                    a fhir:Coding ;
+                    fhir:system "http://example.org/fhir/CodeSystem/activity-codes"^^xsd:string ;
+                    fhir:code "chemotherapy"^^xsd:string ;
+                    fhir:display "Chemotherapy sessions"
+                ]
+            ] ;
+            fhir:scheduledTiming [
+                a fhir:Timing ;
+                fhir:repeat [
+                    a fhir:TimingRepeat ;
+                    fhir:frequency 1 ;
+                    fhir:period 3 ;
+                    fhir:periodUnit "wk"
+                ]
+            ] ;
+            fhir:description "Chemotherapy session every three weeks"
+        ]
+    ] .
